@@ -1,0 +1,19 @@
+{
+    "java.project.sourcePaths": ["src"],
+    "java.project.outputPath": "bin",
+    "java.project.referencedLibraries": [
+        "lib/**/*.jar",
+        "libs/commons-cli-1.5.0/commons-cli-1.5.0.jar",
+        "libs/commons-cli-1.5.0/commons-cli-1.5.0-javadoc.jar",
+        "libs/commons-cli-1.5.0/commons-cli-1.5.0-sources.jar",
+        "libs/commons-cli-1.5.0/commons-cli-1.5.0-tests.jar",
+        "libs/commons-cli-1.5.0/commons-cli-1.5.0-test-sources.jar"
+    ],
+    "java.configuration.runtimes": [
+        {
+            "name": "JavaSE-1.8",
+            "path": "C:\\Program Files\\Java\\jre1.8.0_291",
+            "default": true
+        }
+    ]
+}
