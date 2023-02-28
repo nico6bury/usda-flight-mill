@@ -296,7 +296,9 @@ public class ProcessDataLoggerFile {
                     outputList.add(idla[idx]);
                 }
                 else if (inputData.channels[idx] > threshold[idx] ) {
-                    idla[idx].peakWidth++;
+                    if (idla[idx] != null){
+                        idla[idx].peakWidth++;
+                    }
                 }
             }
             lastInputData = inputData;
