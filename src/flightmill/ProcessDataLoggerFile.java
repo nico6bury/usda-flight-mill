@@ -357,6 +357,7 @@ public class ProcessDataLoggerFile {
         File newFile = new File(destDir, zipEntry.getName());
         File parent = newFile.getParentFile();
         if (!parent.isDirectory() && !parent.mkdirs()) {
+            zis.close();
             throw new IOException("Failed to create directory " + parent);
         }
 
