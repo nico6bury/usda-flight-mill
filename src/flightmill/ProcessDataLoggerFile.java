@@ -279,7 +279,7 @@ public class ProcessDataLoggerFile {
         // print out threshold value for each channel
         for (int idx = 0; idx < minVal.length; idx++) {
 
-            threshold[idx] = (minVal[idx] + maxVal[idx]) / 2;
+            threshold[idx] = 1.5; //(minVal[idx] + maxVal[idx]) / 2;
             System.out.printf("%2d  %5.3f  %5.3f\n", idx, minVal[idx], maxVal[idx]);
         }
 
