@@ -313,7 +313,7 @@ public class ProcessDataLoggerFile {
         BasicFileAttributes attrs;
         try {
             attrs = Files.readAttributes(file.toPath(), BasicFileAttributes.class);
-            FileTime modTime = attrs.lastModifiedTime();
+            FileTime modTime = attrs.creationTime();
 
             return modTime;
         } catch (IOException e) {
