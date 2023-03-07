@@ -233,12 +233,12 @@ public class ProcessDataLoggerFile {
                 if (outputData.channel == jdx) {
                     pw.printf("%2d %8.3f", jdx + 1, outputData.elapsedTime);
                     if (icl.isDataTimeFlg()) {
-                        pw.printf(", ");
+                        pw.printf("\t");
                         long tim = new Double(outputData.elapsedTime * 1000).intValue();
                         pw.printf(dateFormat.format(new Date(tim + fileTime.toMillis())));
                     }
                     if (icl.isPeakWidthFlg()) {
-                        pw.printf(", %d", outputData.peakWidth);
+                        pw.printf("\t%d", outputData.peakWidth);
                     }
                     pw.printf("\n");
                 }
