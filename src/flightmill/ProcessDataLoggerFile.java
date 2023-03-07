@@ -239,14 +239,24 @@ public class ProcessDataLoggerFile {
 
         // print counts per channel
         for (int idx = 0; idx < icl.getNumberOfChannelsUsed(); idx++) {
-            pw.printf("Chan %2d  %5d\n", idx + 1, channelCounts[idx]);
+            pw.printf("Chan %2d  Peaks: %5d\n", idx + 1, channelCounts[idx]);
         }
+        
+        // print headers for the columns we're about to print
+        pw.printf("Chan#\tElTim");
+        if(icl.isDataTimeFlg()){
+            pw.printf("\tDtTim");
+        }//end if we should print the data time data
+        if(icl.isPeakWidthFlg()){
+            pw.printf("\tPkWidth");
+        }//end if we should print the width of the peak
+        pw.printf("\n");
         
         // print out data ordered by channel and in elapsed time order
         for (int jdx = 0; jdx < icl.getNumberOfChannelsUsed(); jdx++) {
             for (IntermediateDataLine outputData : inputList) {
                 if (outputData.channel == jdx) {
-                    pw.printf("%2d %8.3f", jdx + 1, outputData.elapsedTime);
+                    pw.printf("%2d\t%9.3f", jdx + 1, outputData.elapsedTime);
                     if (icl.isDataTimeFlg()) {
                         pw.printf("\t");
                         long tim = new Double(outputData.elapsedTime * 1000).intValue();
