@@ -219,8 +219,23 @@ public class ProcessDataLoggerFile {
         // print second line of header
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         Calendar cal = Calendar.getInstance();
-        pw.printf("File name: %s   Process data %s\n", icl.getInputFileName(), 
+        pw.printf("File name: %s\tData Processed %s\n", icl.getInputFileName(), 
                 dateFormat.format(cal.getTime()));
+        
+        // print third line of header
+        if(inputList.size() > 0){
+            // do some time calculations
+            long tim1 = fileTime.toMillis();
+            IntermediateDataLine lastDataLine = inputList.get(inputList.size() - 1);
+            long tim2 = tim1 + (long)(lastDataLine.elapsedTime * 1000);
+            double minutesDuration = lastDataLine.elapsedTime / 60;
+            // print out the time stuff
+            pw.printf("Data Collected in %1.1f minutes\t", minutesDuration);
+            pw.printf(dateFormat.format(new Date(tim1)));
+            pw.printf("\t-\t");
+            pw.printf(dateFormat.format(new Date(tim2)));
+            pw.printf("\n");
+        }//end if there are any inputs
 
         // print counts per channel
         for (int idx = 0; idx < icl.getNumberOfChannelsUsed(); idx++) {
