@@ -46,14 +46,21 @@ public class ProcessDataLoggerFile {
     // header info
     private static String TITLE = "USDA-ARS Manhattan, KS\tMar/2023\tSixbury/Rust/Brabec";
     private static String PROGRAM_NAME = "Flight Mill Compression";
-    private static String VERSION = "v.2.22"; 
+    private static String VERSION = "v.2.22";
 
     // entry point
     public static void main(String[] args) {
         
         try {
             // testLocalDateTime();
-            InputCommandLine inputCommandLine = processCommandLine(args);
+            InputCommandLine inputCommandLine;
+            if (args.length == 0) {
+                inputCommandLine = processGUI();
+            }//end if we're using a GUI for user input
+            else{
+                inputCommandLine = processCommandLine(args);
+            }//end else we're using the old command line method
+            
             if (inputCommandLine.isZipFileFlg()) {
                 zipFile(inputCommandLine.getInputFileName());
             }
@@ -61,6 +68,7 @@ public class ProcessDataLoggerFile {
                 String unzippedFileName = unzipFile(inputCommandLine.getInputFileName());
                 inputCommandLine.setInputFileName(unzippedFileName);
             }
+
             // load the imput file
             List<InputDataLine> inputList = LoadInputFile(inputCommandLine);
             // make list of individual peaks
@@ -76,6 +84,15 @@ public class ProcessDataLoggerFile {
                     null, ex);
         }
     }//end main method
+
+    // parses options from a GUI
+    private static InputCommandLine processGUI() {
+        // Setup storage object for all the configuration options we get
+        InputCommandLine inputCommandLine = new InputCommandLine();
+        
+
+        return inputCommandLine;
+    }//end processGUI()
 
     // parses options on the command line
     private static InputCommandLine processCommandLine(String[] args) {
