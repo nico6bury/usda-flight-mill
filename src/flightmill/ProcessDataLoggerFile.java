@@ -44,9 +44,9 @@ import org.apache.commons.cli.ParseException;
 public class ProcessDataLoggerFile {
 
     // header info
-    private static String TITLE = "USDA-ARS Manhattan, KS    Feb/2023   Rust/Brabec";
-    private static String PROGRAM_NAME = "Flight Mill Collater";
-    private static String VERSION = "1.01"; 
+    private static String TITLE = "USDA-ARS Manhattan, KS\tMar/2023\tSixbury/Rust/Brabec";
+    private static String PROGRAM_NAME = "Flight Mill Compression";
+    private static String VERSION = "v.2.22"; 
 
     // entry point
     public static void main(String[] args) {
@@ -213,16 +213,16 @@ public class ProcessDataLoggerFile {
         File outputFile = new File(icl.getOutputFileName());
         PrintWriter pw = new PrintWriter(outputFile);
 
-        // print first line of header
-        pw.printf("%s  %s  %s\n", TITLE, PROGRAM_NAME, VERSION);
+        // print first section of header
+        pw.printf("%s  %s\n%s\n", PROGRAM_NAME, VERSION, TITLE);
 
-        // print second line of header
+        // print second section of header
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         Calendar cal = Calendar.getInstance();
-        pw.printf("File name: %s\tData Processed %s\n", icl.getInputFileName(), 
+        pw.printf("File name: %s\nData Processed: %s\n", icl.getInputFileName(), 
                 dateFormat.format(cal.getTime()));
         
-        // print third line of header
+        // print third section of header
         if(inputList.size() > 0){
             // do some time calculations
             long tim1 = fileTime.toMillis();
@@ -231,8 +231,11 @@ public class ProcessDataLoggerFile {
             double minutesDuration = lastDataLine.elapsedTime / 60;
             // print out the time stuff
             pw.printf("Data Collected in %1.1f minutes\t", minutesDuration);
+
+            // new line with date
+            pw.printf("\nStart-End date/time: ");
             pw.printf(dateFormat.format(new Date(tim1)));
-            pw.printf("\t-\t");
+            pw.printf("  -  ");
             pw.printf(dateFormat.format(new Date(tim2)));
             pw.printf("\n");
         }//end if there are any inputs
@@ -243,7 +246,7 @@ public class ProcessDataLoggerFile {
         }
         
         // print headers for the columns we're about to print
-        pw.printf("Chan#\tElTim");
+        pw.printf("Chan#\tPkTime");
         if(icl.isDataTimeFlg()){
             pw.printf("\tDtTim");
         }//end if we should print the data time data
