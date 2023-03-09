@@ -52,7 +52,7 @@ public class ProcessDataLoggerFile {
     public static void main(String[] args) {
         
         try {
-//            testLocalDateTime();
+            // testLocalDateTime();
             InputCommandLine inputCommandLine = processCommandLine(args);
             if (inputCommandLine.isZipFileFlg()) {
                 zipFile(inputCommandLine.getInputFileName());
@@ -75,7 +75,7 @@ public class ProcessDataLoggerFile {
             Logger.getLogger(ProcessDataLoggerFile.class.getName()).log(Level.SEVERE, 
                     null, ex);
         }
-    }
+    }//end main method
 
     // parses options on the command line
     private static InputCommandLine processCommandLine(String[] args) {
@@ -163,7 +163,7 @@ public class ProcessDataLoggerFile {
 //</editor-fold>
 
         return inputCommandLine;
-    }
+    }//end processCommandLine(args)
 
     // load the input file into an input list
     private static List<InputDataLine> LoadInputFile(InputCommandLine icl) 
@@ -191,7 +191,7 @@ public class ProcessDataLoggerFile {
         myReader.close();
 
         return inputDataList;
-    }
+    }//end LoadInputFile(icl)
 
     // write out the collated data
     private static void makeOutputFile(List<IntermediateDataLine> inputList,
@@ -276,7 +276,7 @@ public class ProcessDataLoggerFile {
         // close output file
         pw.close();
 
-    }
+    }//end makeOutputFile(inputList, icl)
 
     // process input 
     private static List<IntermediateDataLine> processInput(List<InputDataLine> list,
@@ -333,7 +333,7 @@ public class ProcessDataLoggerFile {
         }
 
         return outputList;
-    }
+    }//end processInput(list, icl)
 
     // get input file modizfication time to set beginning time for output date/time
     private static FileTime getFileCreationDate(File file) {
@@ -348,7 +348,7 @@ public class ProcessDataLoggerFile {
             e.printStackTrace();
         }
         return null;
-    }
+    }//end getFileCreationDate(file)
 
     // zip input file to save space
     public static void zipFile(String sourceFile) throws IOException {
@@ -369,7 +369,7 @@ public class ProcessDataLoggerFile {
         zipOut.close();
         fis.close();
         fos.close();
-    }
+    }//end zipFile(sourceFile)
 
     // unzip input file
     public static String unzipFile(String zipFileName) throws IOException {
@@ -401,7 +401,7 @@ public class ProcessDataLoggerFile {
         zis.close();
 
         return newFile.getAbsolutePath();
-    }
+    }//end unzipFile(zipFileName)
 
     // class for input data directly mapped to input file
     private static class InputDataLine {
@@ -416,14 +416,14 @@ public class ProcessDataLoggerFile {
             for (int idx = 1; idx < items.length; idx++) {
                 channels[idx - 1] = Double.parseDouble(items[idx]);
             }
-        }
+        }//end 1-arg constructor
 
         public InputDataLine(double time, int channel, int numChannel) {
             this.time = time;
             channels = new double[numChannel];
             channels[channel] = 1.0;
-        }
-    }
+        }//end 3-arg constructor
+    }//end class InputDataLine
 
     // class to hold data lines that hold only peaks
     private static class IntermediateDataLine {
@@ -437,8 +437,8 @@ public class ProcessDataLoggerFile {
             this.channel = channel;
             this.elapsedTime = elapsedTime;
             this.value = value;
-        }
-    }
+        }//end 3-arg constructor
+    }//end class IntermediateDataLine
 
     // class to hold parsed input command options
     private static class InputCommandLine {
@@ -566,6 +566,6 @@ public class ProcessDataLoggerFile {
         }
 
 //</editor-fold>
-    }
+    }//end class InputCommandLine
 
-}
+}//end class ProcessDataLoggerFile
