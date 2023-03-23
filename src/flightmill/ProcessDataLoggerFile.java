@@ -21,6 +21,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -35,6 +36,18 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
+import javafx.application.Platform;
+import javafx.geometry.Insets;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import javafx.scene.control.ButtonBar.ButtonData;
+import javafx.scene.layout.GridPane;
+import javafx.util.Pair;
+
+import javax.swing.JOptionPane;
+
 /**
  * This programs takes a csv file from a datalogger attached to a flight mill
  * and collates it.
@@ -48,9 +61,11 @@ public class ProcessDataLoggerFile {
     private static String PROGRAM_NAME = "Flight Mill Compression";
     private static String VERSION = "v.2.22";
 
+    private static AppInterface gui;
+
     // entry point
     public static void main(String[] args) {
-        
+
         try {
             // testLocalDateTime();
             InputCommandLine inputCommandLine;
@@ -90,7 +105,10 @@ public class ProcessDataLoggerFile {
         // Setup storage object for all the configuration options we get
         InputCommandLine inputCommandLine = new InputCommandLine();
         
-
+        // Show the gui
+        gui = new AppInterface();
+        gui.setVisible(true);
+        
         return inputCommandLine;
     }//end processGUI()
 
