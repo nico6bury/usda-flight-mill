@@ -7,7 +7,8 @@
         "libs/commons-cli-1.5.0/commons-cli-1.5.0-javadoc.jar",
         "libs/commons-cli-1.5.0/commons-cli-1.5.0-sources.jar",
         "libs/commons-cli-1.5.0/commons-cli-1.5.0-tests.jar",
-        "libs/commons-cli-1.5.0/commons-cli-1.5.0-test-sources.jar"
+        "libs/commons-cli-1.5.0/commons-cli-1.5.0-test-sources.jar",
+        "libs/flatlaf-3.0.jar"
     ],
     "java.configuration.runtimes": [
         {
