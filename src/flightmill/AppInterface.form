@@ -77,13 +77,13 @@
               <Component id="jScrollPane2" min="-2" max="-2" attributes="0"/>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                  <Component id="uxGetInputTxt" max="32767" attributes="0"/>
                   <Component id="uxGetInputBtn" max="32767" attributes="0"/>
+                  <Component id="uxGetInputTxt" max="32767" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="uxGetOutputBtn" alignment="3" min="-2" pref="23" max="-2" attributes="0"/>
-                  <Component id="uxGetOutputTxt" alignment="3" min="-2" pref="23" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                  <Component id="uxGetOutputBtn" max="32767" attributes="0"/>
+                  <Component id="uxGetOutputTxt" max="32767" attributes="0"/>
               </Group>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
@@ -104,7 +104,7 @@
               </Group>
               <EmptySpace min="-2" max="-2" attributes="0"/>
               <Component id="uxAddPeakWidthChk" min="-2" pref="20" max="-2" attributes="0"/>
-              <EmptySpace max="32767" attributes="0"/>
+              <EmptySpace pref="16" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
