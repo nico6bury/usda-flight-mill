@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "AppInterface",
+            "request": "launch",
+            "mainClass": "flightmill.AppInterface",
+            "projectName": "FlightMill_5b14dc91"
+        },
+        {
+            "type": "java",
             "name": "Current File",
             "request": "launch",
             "mainClass": "${file}"
@@ -22,7 +29,12 @@
             "name": "Static Console Debug",
             "request": "launch",
             "mainClass": "flightmill.ProcessDataLoggerFile",
-            "args": ["-idebugTest.csv", "-odebugTest.output","-ndt","-pw"]
+            "args": [
+                "-idebugTest.csv",
+                "-odebugTest.output",
+                "-ndt",
+                "-pw"
+            ]
         }
     ]
 }

@@ -55,11 +55,9 @@
                               <EmptySpace type="separate" max="-2" attributes="0"/>
                               <Component id="uxGetThresholdTxt" max="32767" attributes="0"/>
                           </Group>
-                          <Group type="103" groupAlignment="1" max="-2" attributes="0">
-                              <Component id="uxNoDateTimeChk" max="32767" attributes="0"/>
-                              <Component id="uxAddPeakWidthChk" alignment="0" max="32767" attributes="0"/>
-                              <Component id="uxLineSkipChk" alignment="0" max="32767" attributes="0"/>
-                          </Group>
+                          <Component id="uxNoDateTimeChk" alignment="1" max="32767" attributes="0"/>
+                          <Component id="uxAddPeakWidthChk" alignment="0" max="32767" attributes="0"/>
+                          <Component id="uxLineSkipChk" alignment="0" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
@@ -126,6 +124,7 @@
               <Font name="Tahoma" size="14" style="0"/>
             </Property>
             <Property name="rows" type="int" value="5"/>
+            <Property name="text" type="java.lang.String" value="Flight Mill Compression v.2.22&#xa;USDA-ARS Manhattan, KS&#x9;Mar/2023&#x9;Sixbury/Rust/Brabec"/>
           </Properties>
         </Component>
       </SubComponents>

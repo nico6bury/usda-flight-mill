@@ -101,7 +101,7 @@ public class ProcessDataLoggerFile {
     }//end main method
 
     // parses options from a GUI
-    private static InputCommandLine processGUI() {
+    public static InputCommandLine processGUI() {
         // Setup storage object for all the configuration options we get
         InputCommandLine inputCommandLine = new InputCommandLine();
         
@@ -109,11 +109,22 @@ public class ProcessDataLoggerFile {
         gui = new AppInterface();
         gui.setVisible(true);
         
+        // do an application loop for the gui
+        while (gui.isVisible()) {
+            if (gui.isInputDataReady) {
+                gui.isInputDataReady = false;
+                inputCommandLine = gui.inputCommandLine;
+                gui.setVisible(false);
+            }
+        }//end looping while gui is active
+        
+        gui = null;
+
         return inputCommandLine;
     }//end processGUI()
 
     // parses options on the command line
-    private static InputCommandLine processCommandLine(String[] args) {
+    public static InputCommandLine processCommandLine(String[] args) {
 
         InputCommandLine inputCommandLine = new InputCommandLine();
 
@@ -201,7 +212,7 @@ public class ProcessDataLoggerFile {
     }//end processCommandLine(args)
 
     // load the input file into an input list
-    private static List<InputDataLine> LoadInputFile(InputCommandLine icl) 
+    public static List<InputDataLine> LoadInputFile(InputCommandLine icl) 
             throws FileNotFoundException {
 
         String fileName = icl.getInputFileName();
@@ -229,7 +240,7 @@ public class ProcessDataLoggerFile {
     }//end LoadInputFile(icl)
 
     // write out the collated data
-    private static void makeOutputFile(List<IntermediateDataLine> inputList,
+    public static void makeOutputFile(List<IntermediateDataLine> inputList,
             InputCommandLine icl) throws FileNotFoundException {
 
         // get the file modified time to adjust output date/times to 
@@ -314,7 +325,7 @@ public class ProcessDataLoggerFile {
     }//end makeOutputFile(inputList, icl)
 
     // process input 
-    private static List<IntermediateDataLine> processInput(List<InputDataLine> list,
+    public static List<IntermediateDataLine> processInput(List<InputDataLine> list,
             InputCommandLine icl) {
 
         List<IntermediateDataLine> outputList = new ArrayList<>();
@@ -371,7 +382,7 @@ public class ProcessDataLoggerFile {
     }//end processInput(list, icl)
 
     // get input file modizfication time to set beginning time for output date/time
-    private static FileTime getFileCreationDate(File file) {
+    public static FileTime getFileCreationDate(File file) {
 
         BasicFileAttributes attrs;
         try {
@@ -439,7 +450,7 @@ public class ProcessDataLoggerFile {
     }//end unzipFile(zipFileName)
 
     // class for input data directly mapped to input file
-    private static class InputDataLine {
+    protected static class InputDataLine {
 
         double time = 0.0;
         double channels[] = null;
@@ -461,7 +472,7 @@ public class ProcessDataLoggerFile {
     }//end class InputDataLine
 
     // class to hold data lines that hold only peaks
-    private static class IntermediateDataLine {
+    protected static class IntermediateDataLine {
 
         int channel;
         double elapsedTime;
@@ -476,7 +487,7 @@ public class ProcessDataLoggerFile {
     }//end class IntermediateDataLine
 
     // class to hold parsed input command options
-    private static class InputCommandLine {
+    protected static class InputCommandLine {
 
         private String inputFileName = "ns-1-26-23-meeting-test.csv";
         private String outputFileName = "ns-1-26-23-meeting-test.csv.out";
@@ -486,6 +497,7 @@ public class ProcessDataLoggerFile {
         private boolean zipFileFlg = false;              // zip input file
         private boolean dataTimeFlg = true;  // add date time to each output line
         private boolean peakWidthFlg = false; // add date time to each output line
+        private double threshold = 1.5;
 
         //<editor-fold defaultstate="collapsed" desc="getters/setters">
         /**
@@ -598,6 +610,14 @@ public class ProcessDataLoggerFile {
          */
         public void setPeakWidthFlg(boolean peakWidthFlg) {
             this.peakWidthFlg = peakWidthFlg;
+        }
+
+        public double getThreshold() {
+            return threshold;
+        }
+
+        public void setThreshold(double threshold) {
+            this.threshold = threshold;
         }
 
 //</editor-fold>

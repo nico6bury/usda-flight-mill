@@ -6,7 +6,18 @@ package flightmill;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import javax.swing.JFileChooser;
+
+import flightmill.ProcessDataLoggerFile.InputCommandLine;
+import flightmill.ProcessDataLoggerFile.InputDataLine;
+import flightmill.ProcessDataLoggerFile.IntermediateDataLine;
 
 /**
  *
@@ -18,8 +29,26 @@ public class AppInterface extends javax.swing.JFrame {
      * Creates new form test
      */
     public AppInterface() {
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(AppInterface.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(AppInterface.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(AppInterface.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(AppInterface.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+
+
         initComponents();
-    }
+    }//end constructor
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -50,6 +79,7 @@ public class AppInterface extends javax.swing.JFrame {
         jTextArea1.setColumns(20);
         jTextArea1.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         jTextArea1.setRows(5);
+        jTextArea1.setText("Flight Mill Compression v.2.22\nUSDA-ARS Manhattan, KS\tMar/2023\tSixbury/Rust/Brabec");
         jScrollPane2.setViewportView(jTextArea1);
 
         uxGetInputBtn.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
@@ -180,23 +210,83 @@ public class AppInterface extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    protected File lastInputFile;
+    public File getLastInputFile() {
+        return lastInputFile;
+    }//end getLastInputFile()
+    protected File lastOutputFile;
+    public File getLastOutputFile() {
+        return lastOutputFile;
+    }//end getLastOutputFile()
+
     private void uxGetInputBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uxGetInputBtnActionPerformed
         JFileChooser jf = new JFileChooser();
         jf.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println( jf.getSelectedFile().getName());
+                lastInputFile = jf.getSelectedFile();
+                uxGetInputTxt.setText(lastInputFile.getAbsolutePath());
             }
         } );
         jf.showOpenDialog(this);
     }//GEN-LAST:event_uxGetInputBtnActionPerformed
 
     private void uxGetOutputBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uxGetOutputBtnActionPerformed
-        // TODO add your handling code here:
+        JFileChooser jf = new JFileChooser();
+        jf.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                lastOutputFile = jf.getSelectedFile();
+                uxGetOutputTxt.setText(lastOutputFile.getAbsolutePath());
+            }
+        } );
+        jf.showSaveDialog(this);
     }//GEN-LAST:event_uxGetOutputBtnActionPerformed
 
+    public boolean isInputDataReady = false;
+    public InputCommandLine inputCommandLine = null;
+
     private void uxProcessBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uxProcessBtnActionPerformed
-        // TODO add your handling code here:
+        // set up InputCommandLine for all the stuff we need to send
+        inputCommandLine = new InputCommandLine();
+
+        inputCommandLine.setDataTimeFlg(uxNoDateTimeChk.isSelected());
+        inputCommandLine.setInputFileName(uxGetInputTxt.getText());
+        inputCommandLine.setOutputFileName(uxGetOutputTxt.getText());
+        inputCommandLine.setPeakWidthFlg(uxAddPeakWidthChk.isSelected());
+        if (uxLineSkipChk.isSelected()) {
+            inputCommandLine.setSkipLines(Integer.parseInt(uxLineSkipTxt.getText()));
+        }
+        else inputCommandLine.setSkipLines(0);
+        inputCommandLine.setZipFileFlg(uxZipInputChk.isSelected());
+        inputCommandLine.setThreshold(Double.parseDouble(uxGetThresholdTxt.getText()));
+
+        // just do all the processing, whatever
+        try{
+            if (inputCommandLine.isZipFileFlg()) {
+                ProcessDataLoggerFile.zipFile(inputCommandLine.getInputFileName());
+            }
+            if (inputCommandLine.getInputFileName().endsWith(".zip")) {
+                String unzippedFileName = ProcessDataLoggerFile.unzipFile(inputCommandLine.getInputFileName());
+                inputCommandLine.setInputFileName(unzippedFileName);
+            }
+    
+            // load the imput file
+            List<InputDataLine> inputList = ProcessDataLoggerFile.LoadInputFile(inputCommandLine);
+            // make list of individual peaks
+            List<IntermediateDataLine> processedInputList = ProcessDataLoggerFile.processInput(inputList,
+                    inputCommandLine);
+            // write output file
+            ProcessDataLoggerFile.makeOutputFile(processedInputList, inputCommandLine);
+        }//end trying to do whatever
+        catch (FileNotFoundException ex) {
+            Logger.getLogger(ProcessDataLoggerFile.class.getName()).log(Level.SEVERE, 
+                    null, ex);
+        }//end catching FileNotFoundException
+        catch (IOException ex) {
+            Logger.getLogger(ProcessDataLoggerFile.class.getName()).log(Level.SEVERE, 
+                    null, ex);
+        }//end catching IOExceptions
     }//GEN-LAST:event_uxProcessBtnActionPerformed
 
     /**
