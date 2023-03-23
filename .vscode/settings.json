@@ -11,8 +11,12 @@
     ],
     "java.configuration.runtimes": [
         {
+            "name": "JavaSE-17",
+            "path": "C:\\Program Files\\Java\\jdk-17.0.1"
+        },
+        {
             "name": "JavaSE-1.8",
-            "path": "C:\\Program Files\\Java\\jre1.8.0_291",
+            "path": "C:\\Users\\nicholas.sixbury\\Documents\\Alternative Java Installation\\jre-8u51-windows-x64",
             "default": true
         }
     ]
