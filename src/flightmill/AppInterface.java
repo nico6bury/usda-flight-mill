@@ -213,29 +213,35 @@ public class AppInterface extends javax.swing.JFrame {
         return lastOutputFile;
     }//end getLastOutputFile()
 
+    /**
+        File chooser for both opening and saving files
+     */ 
+    private JFileChooser fileChooser = new JFileChooser();
+    private ActionListener actionListener = new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            System.out.println(e.getActionCommand());
+            lastInputFile = fileChooser.getSelectedFile();
+            uxGetInputTxt.setText(lastInputFile.getAbsolutePath());
+            uxGetOutputTxt.setText(lastInputFile.getAbsolutePath() + ".out");
+        }//end actionPerformed
+    };
+
     private void uxGetInputBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uxGetInputBtnActionPerformed
-        JFileChooser jf = new JFileChooser();
-        jf.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                lastInputFile = jf.getSelectedFile();
-                uxGetInputTxt.setText(lastInputFile.getAbsolutePath());
-                uxGetOutputTxt.setText(lastInputFile.getAbsolutePath() + ".out");
-            }
-        } );
-        jf.showOpenDialog(this);
+        fileChooser.addActionListener(actionListener);
+        fileChooser.showOpenDialog(this);
     }//GEN-LAST:event_uxGetInputBtnActionPerformed
 
     private void uxGetOutputBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uxGetOutputBtnActionPerformed
-        JFileChooser jf = new JFileChooser();
-        jf.addActionListener(new ActionListener() {
+        fileChooser.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                lastOutputFile = jf.getSelectedFile();
+                System.out.println(e.getActionCommand());
+                lastOutputFile = fileChooser.getSelectedFile();
                 uxGetOutputTxt.setText(lastOutputFile.getAbsolutePath());
             }
         } );
-        jf.showSaveDialog(this);
+        fileChooser.showSaveDialog(this);
     }//GEN-LAST:event_uxGetOutputBtnActionPerformed
 
     public boolean isInputDataReady = false;
