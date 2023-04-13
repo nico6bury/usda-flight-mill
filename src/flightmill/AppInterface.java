@@ -14,6 +14,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 
 import flightmill.ProcessDataLoggerFile.InputCommandLine;
@@ -279,6 +280,8 @@ public class AppInterface extends javax.swing.JFrame {
                     inputCommandLine);
             // write output file
             ProcessDataLoggerFile.makeOutputFile(processedInputList, inputCommandLine);
+            // tell the user what happened
+            JOptionPane.showMessageDialog(this, "Files have finished processing.");
         }//end trying to do whatever
         catch (FileNotFoundException ex) {
             Logger.getLogger(ProcessDataLoggerFile.class.getName()).log(Level.SEVERE, 
