@@ -241,6 +241,7 @@ public class AppInterface extends javax.swing.JFrame {
     private void uxGetInputBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uxGetInputBtnActionPerformed
         fileChooser.addActionListener(actionListener);
         fileChooser.showOpenDialog(this);
+        uxStatusText.setText("");
     }//GEN-LAST:event_uxGetInputBtnActionPerformed
 
     private void uxGetOutputBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uxGetOutputBtnActionPerformed
@@ -262,6 +263,10 @@ public class AppInterface extends javax.swing.JFrame {
         // set up InputCommandLine for all the stuff we need to send
         inputCommandLine = new InputCommandLine();
 
+        // update status label
+        uxStatusText.setText("Gathering Parameters");
+        uxStatusText.paintImmediately(uxStatusText.getVisibleRect());
+
         inputCommandLine.setDataTimeFlg(uxNoDateTimeChk.isSelected());
         inputCommandLine.setInputFileName(uxGetInputTxt.getText());
         inputCommandLine.setOutputFileName(uxGetOutputTxt.getText());
@@ -275,29 +280,50 @@ public class AppInterface extends javax.swing.JFrame {
 
         // just do all the processing, whatever
         try{
+            
             if (inputCommandLine.isZipFileFlg()) {
+                // update status text
+                uxStatusText.setText("Zipping Input File");
+                uxStatusText.paintImmediately(uxStatusText.getVisibleRect());
+                // actually zipping
                 ProcessDataLoggerFile.zipFile(inputCommandLine.getInputFileName());
             }
             if (inputCommandLine.getInputFileName().endsWith(".zip")) {
+                // update status text
+                uxStatusText.setText("Unzipping Input File");
+                uxStatusText.paintImmediately(uxStatusText.getVisibleRect());
+                // actually unzipping
                 String unzippedFileName = ProcessDataLoggerFile.unzipFile(inputCommandLine.getInputFileName());
                 inputCommandLine.setInputFileName(unzippedFileName);
             }
     
             // load the imput file
+            uxStatusText.setText("Loading input file into memory.");
+            uxStatusText.paintImmediately(uxStatusText.getVisibleRect());
             List<InputDataLine> inputList = ProcessDataLoggerFile.LoadInputFile(inputCommandLine);
             // make list of individual peaks
+            uxStatusText.setText("Finding list of individual peaks.");
+            uxStatusText.paintImmediately(uxStatusText.getVisibleRect());
             List<IntermediateDataLine> processedInputList = ProcessDataLoggerFile.processInput(inputList,
                     inputCommandLine);
             // write output file
+            uxStatusText.setText("Writing the output file.");
+            uxStatusText.paintImmediately(uxStatusText.getVisibleRect());
             ProcessDataLoggerFile.makeOutputFile(processedInputList, inputCommandLine);
             // tell the user what happened
+            uxStatusText.setText("Files have finished processing.");
+            uxStatusText.paintImmediately(uxStatusText.getVisibleRect());
             JOptionPane.showMessageDialog(this, "Files have finished processing.");
         }//end trying to do whatever
         catch (FileNotFoundException ex) {
+            uxStatusText.setText("File not found. Aborting...");
+            uxStatusText.paintImmediately(uxStatusText.getVisibleRect());
             Logger.getLogger(ProcessDataLoggerFile.class.getName()).log(Level.SEVERE, 
                     null, ex);
         }//end catching FileNotFoundException
         catch (IOException ex) {
+            uxStatusText.setText("An unspecified IO error has occured. Consider closing applications that might still be writing or reading from the file. Aborting...");
+            uxStatusText.paintImmediately(uxStatusText.getVisibleRect());
             Logger.getLogger(ProcessDataLoggerFile.class.getName()).log(Level.SEVERE, 
                     null, ex);
         }//end catching IOExceptions
