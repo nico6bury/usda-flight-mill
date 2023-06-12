@@ -239,6 +239,12 @@ public class ProcessDataLoggerFile {
         return inputDataList;
     }//end LoadInputFile(icl)
 
+    public static String reformatOutputFile(String outputFilePath) {
+        
+
+        return outputFilePath;
+    }//end reformatOutputFile(outputFilePath)
+
     // write out the collated data
     public static void makeOutputFile(List<IntermediateDataLine> inputList,
             InputCommandLine icl) throws FileNotFoundException {

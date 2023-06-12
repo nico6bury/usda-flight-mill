@@ -269,7 +269,7 @@ public class AppInterface extends javax.swing.JFrame {
 
         inputCommandLine.setDataTimeFlg(uxNoDateTimeChk.isSelected());
         inputCommandLine.setInputFileName(uxGetInputTxt.getText());
-        inputCommandLine.setOutputFileName(uxGetOutputTxt.getText());
+        inputCommandLine.setOutputFileName(ProcessDataLoggerFile.reformatOutputFile(uxGetOutputTxt.getText()));
         inputCommandLine.setPeakWidthFlg(uxAddPeakWidthChk.isSelected());
         if (uxLineSkipChk.isSelected()) {
             inputCommandLine.setSkipLines(Integer.parseInt(uxLineSkipTxt.getText()));
