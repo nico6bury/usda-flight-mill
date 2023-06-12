@@ -314,6 +314,11 @@ public class AppInterface extends javax.swing.JFrame {
             uxStatusText.setText("Files have finished processing.");
             uxStatusText.paintImmediately(uxStatusText.getVisibleRect());
             JOptionPane.showMessageDialog(this, "Files have finished processing.");
+            // open the file in file explorer
+            try {
+                Runtime.getRuntime().exec("explorer.exe /select," + inputCommandLine.getOutputFileName());
+            }//end trying to open file explorer
+            catch(Exception e) {System.out.println("Couldn't open file explorer");}
         }//end trying to do whatever
         catch (FileNotFoundException ex) {
             uxStatusText.setText("File not found. Aborting...");
