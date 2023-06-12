@@ -239,10 +239,18 @@ public class ProcessDataLoggerFile {
         return inputDataList;
     }//end LoadInputFile(icl)
 
-    public static String reformatOutputFile(String outputFilePath) {
-        
+    public static String OUTPUT_FOLDER_NAME = "ResultsFolder";
 
-        return outputFilePath;
+    public static String reformatOutputFile(String outputFilePath) {
+        File outputFile = new File(outputFilePath);
+        File parentDirectory = outputFile.getParentFile();
+        File newDirectory = new File(parentDirectory.getAbsolutePath() + File.separator + OUTPUT_FOLDER_NAME);
+        if (!newDirectory.exists()) {
+            Boolean result = newDirectory.mkdir();
+        }//end if new directory needs to be created
+        outputFile = new File(newDirectory.getAbsolutePath() + File.separator + outputFile.getName());
+
+        return outputFile.getAbsolutePath();
     }//end reformatOutputFile(outputFilePath)
 
     // write out the collated data
