@@ -72,10 +72,14 @@ public class AppInterface extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
+        this.setTitle("Flight Mill Data File Compression Software");
         jTextArea1.setColumns(20);
         jTextArea1.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         jTextArea1.setRows(5);
-        jTextArea1.setText("\t\tFlight Mill Data File Compression Software v.2.23\n   \t> compresses 8 channel datafile collected from WinDaq hardware/software\n\n\t\tSixbury/Rust/Brabec  March 2023\n\t\tUSDA-ARS   Manhattan, Kansas");
+        jTextArea1.setText("\t\tFlight Mill Data File Compression Software v.2.23" +
+        "\n   \t> compresses 8 channel datafile collected from WinDaq hardware/software" +
+        "\n\n\t\tSixbury/Rust/Brabec  June 2023" +
+        "\n\t\tUSDA-ARS   Manhattan, Kansas");
         jScrollPane2.setViewportView(jTextArea1);
 
         uxGetInputBtn.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
