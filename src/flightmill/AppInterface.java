@@ -274,6 +274,16 @@ public class AppInterface extends javax.swing.JFrame {
     private void uxProcessBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uxProcessBtnActionPerformed
         // disable "show in folder" button
         uxShowFileBtn.setEnabled(false);
+
+        // check that there's actually a file to open
+        String inputText = uxGetInputTxt.getText();
+        if (inputText.isEmpty()) {
+            // display message about empty file path
+            JOptionPane.showMessageDialog(this, "You haven't selected a file to process." +
+            "\nPlease click the \"Select Input File\" button to " +
+            "\nselect a file, or copy and paste the path yourself...");
+            return;
+        }//end if input text isn't filled in
         
         // set up InputCommandLine for all the stuff we need to send
         inputCommandLine = new InputCommandLine();
@@ -283,7 +293,7 @@ public class AppInterface extends javax.swing.JFrame {
         uxStatusText.paintImmediately(uxStatusText.getVisibleRect());
 
         inputCommandLine.setDataTimeFlg(uxNoDateTimeChk.isSelected());
-        inputCommandLine.setInputFileName(uxGetInputTxt.getText());
+        inputCommandLine.setInputFileName(inputText);
         inputCommandLine.setOutputFileName(ProcessDataLoggerFile.reformatOutputFile(uxGetOutputTxt.getText()));
         inputCommandLine.setPeakWidthFlg(uxAddPeakWidthChk.isSelected());
         if (uxLineSkipChk.isSelected()) {
