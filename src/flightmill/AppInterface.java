@@ -76,7 +76,7 @@ public class AppInterface extends javax.swing.JFrame {
         jTextArea1.setColumns(20);
         jTextArea1.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         jTextArea1.setRows(5);
-        jTextArea1.setText("\t\tFlight Mill Data File Compression Software v.2.24" +
+        jTextArea1.setText("\t\tFlight Mill Data File Compression Software v.3.1" +
         "\n   \t> compresses 8 channel datafile collected from WinDaq hardware/software" +
         "\n\n\t\tSixbury/Rust/Brabec  June 2023" +
         "\n\t\tUSDA-ARS   Manhattan, Kansas");
