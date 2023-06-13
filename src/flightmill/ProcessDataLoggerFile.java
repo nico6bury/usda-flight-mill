@@ -21,6 +21,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -35,6 +36,18 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
+import javafx.application.Platform;
+import javafx.geometry.Insets;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import javafx.scene.control.ButtonBar.ButtonData;
+import javafx.scene.layout.GridPane;
+import javafx.util.Pair;
+
+import javax.swing.JOptionPane;
+
 /**
  * This programs takes a csv file from a datalogger attached to a flight mill
  * and collates it.
@@ -46,14 +59,23 @@ public class ProcessDataLoggerFile {
     // header info
     private static String TITLE = "USDA-ARS Manhattan, KS\tMar/2023\tSixbury/Rust/Brabec";
     private static String PROGRAM_NAME = "Flight Mill Compression";
-    private static String VERSION = "v.2.22"; 
+    private static String VERSION = "v.2.23";
+
+    private static AppInterface gui;
 
     // entry point
     public static void main(String[] args) {
-        
+
         try {
-//            testLocalDateTime();
-            InputCommandLine inputCommandLine = processCommandLine(args);
+            // testLocalDateTime();
+            InputCommandLine inputCommandLine;
+            if (args.length == 0) {
+                inputCommandLine = processGUI();
+            }//end if we're using a GUI for user input
+            else{
+                inputCommandLine = processCommandLine(args);
+            }//end else we're using the old command line method
+            
             if (inputCommandLine.isZipFileFlg()) {
                 zipFile(inputCommandLine.getInputFileName());
             }
@@ -61,6 +83,7 @@ public class ProcessDataLoggerFile {
                 String unzippedFileName = unzipFile(inputCommandLine.getInputFileName());
                 inputCommandLine.setInputFileName(unzippedFileName);
             }
+
             // load the imput file
             List<InputDataLine> inputList = LoadInputFile(inputCommandLine);
             // make list of individual peaks
@@ -75,10 +98,33 @@ public class ProcessDataLoggerFile {
             Logger.getLogger(ProcessDataLoggerFile.class.getName()).log(Level.SEVERE, 
                     null, ex);
         }
-    }
+    }//end main method
+
+    // parses options from a GUI
+    public static InputCommandLine processGUI() {
+        // Setup storage object for all the configuration options we get
+        InputCommandLine inputCommandLine = new InputCommandLine();
+        
+        // Show the gui
+        gui = new AppInterface();
+        gui.setVisible(true);
+        
+        // do an application loop for the gui
+        while (gui.isVisible()) {
+            if (gui.isInputDataReady) {
+                gui.isInputDataReady = false;
+                inputCommandLine = gui.inputCommandLine;
+                gui.setVisible(false);
+            }
+        }//end looping while gui is active
+        
+        gui = null;
+
+        return inputCommandLine;
+    }//end processGUI()
 
     // parses options on the command line
-    private static InputCommandLine processCommandLine(String[] args) {
+    public static InputCommandLine processCommandLine(String[] args) {
 
         InputCommandLine inputCommandLine = new InputCommandLine();
 
@@ -163,10 +209,10 @@ public class ProcessDataLoggerFile {
 //</editor-fold>
 
         return inputCommandLine;
-    }
+    }//end processCommandLine(args)
 
     // load the input file into an input list
-    private static List<InputDataLine> LoadInputFile(InputCommandLine icl) 
+    public static List<InputDataLine> LoadInputFile(InputCommandLine icl) 
             throws FileNotFoundException {
 
         String fileName = icl.getInputFileName();
@@ -191,10 +237,24 @@ public class ProcessDataLoggerFile {
         myReader.close();
 
         return inputDataList;
-    }
+    }//end LoadInputFile(icl)
+
+    public static String OUTPUT_FOLDER_NAME = "ResultsFolder";
+
+    public static String reformatOutputFile(String outputFilePath) {
+        File outputFile = new File(outputFilePath);
+        File parentDirectory = outputFile.getParentFile();
+        File newDirectory = new File(parentDirectory.getAbsolutePath() + File.separator + OUTPUT_FOLDER_NAME);
+        if (!newDirectory.exists()) {
+            Boolean result = newDirectory.mkdir();
+        }//end if new directory needs to be created
+        outputFile = new File(newDirectory.getAbsolutePath() + File.separator + outputFile.getName());
+
+        return outputFile.getAbsolutePath();
+    }//end reformatOutputFile(outputFilePath)
 
     // write out the collated data
-    private static void makeOutputFile(List<IntermediateDataLine> inputList,
+    public static void makeOutputFile(List<IntermediateDataLine> inputList,
             InputCommandLine icl) throws FileNotFoundException {
 
         // get the file modified time to adjust output date/times to 
@@ -276,10 +336,10 @@ public class ProcessDataLoggerFile {
         // close output file
         pw.close();
 
-    }
+    }//end makeOutputFile(inputList, icl)
 
     // process input 
-    private static List<IntermediateDataLine> processInput(List<InputDataLine> list,
+    public static List<IntermediateDataLine> processInput(List<InputDataLine> list,
             InputCommandLine icl) {
 
         List<IntermediateDataLine> outputList = new ArrayList<>();
@@ -333,10 +393,10 @@ public class ProcessDataLoggerFile {
         }
 
         return outputList;
-    }
+    }//end processInput(list, icl)
 
     // get input file modizfication time to set beginning time for output date/time
-    private static FileTime getFileCreationDate(File file) {
+    public static FileTime getFileCreationDate(File file) {
 
         BasicFileAttributes attrs;
         try {
@@ -348,7 +408,7 @@ public class ProcessDataLoggerFile {
             e.printStackTrace();
         }
         return null;
-    }
+    }//end getFileCreationDate(file)
 
     // zip input file to save space
     public static void zipFile(String sourceFile) throws IOException {
@@ -369,7 +429,7 @@ public class ProcessDataLoggerFile {
         zipOut.close();
         fis.close();
         fos.close();
-    }
+    }//end zipFile(sourceFile)
 
     // unzip input file
     public static String unzipFile(String zipFileName) throws IOException {
@@ -401,10 +461,10 @@ public class ProcessDataLoggerFile {
         zis.close();
 
         return newFile.getAbsolutePath();
-    }
+    }//end unzipFile(zipFileName)
 
     // class for input data directly mapped to input file
-    private static class InputDataLine {
+    protected static class InputDataLine {
 
         double time = 0.0;
         double channels[] = null;
@@ -416,17 +476,17 @@ public class ProcessDataLoggerFile {
             for (int idx = 1; idx < items.length; idx++) {
                 channels[idx - 1] = Double.parseDouble(items[idx]);
             }
-        }
+        }//end 1-arg constructor
 
         public InputDataLine(double time, int channel, int numChannel) {
             this.time = time;
             channels = new double[numChannel];
             channels[channel] = 1.0;
-        }
-    }
+        }//end 3-arg constructor
+    }//end class InputDataLine
 
     // class to hold data lines that hold only peaks
-    private static class IntermediateDataLine {
+    protected static class IntermediateDataLine {
 
         int channel;
         double elapsedTime;
@@ -437,11 +497,11 @@ public class ProcessDataLoggerFile {
             this.channel = channel;
             this.elapsedTime = elapsedTime;
             this.value = value;
-        }
-    }
+        }//end 3-arg constructor
+    }//end class IntermediateDataLine
 
     // class to hold parsed input command options
-    private static class InputCommandLine {
+    protected static class InputCommandLine {
 
         private String inputFileName = "ns-1-26-23-meeting-test.csv";
         private String outputFileName = "ns-1-26-23-meeting-test.csv.out";
@@ -451,6 +511,7 @@ public class ProcessDataLoggerFile {
         private boolean zipFileFlg = false;              // zip input file
         private boolean dataTimeFlg = true;  // add date time to each output line
         private boolean peakWidthFlg = false; // add date time to each output line
+        private double threshold = 1.5;
 
         //<editor-fold defaultstate="collapsed" desc="getters/setters">
         /**
@@ -565,7 +626,15 @@ public class ProcessDataLoggerFile {
             this.peakWidthFlg = peakWidthFlg;
         }
 
-//</editor-fold>
-    }
+        public double getThreshold() {
+            return threshold;
+        }
 
-}
+        public void setThreshold(double threshold) {
+            this.threshold = threshold;
+        }
+
+//</editor-fold>
+    }//end class InputCommandLine
+
+}//end class ProcessDataLoggerFile
