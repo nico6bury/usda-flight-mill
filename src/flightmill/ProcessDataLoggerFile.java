@@ -16,6 +16,7 @@ import java.nio.file.attribute.FileTime;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -239,12 +240,14 @@ public class ProcessDataLoggerFile {
         return inputDataList;
     }//end LoadInputFile(icl)
 
-    public static String OUTPUT_FOLDER_NAME = "ResultsFolder";
+    public static String OUTPUT_FOLDER_NAME = "output-folder";
 
     public static String reformatOutputFile(String outputFilePath) {
         File outputFile = new File(outputFilePath);
         File parentDirectory = outputFile.getParentFile();
-        File newDirectory = new File(parentDirectory.getAbsolutePath() + File.separator + OUTPUT_FOLDER_NAME);
+        LocalDateTime currentDateTime = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-");
+        File newDirectory = new File(parentDirectory.getAbsolutePath() + File.separator + currentDateTime.format(formatter) + OUTPUT_FOLDER_NAME);
         if (!newDirectory.exists()) {
             Boolean result = newDirectory.mkdir();
         }//end if new directory needs to be created

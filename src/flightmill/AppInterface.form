@@ -24,58 +24,63 @@
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" attributes="0">
-              <EmptySpace max="-2" attributes="0"/>
+              <EmptySpace min="-2" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="1" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
-                      <Group type="103" groupAlignment="1" attributes="0">
-                          <Group type="102" alignment="0" attributes="0">
-                              <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                                  <Component id="uxGetOutputBtn" max="32767" attributes="0"/>
-                                  <Component id="uxGetInputBtn" max="32767" attributes="0"/>
-                              </Group>
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="uxGetInputTxt" max="32767" attributes="0"/>
-                                  <Component id="uxGetOutputTxt" max="32767" attributes="0"/>
-                              </Group>
-                          </Group>
-                          <Component id="jScrollPane2" alignment="0" max="32767" attributes="0"/>
+                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                          <Component id="uxGetOutputBtn" max="32767" attributes="0"/>
+                          <Component id="uxGetInputBtn" max="32767" attributes="0"/>
+                      </Group>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="uxGetInputTxt" max="32767" attributes="0"/>
+                          <Component id="uxGetOutputTxt" max="32767" attributes="0"/>
+                      </Group>
+                  </Group>
+                  <Component id="jScrollPane2" alignment="0" max="32767" attributes="0"/>
+                  <Group type="102" attributes="0">
+                      <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" alignment="0" attributes="0">
                               <Component id="jLabel1" min="-2" pref="179" max="-2" attributes="0"/>
                               <EmptySpace type="separate" max="-2" attributes="0"/>
                               <Component id="uxGetThresholdTxt" min="-2" pref="118" max="-2" attributes="0"/>
-                              <EmptySpace min="-2" pref="62" max="-2" attributes="0"/>
-                              <Component id="uxStatusText" max="32767" attributes="0"/>
+                          </Group>
+                          <Group type="103" alignment="1" groupAlignment="0" attributes="0">
+                              <Group type="103" alignment="0" groupAlignment="0" max="-2" attributes="0">
+                                  <Component id="uxNoDateTimeChk" alignment="1" max="32767" attributes="0"/>
+                                  <Component id="uxAddPeakWidthChk" alignment="0" max="32767" attributes="0"/>
+                              </Group>
+                              <Component id="uxZipInputChk" alignment="0" min="-2" max="-2" attributes="0"/>
+                              <Group type="102" alignment="0" attributes="0">
+                                  <Component id="uxLineSkipChk" min="-2" pref="315" max="-2" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Component id="uxLineSkipTxt" min="-2" pref="38" max="-2" attributes="0"/>
+                              </Group>
                           </Group>
                       </Group>
-                      <EmptySpace max="-2" attributes="0"/>
-                  </Group>
-                  <Group type="102" alignment="1" attributes="0">
+                      <EmptySpace max="32767" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Group type="103" alignment="0" groupAlignment="0" max="-2" attributes="0">
-                              <Component id="uxNoDateTimeChk" alignment="1" max="32767" attributes="0"/>
-                              <Component id="uxAddPeakWidthChk" alignment="0" max="32767" attributes="0"/>
+                          <Group type="102" attributes="0">
+                              <EmptySpace min="0" pref="86" max="32767" attributes="0"/>
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Group type="102" alignment="1" attributes="0">
+                                      <Component id="uxShowFileBtn" min="-2" pref="148" max="-2" attributes="0"/>
+                                      <EmptySpace min="-2" pref="74" max="-2" attributes="0"/>
+                                  </Group>
+                                  <Group type="102" alignment="1" attributes="0">
+                                      <Component id="uxProcessBtn" min="-2" pref="173" max="-2" attributes="0"/>
+                                      <EmptySpace min="-2" pref="63" max="-2" attributes="0"/>
+                                  </Group>
+                              </Group>
                           </Group>
-                          <Component id="uxZipInputChk" alignment="0" min="-2" max="-2" attributes="0"/>
                           <Group type="102" alignment="0" attributes="0">
-                              <Component id="uxLineSkipChk" min="-2" pref="315" max="-2" attributes="0"/>
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Component id="uxLineSkipTxt" min="-2" pref="38" max="-2" attributes="0"/>
-                          </Group>
-                      </Group>
-                      <EmptySpace pref="92" max="32767" attributes="0"/>
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Group type="102" alignment="1" attributes="0">
-                              <Component id="uxProcessBtn" min="-2" pref="173" max="-2" attributes="0"/>
-                              <EmptySpace min="-2" pref="69" max="-2" attributes="0"/>
-                          </Group>
-                          <Group type="102" alignment="1" attributes="0">
-                              <Component id="uxShowFileBtn" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace min="-2" pref="102" max="-2" attributes="0"/>
+                              <Component id="uxStatusText" min="-2" pref="311" max="-2" attributes="0"/>
+                              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                           </Group>
                       </Group>
                   </Group>
               </Group>
+              <EmptySpace min="-2" max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -95,7 +100,16 @@
                   <Component id="uxGetOutputTxt" max="32767" attributes="0"/>
               </Group>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" alignment="0" attributes="0">
+                  <Group type="102" attributes="0">
+                      <EmptySpace type="separate" max="-2" attributes="0"/>
+                      <Component id="uxProcessBtn" min="-2" pref="66" max="-2" attributes="0"/>
+                      <EmptySpace type="separate" min="-2" max="-2" attributes="0"/>
+                      <Component id="uxShowFileBtn" min="-2" pref="32" max="-2" attributes="0"/>
+                      <EmptySpace max="32767" attributes="0"/>
+                      <Component id="uxStatusText" min="-2" pref="45" max="-2" attributes="0"/>
+                      <EmptySpace pref="16" max="32767" attributes="0"/>
+                  </Group>
+                  <Group type="102" attributes="0">
                       <EmptySpace min="-2" pref="30" max="-2" attributes="0"/>
                       <Component id="uxAddPeakWidthChk" min="-2" pref="20" max="-2" attributes="0"/>
                       <EmptySpace min="-2" pref="6" max="-2" attributes="0"/>
@@ -106,26 +120,12 @@
                           <Component id="uxLineSkipChk" alignment="3" min="-2" pref="20" max="-2" attributes="0"/>
                           <Component id="uxLineSkipTxt" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
-                  </Group>
-                  <Group type="102" alignment="0" attributes="0">
-                      <EmptySpace type="separate" max="-2" attributes="0"/>
-                      <Component id="uxProcessBtn" min="-2" pref="66" max="-2" attributes="0"/>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                      <Component id="uxShowFileBtn" min="-2" max="-2" attributes="0"/>
-                  </Group>
-              </Group>
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" attributes="0">
-                      <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="jLabel1" alignment="3" min="-2" pref="20" max="-2" attributes="0"/>
                           <Component id="uxGetThresholdTxt" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="jLabel1" alignment="3" min="-2" pref="20" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace pref="28" max="32767" attributes="0"/>
-                  </Group>
-                  <Group type="102" attributes="0">
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="uxStatusText" max="32767" attributes="0"/>
+                      <EmptySpace max="32767" attributes="0"/>
                   </Group>
               </Group>
           </Group>
@@ -261,7 +261,7 @@
     </Component>
     <Component class="javax.swing.JButton" name="uxShowFileBtn">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Show in Folder"/>
+        <Property name="text" type="java.lang.String" value="Show Output Folder"/>
         <Property name="enabled" type="boolean" value="false"/>
       </Properties>
       <Events>
