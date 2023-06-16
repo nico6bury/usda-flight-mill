@@ -250,7 +250,7 @@ public class AppInterface extends javax.swing.JFrame {
             System.out.println(e.getActionCommand());
             lastInputFile = fileChooser.getSelectedFile();
             uxGetInputTxt.setText(lastInputFile.getAbsolutePath());
-            uxGetOutputTxt.setText(lastInputFile.getAbsolutePath() + ".out");
+            uxGetOutputTxt.setText(ProcessDataLoggerFile.reformatOutputFile(lastInputFile.getAbsolutePath(), false));
         }//end actionPerformed
     };
 
@@ -298,7 +298,7 @@ public class AppInterface extends javax.swing.JFrame {
 
         inputCommandLine.setDataTimeFlg(uxNoDateTimeChk.isSelected());
         inputCommandLine.setInputFileName(inputText);
-        inputCommandLine.setOutputFileName(ProcessDataLoggerFile.reformatOutputFile(uxGetOutputTxt.getText()));
+        inputCommandLine.setOutputFileName(uxGetOutputTxt.getText());
         inputCommandLine.setPeakWidthFlg(uxAddPeakWidthChk.isSelected());
         if (uxLineSkipChk.isSelected()) {
             inputCommandLine.setSkipLines(Integer.parseInt(uxLineSkipTxt.getText()));
