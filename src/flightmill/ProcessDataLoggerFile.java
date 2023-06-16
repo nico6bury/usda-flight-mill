@@ -242,16 +242,28 @@ public class ProcessDataLoggerFile {
 
     public static String OUTPUT_FOLDER_NAME = "output-folder";
 
-    public static String reformatOutputFile(String outputFilePath) {
+    /**
+     * This method reformats a given path in order to change the extension, put it into a new directory in the location of the original file, and name that directory based on the current date.
+     * @param outputFilePath The path you want to format
+     * @param ensureDirectoryExists If this is true, then this method will create a new directory if it doesn't already exist.
+     * @return Returns a resulting path as a String
+     */
+    public static String reformatOutputFile(String outputFilePath, boolean ensureDirectoryExists) {
+        // figure out the path of the output directory
         File outputFile = new File(outputFilePath);
         File parentDirectory = outputFile.getParentFile();
         LocalDateTime currentDateTime = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-");
         File newDirectory = new File(parentDirectory.getAbsolutePath() + File.separator + currentDateTime.format(formatter) + OUTPUT_FOLDER_NAME);
-        if (!newDirectory.exists()) {
+        // create the directory if it doesn't exist
+        if (ensureDirectoryExists && !newDirectory.exists()) {
             Boolean result = newDirectory.mkdir();
         }//end if new directory needs to be created
-        outputFile = new File(newDirectory.getAbsolutePath() + File.separator + outputFile.getName());
+        // create the resulting path of the output file
+        String priorFileName = outputFile.getName();
+        String newExtension = ".OUT";
+        String newFileName = priorFileName.substring(0, priorFileName.lastIndexOf(".")) + newExtension;
+        outputFile = new File(newDirectory.getAbsolutePath() + File.separator + newFileName);
 
         return outputFile.getAbsolutePath();
     }//end reformatOutputFile(outputFilePath)
@@ -271,9 +283,12 @@ public class ProcessDataLoggerFile {
         for (IntermediateDataLine idl : inputList) {    
             channelCounts[idl.channel]++;
         }
-        
+
         // save to output file
         File outputFile = new File(icl.getOutputFileName());
+        if (!outputFile.exists()) {
+            outputFile.getParentFile().mkdirs();
+        }//end if we need to make the resulting directories
         PrintWriter pw = new PrintWriter(outputFile);
 
         // print first section of header
