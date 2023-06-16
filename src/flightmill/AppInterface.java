@@ -255,9 +255,12 @@ public class AppInterface extends javax.swing.JFrame {
     };
 
     private void uxGetInputBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uxGetInputBtnActionPerformed
+        // clear from previous operations
+        uxStatusText.setText("");
+        uxShowFileBtn.setEnabled(false);
+        // actually show the dialog
         fileChooser.addActionListener(actionListener);
         fileChooser.showOpenDialog(this);
-        uxStatusText.setText("");
     }//GEN-LAST:event_uxGetInputBtnActionPerformed
 
     private void uxGetOutputBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uxGetOutputBtnActionPerformed
@@ -276,9 +279,6 @@ public class AppInterface extends javax.swing.JFrame {
     public InputCommandLine inputCommandLine = null;
 
     private void uxProcessBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uxProcessBtnActionPerformed
-        // disable "show in folder" button
-        uxShowFileBtn.setEnabled(false);
-
         // check that there's actually a file to open
         String inputText = uxGetInputTxt.getText();
         if (inputText.isEmpty()) {
