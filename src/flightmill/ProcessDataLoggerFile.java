@@ -22,7 +22,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Optional;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -36,18 +35,6 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
-
-import javafx.application.Platform;
-import javafx.geometry.Insets;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Dialog;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
-import javafx.scene.control.ButtonBar.ButtonData;
-import javafx.scene.layout.GridPane;
-import javafx.util.Pair;
-
-import javax.swing.JOptionPane;
 
 /**
  * This programs takes a csv file from a datalogger attached to a flight mill
@@ -257,7 +244,7 @@ public class ProcessDataLoggerFile {
         File newDirectory = new File(parentDirectory.getAbsolutePath() + File.separator + currentDateTime.format(formatter) + OUTPUT_FOLDER_NAME);
         // create the directory if it doesn't exist
         if (ensureDirectoryExists && !newDirectory.exists()) {
-            Boolean result = newDirectory.mkdir();
+            newDirectory.mkdir();
         }//end if new directory needs to be created
         // create the resulting path of the output file
         String priorFileName = outputFile.getName();
