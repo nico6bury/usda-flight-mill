@@ -290,8 +290,8 @@ public class ProcessDataLoggerFile {
         // print third section of header
         if(inputList.size() > 0){
             // do some time calculations
-            long tim1 = fileTime.toMillis();
             IntermediateDataLine lastDataLine = inputList.get(inputList.size() - 1);
+            long tim1 = fileTime.toMillis() - (long)(lastDataLine.elapsedTime * 1000);
             long tim2 = tim1 + (long)(lastDataLine.elapsedTime * 1000);
             double minutesDuration = lastDataLine.elapsedTime / 60;
             // print out the time stuff
@@ -406,7 +406,8 @@ public class ProcessDataLoggerFile {
         BasicFileAttributes attrs;
         try {
             attrs = Files.readAttributes(file.toPath(), BasicFileAttributes.class);
-            FileTime modTime = attrs.creationTime();
+            FileTime modTime = attrs.lastModifiedTime(); //.creationTime();
+            // TODO: Subtract duration from modTime time to get start time
 
             return modTime;
         } catch (IOException e) {
