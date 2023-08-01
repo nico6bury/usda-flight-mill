@@ -406,8 +406,7 @@ public class ProcessDataLoggerFile {
         BasicFileAttributes attrs;
         try {
             attrs = Files.readAttributes(file.toPath(), BasicFileAttributes.class);
-            FileTime modTime = attrs.lastModifiedTime(); //.creationTime();
-            // TODO: Subtract duration from modTime time to get start time
+            FileTime modTime = attrs.lastModifiedTime();
 
             return modTime;
         } catch (IOException e) {
