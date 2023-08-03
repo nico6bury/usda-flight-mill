@@ -9,7 +9,8 @@ public class FinalDataLine {
     */
     public int channel;
     /*
-        * The amount of time elapsed since data collection started
+        * The amount of time elapsed since data collection started.
+        The unit is in seconds. At time of writing, they seem to be in 4 milisecond intervals
         */
     public double elapsedTime;
     /*
