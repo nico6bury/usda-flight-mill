@@ -15,11 +15,12 @@ import java.util.logging.Logger;
 
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
-import flightmill.ProcessDataLoggerFile.InputCommandLine;
-import flightmill.ProcessDataLoggerFile.InputDataLine;
-import flightmill.ProcessDataLoggerFile.IntermediateDataLine;
 
 import com.formdev.flatlaf.*;
+
+import flightmill.dataStorageStructs.InputCommandLine;
+import flightmill.dataStorageStructs.InputDataLine;
+import flightmill.dataStorageStructs.IntermediateDataLine;
 
 /**
  *
