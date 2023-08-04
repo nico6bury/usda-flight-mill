@@ -50,7 +50,7 @@ import flightmill.dataStorageStructs.IntermediateDataLine;
 public class ProcessDataLoggerFile {
 
     // header info
-    private static String TITLE = "USDA-ARS Manhattan, KS\tMar/2023\tSixbury/Rust/Brabec";
+    private static String TITLE = "USDA-ARS Manhattan, KS\tJuly/2023\tSixbury/Rust/Brabec";
     private static String PROGRAM_NAME = "Flight Mill Compression";
     private static String VERSION = "v1.0.1";
 
