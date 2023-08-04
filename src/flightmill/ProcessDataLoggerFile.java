@@ -77,13 +77,15 @@ public class ProcessDataLoggerFile {
                 inputCommandLine.setInputFileName(unzippedFileName);
             }
 
-            // load the imput file
+            // load the input file
             List<InputDataLine> inputList = LoadInputFile(inputCommandLine);
             // make list of individual peaks
             List<IntermediateDataLine> processedInputList = processInput(inputList,
                     inputCommandLine);
+            // figure out direction from our list of individual peaks
+            List<FinalDataLine> directionedInputList = processDirectionallity(processedInputList);
             // write output file
-            makeOutputFile(processedInputList, inputCommandLine);
+            makeOutputFile(directionedInputList, inputCommandLine);
         } catch (FileNotFoundException ex) {
             Logger.getLogger(ProcessDataLoggerFile.class.getName()).log(Level.SEVERE, 
                     null, ex);
@@ -261,7 +263,7 @@ public class ProcessDataLoggerFile {
     }//end reformatOutputFile(outputFilePath)
 
     // write out the collated data
-    public static void makeOutputFile(List<IntermediateDataLine> inputList,
+    public static void makeOutputFile(List<FinalDataLine> inputList,
             InputCommandLine icl) throws FileNotFoundException {
 
         // get the file modified time to adjust output date/times to 
@@ -272,7 +274,7 @@ public class ProcessDataLoggerFile {
         int[] channelCounts = new int[icl.getNumberOfChannelsUsed()];
 
         // count the number of peaks per channel
-        for (IntermediateDataLine idl : inputList) {    
+        for (FinalDataLine idl : inputList) {    
             channelCounts[idl.channel]++;
         }
 
@@ -295,7 +297,7 @@ public class ProcessDataLoggerFile {
         // print third section of header
         if(inputList.size() > 0){
             // do some time calculations
-            IntermediateDataLine lastDataLine = inputList.get(inputList.size() - 1);
+            FinalDataLine lastDataLine = inputList.get(inputList.size() - 1);
             long tim1 = fileTime.toMillis() - (long)(lastDataLine.elapsedTime * 1000);
             long tim2 = tim1 + (long)(lastDataLine.elapsedTime * 1000);
             double minutesDuration = lastDataLine.elapsedTime / 60;
@@ -323,11 +325,13 @@ public class ProcessDataLoggerFile {
         if(icl.isPeakWidthFlg()){
             pw.printf("\tPkWidth");
         }//end if we should print the width of the peak
+        // print out direction
+        pw.printf("\tDirec");
         pw.printf("\n");
         
         // print out data ordered by channel and in elapsed time order
         for (int jdx = 0; jdx < icl.getNumberOfChannelsUsed(); jdx++) {
-            for (IntermediateDataLine outputData : inputList) {
+            for (FinalDataLine outputData : inputList) {
                 if (outputData.channel == jdx) {
                     pw.printf("%2d\t%9.3f", jdx + 1, outputData.elapsedTime);
                     if (icl.isDataTimeFlg()) {
@@ -338,6 +342,8 @@ public class ProcessDataLoggerFile {
                     if (icl.isPeakWidthFlg()) {
                         pw.printf("\t%d", outputData.peakWidth);
                     }
+                    // print out direction
+                    pw.printf("\t%i", outputData.direction);
                     pw.printf("\n");
                 }
             }

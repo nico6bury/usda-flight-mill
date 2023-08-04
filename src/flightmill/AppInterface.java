@@ -18,6 +18,7 @@ import javax.swing.JOptionPane;
 
 import com.formdev.flatlaf.*;
 
+import flightmill.dataStorageStructs.FinalDataLine;
 import flightmill.dataStorageStructs.InputCommandLine;
 import flightmill.dataStorageStructs.InputDataLine;
 import flightmill.dataStorageStructs.IntermediateDataLine;
@@ -330,10 +331,14 @@ public class AppInterface extends javax.swing.JFrame {
             uxStatusText.paintImmediately(uxStatusText.getVisibleRect());
             List<IntermediateDataLine> processedInputList = ProcessDataLoggerFile.processInput(inputList,
                     inputCommandLine);
+            // figure out directionallity from those peaks
+            uxStatusText.setText("Sifting through peaks to figure out directionallity.");
+            uxStatusText.paintImmediately(uxStatusText.getVisibleRect());
+            List<FinalDataLine> directionedInputList = ProcessDataLoggerFile.processDirectionallity(processedInputList);
             // write output file
             uxStatusText.setText("Writing the output file.");
             uxStatusText.paintImmediately(uxStatusText.getVisibleRect());
-            ProcessDataLoggerFile.makeOutputFile(processedInputList, inputCommandLine);
+            ProcessDataLoggerFile.makeOutputFile(directionedInputList, inputCommandLine);
             // tell the user what happened
             uxStatusText.setText("Files have finished processing.");
             uxStatusText.paintImmediately(uxStatusText.getVisibleRect());
