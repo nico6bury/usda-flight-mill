@@ -52,7 +52,7 @@ public class ProcessDataLoggerFile {
     // header info
     private static String TITLE = "USDA-ARS Manhattan, KS\tMar/2023\tSixbury/Rust/Brabec";
     private static String PROGRAM_NAME = "Flight Mill Compression";
-    private static String VERSION = "v.2.23";
+    private static String VERSION = "v1.0.1";
 
     private static AppInterface gui;
 
