@@ -36,6 +36,7 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
+import flightmill.dataStorageStructs.FinalDataLine;
 import flightmill.dataStorageStructs.InputCommandLine;
 import flightmill.dataStorageStructs.InputDataLine;
 import flightmill.dataStorageStructs.IntermediateDataLine;
@@ -403,6 +404,40 @@ public class ProcessDataLoggerFile {
 
         return outputList;
     }//end processInput(list, icl)
+
+    public static List<FinalDataLine> processDirectionallity(List<IntermediateDataLine> intermedDatas) {
+        /*
+         * Ideas that went into making this method:
+         * From beginning of loop, only look forward for pairs. When we find pairs, skip forward to after what we just did.
+         * FDL constructor should take care of directionallity as long as we can pair up idls.
+         * Anything we can't pair up, we immediately add as singleton fdl with direction 0.
+         */
+        // initialize variables to help with loop and stuff
+        List<FinalDataLine> fdls = new ArrayList<>();
+
+        // try to group all the idls in intermedDatas into fdls
+        for (int i = 0; i < intermedDatas.size(); i++) {
+            // let's get our references for this iteration
+            IntermediateDataLine this_idl = intermedDatas.get(i);
+            List<IntermediateDataLine> next_3 = intermedDatas.subList(Integer.max(i+1, intermedDatas.size()), Integer.max(i+5, intermedDatas.size()));
+
+            // Figure out if the time difference between this_idl and the next one is very small
+            double seconds_thresh_small = 0.100; // one tenth of a second
+            IntermediateDataLine next_idl = next_3.get(0);
+            if (next_3.size() > 0 && (Math.abs(this_idl.elapsedTime - next_idl.elapsedTime) < seconds_thresh_small)) {
+                // we found a pairing
+                fdls.add(new FinalDataLine(this_idl, next_idl));
+                // loop maintenance, take us to element after next
+                i = i + 2;
+            }//end if we found a pairing
+            else {
+                // if pairing was not found, then add this_idl as singleton fdl
+                fdls.add(new FinalDataLine(this_idl));
+            }//end else we can't pair this_idl
+        }//end trying to group idls into fdls
+
+        return fdls;
+    }//end processDirectionallity(intermedDatas)
 
     // get input file modizfication time to set beginning time for output date/time
     public static FileTime getFileCreationDate(File file) {
