@@ -21,7 +21,7 @@ public class FinalDataLine {
     /*
     * The width of this peak. Should probably reformulate as a number of miliseconds or something.
     */
-    public double peakWidth;
+    public int peakWidth;
     /*
     * This is a sentinel value indicating probably direction.
     * This only works with notched flags, so if this doesn't seem to be a reading, or we can't figure out directionallity, then this will be 0.
@@ -30,7 +30,7 @@ public class FinalDataLine {
     */
     public int direction;
 
-    public FinalDataLine(int channel, double elapsedTime, double value, double peakWidth, int direction) {
+    public FinalDataLine(int channel, double elapsedTime, double value, int peakWidth, int direction) {
         this.channel = channel;
         this.elapsedTime = elapsedTime;
         this.value = value;

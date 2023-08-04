@@ -343,7 +343,7 @@ public class ProcessDataLoggerFile {
                         pw.printf("\t%d", outputData.peakWidth);
                     }
                     // print out direction
-                    pw.printf("\t%i", outputData.direction);
+                    pw.printf("\t%d", outputData.direction);
                     pw.printf("\n");
                 }
             }
@@ -425,21 +425,26 @@ public class ProcessDataLoggerFile {
         for (int i = 0; i < intermedDatas.size(); i++) {
             // let's get our references for this iteration
             IntermediateDataLine this_idl = intermedDatas.get(i);
-            List<IntermediateDataLine> next_3 = intermedDatas.subList(Integer.max(i+1, intermedDatas.size()), Integer.max(i+5, intermedDatas.size()));
 
-            // Figure out if the time difference between this_idl and the next one is very small
-            double seconds_thresh_small = 0.100; // one tenth of a second
-            IntermediateDataLine next_idl = next_3.get(0);
-            if (next_3.size() > 0 && (Math.abs(this_idl.elapsedTime - next_idl.elapsedTime) < seconds_thresh_small)) {
-                // we found a pairing
-                fdls.add(new FinalDataLine(this_idl, next_idl));
-                // loop maintenance, take us to element after next
-                i = i + 2;
-            }//end if we found a pairing
+            if (i+1 < intermedDatas.size()) {
+                // Figure out if the time difference between this_idl and the next one is very small
+                double seconds_thresh_small = 0.100; // one tenth of a second
+                IntermediateDataLine next_idl = intermedDatas.get(i+1);
+                if (Math.abs(this_idl.elapsedTime - next_idl.elapsedTime) < seconds_thresh_small) {
+                    // we found a pairing
+                    fdls.add(new FinalDataLine(this_idl, next_idl));
+                    // loop maintenance, take us to element after next
+                    i = i + 2;
+                }//end if we found a pairing
+                else {
+                    // if pairing was not found, then add this_idl as singleton fdl
+                    fdls.add(new FinalDataLine(this_idl));
+                }//end else we can't pair this_idl
+            }//end if we have a next element we can look at
             else {
-                // if pairing was not found, then add this_idl as singleton fdl
+                // this is the last element, might as well add as singleton fdl
                 fdls.add(new FinalDataLine(this_idl));
-            }//end else we can't pair this_idl
+            }//end else this is the last element
         }//end trying to group idls into fdls
 
         return fdls;
