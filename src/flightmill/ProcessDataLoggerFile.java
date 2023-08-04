@@ -22,7 +22,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Optional;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -37,17 +36,10 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
-import javafx.application.Platform;
-import javafx.geometry.Insets;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Dialog;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
-import javafx.scene.control.ButtonBar.ButtonData;
-import javafx.scene.layout.GridPane;
-import javafx.util.Pair;
-
-import javax.swing.JOptionPane;
+import flightmill.dataStorageStructs.FinalDataLine;
+import flightmill.dataStorageStructs.InputCommandLine;
+import flightmill.dataStorageStructs.InputDataLine;
+import flightmill.dataStorageStructs.IntermediateDataLine;
 
 /**
  * This programs takes a csv file from a datalogger attached to a flight mill
@@ -60,7 +52,7 @@ public class ProcessDataLoggerFile {
     // header info
     private static String TITLE = "USDA-ARS Manhattan, KS\tMar/2023\tSixbury/Rust/Brabec";
     private static String PROGRAM_NAME = "Flight Mill Compression";
-    private static String VERSION = "v.2.23";
+    private static String VERSION = "v1.0.1";
 
     private static AppInterface gui;
 
@@ -85,13 +77,15 @@ public class ProcessDataLoggerFile {
                 inputCommandLine.setInputFileName(unzippedFileName);
             }
 
-            // load the imput file
+            // load the input file
             List<InputDataLine> inputList = LoadInputFile(inputCommandLine);
             // make list of individual peaks
             List<IntermediateDataLine> processedInputList = processInput(inputList,
                     inputCommandLine);
+            // figure out direction from our list of individual peaks
+            List<FinalDataLine> directionedInputList = processDirectionallity(processedInputList);
             // write output file
-            makeOutputFile(processedInputList, inputCommandLine);
+            makeOutputFile(directionedInputList, inputCommandLine);
         } catch (FileNotFoundException ex) {
             Logger.getLogger(ProcessDataLoggerFile.class.getName()).log(Level.SEVERE, 
                     null, ex);
@@ -257,7 +251,7 @@ public class ProcessDataLoggerFile {
         File newDirectory = new File(parentDirectory.getAbsolutePath() + File.separator + currentDateTime.format(formatter) + OUTPUT_FOLDER_NAME);
         // create the directory if it doesn't exist
         if (ensureDirectoryExists && !newDirectory.exists()) {
-            Boolean result = newDirectory.mkdir();
+            newDirectory.mkdir();
         }//end if new directory needs to be created
         // create the resulting path of the output file
         String priorFileName = outputFile.getName();
@@ -269,7 +263,7 @@ public class ProcessDataLoggerFile {
     }//end reformatOutputFile(outputFilePath)
 
     // write out the collated data
-    public static void makeOutputFile(List<IntermediateDataLine> inputList,
+    public static void makeOutputFile(List<FinalDataLine> inputList,
             InputCommandLine icl) throws FileNotFoundException {
 
         // get the file modified time to adjust output date/times to 
@@ -280,7 +274,7 @@ public class ProcessDataLoggerFile {
         int[] channelCounts = new int[icl.getNumberOfChannelsUsed()];
 
         // count the number of peaks per channel
-        for (IntermediateDataLine idl : inputList) {    
+        for (FinalDataLine idl : inputList) {    
             channelCounts[idl.channel]++;
         }
 
@@ -303,8 +297,8 @@ public class ProcessDataLoggerFile {
         // print third section of header
         if(inputList.size() > 0){
             // do some time calculations
-            long tim1 = fileTime.toMillis();
-            IntermediateDataLine lastDataLine = inputList.get(inputList.size() - 1);
+            FinalDataLine lastDataLine = inputList.get(inputList.size() - 1);
+            long tim1 = fileTime.toMillis() - (long)(lastDataLine.elapsedTime * 1000);
             long tim2 = tim1 + (long)(lastDataLine.elapsedTime * 1000);
             double minutesDuration = lastDataLine.elapsedTime / 60;
             // print out the time stuff
@@ -331,11 +325,13 @@ public class ProcessDataLoggerFile {
         if(icl.isPeakWidthFlg()){
             pw.printf("\tPkWidth");
         }//end if we should print the width of the peak
+        // print out direction
+        pw.printf("\tDirec");
         pw.printf("\n");
         
         // print out data ordered by channel and in elapsed time order
         for (int jdx = 0; jdx < icl.getNumberOfChannelsUsed(); jdx++) {
-            for (IntermediateDataLine outputData : inputList) {
+            for (FinalDataLine outputData : inputList) {
                 if (outputData.channel == jdx) {
                     pw.printf("%2d\t%9.3f", jdx + 1, outputData.elapsedTime);
                     if (icl.isDataTimeFlg()) {
@@ -346,6 +342,8 @@ public class ProcessDataLoggerFile {
                     if (icl.isPeakWidthFlg()) {
                         pw.printf("\t%d", outputData.peakWidth);
                     }
+                    // print out direction
+                    pw.printf("\t%d", outputData.direction);
                     pw.printf("\n");
                 }
             }
@@ -413,13 +411,52 @@ public class ProcessDataLoggerFile {
         return outputList;
     }//end processInput(list, icl)
 
+    public static List<FinalDataLine> processDirectionallity(List<IntermediateDataLine> intermedDatas) {
+        /*
+         * Ideas that went into making this method:
+         * From beginning of loop, only look forward for pairs. When we find pairs, skip forward to after what we just did.
+         * FDL constructor should take care of directionallity as long as we can pair up idls.
+         * Anything we can't pair up, we immediately add as singleton fdl with direction 0.
+         */
+        // initialize variables to help with loop and stuff
+        List<FinalDataLine> fdls = new ArrayList<>();
+
+        // try to group all the idls in intermedDatas into fdls
+        for (int i = 0; i < intermedDatas.size(); i++) {
+            // let's get our references for this iteration
+            IntermediateDataLine this_idl = intermedDatas.get(i);
+
+            if (i+1 < intermedDatas.size()) {
+                // Figure out if the time difference between this_idl and the next one is very small
+                double seconds_thresh_small = 0.100; // one tenth of a second
+                IntermediateDataLine next_idl = intermedDatas.get(i+1);
+                if (Math.abs(this_idl.elapsedTime - next_idl.elapsedTime) < seconds_thresh_small) {
+                    // we found a pairing
+                    fdls.add(new FinalDataLine(this_idl, next_idl));
+                    // loop maintenance, take us to element after next
+                    i = i + 2;
+                }//end if we found a pairing
+                else {
+                    // if pairing was not found, then add this_idl as singleton fdl
+                    fdls.add(new FinalDataLine(this_idl));
+                }//end else we can't pair this_idl
+            }//end if we have a next element we can look at
+            else {
+                // this is the last element, might as well add as singleton fdl
+                fdls.add(new FinalDataLine(this_idl));
+            }//end else this is the last element
+        }//end trying to group idls into fdls
+
+        return fdls;
+    }//end processDirectionallity(intermedDatas)
+
     // get input file modizfication time to set beginning time for output date/time
     public static FileTime getFileCreationDate(File file) {
 
         BasicFileAttributes attrs;
         try {
             attrs = Files.readAttributes(file.toPath(), BasicFileAttributes.class);
-            FileTime modTime = attrs.creationTime();
+            FileTime modTime = attrs.lastModifiedTime();
 
             return modTime;
         } catch (IOException e) {
@@ -480,179 +517,4 @@ public class ProcessDataLoggerFile {
 
         return newFile.getAbsolutePath();
     }//end unzipFile(zipFileName)
-
-    // class for input data directly mapped to input file
-    protected static class InputDataLine {
-
-        double time = 0.0;
-        double channels[] = null;
-
-        public InputDataLine(String inputLine) {
-            String items[] = inputLine.split(",");
-            time = Double.parseDouble(items[0]);
-            channels = new double[items.length - 1];
-            for (int idx = 1; idx < items.length; idx++) {
-                channels[idx - 1] = Double.parseDouble(items[idx]);
-            }
-        }//end 1-arg constructor
-
-        public InputDataLine(double time, int channel, int numChannel) {
-            this.time = time;
-            channels = new double[numChannel];
-            channels[channel] = 1.0;
-        }//end 3-arg constructor
-    }//end class InputDataLine
-
-    // class to hold data lines that hold only peaks
-    protected static class IntermediateDataLine {
-
-        int channel;
-        double elapsedTime;
-        double value;
-        int peakWidth = 1;
-
-        public IntermediateDataLine(int channel, double elapsedTime, double value) {
-            this.channel = channel;
-            this.elapsedTime = elapsedTime;
-            this.value = value;
-        }//end 3-arg constructor
-    }//end class IntermediateDataLine
-
-    // class to hold parsed input command options
-    protected static class InputCommandLine {
-
-        private String inputFileName = "ns-1-26-23-meeting-test.csv";
-        private String outputFileName = "ns-1-26-23-meeting-test.csv.out";
-        private int skipLines = 3;    // header lines at top of data logger file
-        private double timeInterval = 0.01;  // time between data logger readings
-        private int numberOfChannelsUsed = 0;    // self explanitory
-        private boolean zipFileFlg = false;              // zip input file
-        private boolean dataTimeFlg = true;  // add date time to each output line
-        private boolean peakWidthFlg = false; // add date time to each output line
-        private double threshold = 1.5;
-
-        //<editor-fold defaultstate="collapsed" desc="getters/setters">
-        /**
-         * @return the inputFileName
-         */
-        public String getInputFileName() {
-            return inputFileName;
-        }
-
-        /**
-         * @param aInputFileName the inputFileName to set
-         */
-        public void setInputFileName(String aInputFileName) {
-            inputFileName = aInputFileName;
-        }
-
-        /**
-         * @return the outputFileName
-         */
-        public String getOutputFileName() {
-            return outputFileName;
-        }
-
-        /**
-         * @param aOutputFileName the outputFileName to set
-         */
-        public void setOutputFileName(String aOutputFileName) {
-            outputFileName = aOutputFileName;
-        }
-
-        /**
-         * @return the skipLines
-         */
-        public int getSkipLines() {
-            return skipLines;
-        }
-
-        /**
-         * @param aSkipLines the skipLines to set
-         */
-        public void setSkipLines(int aSkipLines) {
-            skipLines = aSkipLines;
-        }
-
-        /**
-         * @return the timeInterval
-         */
-        public double getTimeInterval() {
-            return timeInterval;
-        }
-
-        /**
-         * @param aTimeInterval the timeInterval to set
-         */
-        public void setTimeInterval(double aTimeInterval) {
-            timeInterval = aTimeInterval;
-        }
-
-        /**
-         * @return the numberOfChannelsUsed
-         */
-        public int getNumberOfChannelsUsed() {
-            return numberOfChannelsUsed;
-        }
-
-        /**
-         * @param aNumberOfChannelsUsed the numberOfChannelsUsed to set
-         */
-        public void setNumberOfChannelsUsed(int aNumberOfChannelsUsed) {
-            numberOfChannelsUsed = aNumberOfChannelsUsed;
-        }
-
-        /**
-         * @return the zipFileFlg
-         */
-        public boolean isZipFileFlg() {
-            return zipFileFlg;
-        }
-
-        /**
-         * @param aZipFileFlg the zipFileFlg to set
-         */
-        public void setZipFileFlg(boolean aZipFileFlg) {
-            zipFileFlg = aZipFileFlg;
-        }
-
-        /**
-         * @return the dataTimeFlg
-         */
-        public boolean isDataTimeFlg() {
-            return dataTimeFlg;
-        }
-
-        /**
-         * @param dataTimeFlg the dataTimeFlg to set
-         */
-        public void setDataTimeFlg(boolean dataTimeFlg) {
-            this.dataTimeFlg = dataTimeFlg;
-        }
-
-        /**
-         * @return the peakWidthFlg
-         */
-        public boolean isPeakWidthFlg() {
-            return peakWidthFlg;
-        }
-
-        /**
-         * @param peakWidthFlg the peakWidthFlg to set
-         */
-        public void setPeakWidthFlg(boolean peakWidthFlg) {
-            this.peakWidthFlg = peakWidthFlg;
-        }
-
-        public double getThreshold() {
-            return threshold;
-        }
-
-        public void setThreshold(double threshold) {
-            this.threshold = threshold;
-        }
-
-//</editor-fold>
-    }//end class InputCommandLine
-
 }//end class ProcessDataLoggerFile

@@ -107,7 +107,7 @@
                       <Component id="uxShowFileBtn" min="-2" pref="32" max="-2" attributes="0"/>
                       <EmptySpace max="32767" attributes="0"/>
                       <Component id="uxStatusText" min="-2" pref="45" max="-2" attributes="0"/>
-                      <EmptySpace pref="16" max="32767" attributes="0"/>
+                      <EmptySpace pref="23" max="32767" attributes="0"/>
                   </Group>
                   <Group type="102" attributes="0">
                       <EmptySpace min="-2" pref="30" max="-2" attributes="0"/>
@@ -147,7 +147,7 @@
               <Font name="Tahoma" size="14" style="0"/>
             </Property>
             <Property name="rows" type="int" value="5"/>
-            <Property name="text" type="java.lang.String" value="&#x9;&#x9;Flight Mill Data File Compression Software v.2.23&#xa;   &#x9;&gt; compresses 8 channel datafile collected from WinDaq hardware/software&#xa;&#xa;&#x9;&#x9;Sixbury/Rust/Brabec  March 2023&#xa;&#x9;&#x9;USDA-ARS   Manhattan, Kansas"/>
+            <Property name="text" type="java.lang.String" value="&#x9;&#x9;Flight Mill Data File Compression Software v1.0.1&#xa;   &#x9;&gt; compresses 8 channel datafile collected from WinDaq hardware/software&#xa;&#xa;&#x9;&#x9;Sixbury/Rust/Brabec  July 2023&#xa;&#x9;&#x9;USDA-ARS   Manhattan, Kansas"/>
           </Properties>
         </Component>
       </SubComponents>
