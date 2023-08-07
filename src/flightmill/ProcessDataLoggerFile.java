@@ -50,9 +50,9 @@ import flightmill.dataStorageStructs.IntermediateDataLine;
 public class ProcessDataLoggerFile {
 
     // header info
-    private static String TITLE = "USDA-ARS Manhattan, KS\tJuly/2023\tSixbury/Rust/Brabec";
+    private static String TITLE = "USDA-ARS Manhattan, KS\tAug/2023\tSixbury/Rust/Brabec";
     private static String PROGRAM_NAME = "Flight Mill Compression";
-    private static String VERSION = "v1.0.1";
+    private static String VERSION = "v1.1.0";
 
     private static AppInterface gui;
 
@@ -82,8 +82,10 @@ public class ProcessDataLoggerFile {
             // make list of individual peaks
             List<IntermediateDataLine> processedInputList = processInput(inputList,
                     inputCommandLine);
+            // sort individual peaks by channel
+            List<List<IntermediateDataLine>> channelSortedInputList = separateIntermedDataByChannel(processedInputList);
             // figure out direction from our list of individual peaks
-            List<FinalDataLine> directionedInputList = processDirectionallity(processedInputList);
+            List<FinalDataLine> directionedInputList = processDirectionallity(channelSortedInputList);
             // write output file
             makeOutputFile(directionedInputList, inputCommandLine);
         } catch (FileNotFoundException ex) {
@@ -330,24 +332,21 @@ public class ProcessDataLoggerFile {
         pw.printf("\n");
         
         // print out data ordered by channel and in elapsed time order
-        for (int jdx = 0; jdx < icl.getNumberOfChannelsUsed(); jdx++) {
-            for (FinalDataLine outputData : inputList) {
-                if (outputData.channel == jdx) {
-                    pw.printf("%2d\t%9.3f", jdx + 1, outputData.elapsedTime);
-                    if (icl.isDataTimeFlg()) {
-                        pw.printf("\t");
-                        long tim = new Double(outputData.elapsedTime * 1000).intValue();
-                        pw.printf(dateFormat.format(new Date(tim + fileTime.toMillis())));
-                    }
-                    if (icl.isPeakWidthFlg()) {
-                        pw.printf("\t%d", outputData.peakWidth);
-                    }
-                    // print out direction
-                    pw.printf("\t%d", outputData.direction);
-                    pw.printf("\n");
-                }
+        for (int i = 0; i < inputList.size(); i++) {
+            FinalDataLine outputData = inputList.get(i);
+            pw.printf("%2d\t%9.3f", outputData.channel + 1, outputData.elapsedTime);
+            if (icl.isDataTimeFlg()) {
+                pw.printf("\t");
+                long tim = new Double(outputData.elapsedTime * 1000).intValue();
+                pw.printf(dateFormat.format(new Date(tim + fileTime.toMillis())));
             }
-        }
+            if (icl.isPeakWidthFlg()) {
+                pw.printf("\t%d", outputData.peakWidth);
+            }
+            // print out direction
+            pw.printf("\t%d", outputData.direction);
+            pw.printf("\n");
+        }//end looping over all the stuff to print out
         
         // close output file
         pw.close();
@@ -411,7 +410,25 @@ public class ProcessDataLoggerFile {
         return outputList;
     }//end processInput(list, icl)
 
-    public static List<FinalDataLine> processDirectionallity(List<IntermediateDataLine> intermedDatas) {
+    public static List<List<IntermediateDataLine>> separateIntermedDataByChannel(List<IntermediateDataLine> intermedDatas) {
+        List<List<IntermediateDataLine>> chan_sorted = new ArrayList<>();
+
+        // put channel data into proper list
+        for (int i = 0; i < intermedDatas.size(); i++) {
+            IntermediateDataLine this_intermed_data = intermedDatas.get(i);
+            int this_channel = this_intermed_data.channel;
+            // check to make sure bounds of array are good
+            while (chan_sorted.size() <= this_channel) {
+                chan_sorted.add(new ArrayList<>());
+            }//end looping while we need to expand chan_sorted
+            // actually add this_intermed_data into proper list based on channel
+            chan_sorted.get(this_channel).add(this_intermed_data);
+        }//end sorting every intermediate data line into proper channel
+
+        return chan_sorted;
+    }//end sortIntermediateDataByChannel(intermedDatas)
+
+    public static List<FinalDataLine> processDirectionallity(List<List<IntermediateDataLine>> sortedIntermedDatas) {
         /*
          * Ideas that went into making this method:
          * From beginning of loop, only look forward for pairs. When we find pairs, skip forward to after what we just did.
@@ -420,32 +437,46 @@ public class ProcessDataLoggerFile {
          */
         // initialize variables to help with loop and stuff
         List<FinalDataLine> fdls = new ArrayList<>();
+        double seconds_thresh_normal = 0.100; // one tenth of a second
+        double seconds_thresh_little_slow = 0.300;
+        double seconds_thresh_slow = 0.500;
+        double seconds_thresh_very_slow = 1.000;
 
-        // try to group all the idls in intermedDatas into fdls
-        for (int i = 0; i < intermedDatas.size(); i++) {
-            // let's get our references for this iteration
-            IntermediateDataLine this_idl = intermedDatas.get(i);
-
-            if (i+1 < intermedDatas.size()) {
-                // Figure out if the time difference between this_idl and the next one is very small
-                double seconds_thresh_small = 0.100; // one tenth of a second
-                IntermediateDataLine next_idl = intermedDatas.get(i+1);
-                if (Math.abs(this_idl.elapsedTime - next_idl.elapsedTime) < seconds_thresh_small) {
-                    // we found a pairing
-                    fdls.add(new FinalDataLine(this_idl, next_idl));
-                    // loop maintenance, take us to element after next
-                    i = i + 2;
-                }//end if we found a pairing
+        for (List<IntermediateDataLine> intermedDatas : sortedIntermedDatas) {
+            // try to group all the idls in intermedDatas into fdls
+            for (int i = 0; i < intermedDatas.size(); i++) {
+                // let's get our references for this iteration
+                IntermediateDataLine this_idl = intermedDatas.get(i);
+    
+                if (i+1 < intermedDatas.size()) {
+                    // Figure out if the time difference between this_idl and the next one is very small
+                    IntermediateDataLine next_idl = intermedDatas.get(i+1);
+                    // make sure to test for being really slow
+                    double thresh_to_use = seconds_thresh_normal;
+                    // get max width of peak, indicator of speed
+                    int max_pw = Math.max(this_idl.peakWidth, next_idl.peakWidth);
+                    if (max_pw > 33) {thresh_to_use = seconds_thresh_little_slow;}
+                    if (max_pw > 66) {thresh_to_use = seconds_thresh_slow;}
+                    if (max_pw > 99) {thresh_to_use = seconds_thresh_very_slow;}
+                    // figure out if we're probably looking at a pair of notches
+                    if (Math.abs(this_idl.elapsedTime - next_idl.elapsedTime) < thresh_to_use) {
+                        // we found a pairing
+                        fdls.add(new FinalDataLine(this_idl, next_idl));
+                        // loop maintenance, take us to element after next
+                        i = i + 1;
+                    }//end if we found a pairing
+                    else {
+                        // if pairing was not found, then add this_idl as singleton fdl
+                        fdls.add(new FinalDataLine(this_idl));
+                    }//end else we can't pair this_idl
+                }//end if we have a next element we can look at
                 else {
-                    // if pairing was not found, then add this_idl as singleton fdl
+                    // this is the last element, might as well add as singleton fdl
                     fdls.add(new FinalDataLine(this_idl));
-                }//end else we can't pair this_idl
-            }//end if we have a next element we can look at
-            else {
-                // this is the last element, might as well add as singleton fdl
-                fdls.add(new FinalDataLine(this_idl));
-            }//end else this is the last element
-        }//end trying to group idls into fdls
+                }//end else this is the last element
+            }//end trying to group idls into fdls
+        }//end looping over lists sorted by channel
+
 
         return fdls;
     }//end processDirectionallity(intermedDatas)

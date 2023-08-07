@@ -74,7 +74,7 @@ public class AppInterface extends javax.swing.JFrame {
         jTextArea1.setColumns(20);
         jTextArea1.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         jTextArea1.setRows(5);
-        jTextArea1.setText("\t\tFlight Mill Data File Compression Software v1.0.1\n   \t> compresses 8 channel datafile collected from WinDaq hardware/software\n\n\t\tSixbury/Rust/Brabec  July 2023\n\t\tUSDA-ARS   Manhattan, Kansas");
+        jTextArea1.setText("\t\tFlight Mill Data File Compression Software v1.1.0\n   \t> compresses 8 channel datafile collected from WinDaq hardware/software\n\n\t\tSixbury/Rust/Brabec  Aug 2023\n\t\tUSDA-ARS   Manhattan, Kansas");
         jScrollPane2.setViewportView(jTextArea1);
 
         uxGetInputBtn.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
@@ -331,10 +331,14 @@ public class AppInterface extends javax.swing.JFrame {
             uxStatusText.paintImmediately(uxStatusText.getVisibleRect());
             List<IntermediateDataLine> processedInputList = ProcessDataLoggerFile.processInput(inputList,
                     inputCommandLine);
+            // sort peaks by channel
+            uxStatusText.setText("Sorting peaks by channel to ease processing.");
+            uxStatusText.paintImmediately(uxStatusText.getVisibleRect());
+            List<List<IntermediateDataLine>> channelSortedInputList = ProcessDataLoggerFile.separateIntermedDataByChannel(processedInputList);
             // figure out directionallity from those peaks
             uxStatusText.setText("Sifting through peaks to figure out directionallity.");
             uxStatusText.paintImmediately(uxStatusText.getVisibleRect());
-            List<FinalDataLine> directionedInputList = ProcessDataLoggerFile.processDirectionallity(processedInputList);
+            List<FinalDataLine> directionedInputList = ProcessDataLoggerFile.processDirectionallity(channelSortedInputList);
             // write output file
             uxStatusText.setText("Writing the output file.");
             uxStatusText.paintImmediately(uxStatusText.getVisibleRect());
