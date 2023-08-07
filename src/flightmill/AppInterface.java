@@ -331,10 +331,14 @@ public class AppInterface extends javax.swing.JFrame {
             uxStatusText.paintImmediately(uxStatusText.getVisibleRect());
             List<IntermediateDataLine> processedInputList = ProcessDataLoggerFile.processInput(inputList,
                     inputCommandLine);
+            // sort peaks by channel
+            uxStatusText.setText("Sorting peaks by channel to ease processing.");
+            uxStatusText.paintImmediately(uxStatusText.getVisibleRect());
+            List<List<IntermediateDataLine>> channelSortedInputList = ProcessDataLoggerFile.separateIntermedDataByChannel(processedInputList);
             // figure out directionallity from those peaks
             uxStatusText.setText("Sifting through peaks to figure out directionallity.");
             uxStatusText.paintImmediately(uxStatusText.getVisibleRect());
-            List<FinalDataLine> directionedInputList = ProcessDataLoggerFile.processDirectionallity(processedInputList);
+            List<FinalDataLine> directionedInputList = ProcessDataLoggerFile.processDirectionallity(channelSortedInputList);
             // write output file
             uxStatusText.setText("Writing the output file.");
             uxStatusText.paintImmediately(uxStatusText.getVisibleRect());
