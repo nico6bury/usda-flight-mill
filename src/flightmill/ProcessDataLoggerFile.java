@@ -452,7 +452,7 @@ public class ProcessDataLoggerFile {
                         // we found a pairing
                         fdls.add(new FinalDataLine(this_idl, next_idl));
                         // loop maintenance, take us to element after next
-                        i = i + 2;
+                        i = i + 1;
                     }//end if we found a pairing
                     else {
                         // if pairing was not found, then add this_idl as singleton fdl
