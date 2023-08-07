@@ -437,6 +437,10 @@ public class ProcessDataLoggerFile {
          */
         // initialize variables to help with loop and stuff
         List<FinalDataLine> fdls = new ArrayList<>();
+        double seconds_thresh_normal = 0.100; // one tenth of a second
+        double seconds_thresh_little_slow = 0.300;
+        double seconds_thresh_slow = 0.500;
+        double seconds_thresh_very_slow = 1.000;
 
         for (List<IntermediateDataLine> intermedDatas : sortedIntermedDatas) {
             // try to group all the idls in intermedDatas into fdls
@@ -446,9 +450,16 @@ public class ProcessDataLoggerFile {
     
                 if (i+1 < intermedDatas.size()) {
                     // Figure out if the time difference between this_idl and the next one is very small
-                    double seconds_thresh_small = 0.100; // one tenth of a second
                     IntermediateDataLine next_idl = intermedDatas.get(i+1);
-                    if (Math.abs(this_idl.elapsedTime - next_idl.elapsedTime) < seconds_thresh_small) {
+                    // make sure to test for being really slow
+                    double thresh_to_use = seconds_thresh_normal;
+                    // get max width of peak, indicator of speed
+                    int max_pw = Math.max(this_idl.peakWidth, next_idl.peakWidth);
+                    if (max_pw > 33) {thresh_to_use = seconds_thresh_little_slow;}
+                    if (max_pw > 66) {thresh_to_use = seconds_thresh_slow;}
+                    if (max_pw > 99) {thresh_to_use = seconds_thresh_very_slow;}
+                    // figure out if we're probably looking at a pair of notches
+                    if (Math.abs(this_idl.elapsedTime - next_idl.elapsedTime) < thresh_to_use) {
                         // we found a pairing
                         fdls.add(new FinalDataLine(this_idl, next_idl));
                         // loop maintenance, take us to element after next
