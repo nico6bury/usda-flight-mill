@@ -33,6 +33,11 @@ public class AppInterface extends javax.swing.JFrame {
      * Creates new form test
      */
     public AppInterface() {
+        initComponents();
+
+        // update version and date and stuff
+        jTextArea1.setText("\t\tFlight Mill Data File Compression Software " + ProcessDataLoggerFile.VERSION + "\n   \t> compresses 8 channel datafile collected from WinDaq hardware/software\n\n\t\t" + ProcessDataLoggerFile.PEOPLE + "  " + ProcessDataLoggerFile.DATE() + "\n\t\t" + ProcessDataLoggerFile.LOCATION);
+
         boolean darkMode = false;
         if(darkMode) {
             FlatDarkLaf.setup();
@@ -40,8 +45,6 @@ public class AppInterface extends javax.swing.JFrame {
         else {
             FlatLightLaf.setup();
         }
-
-        initComponents();
     }//end constructor
 
     /**
