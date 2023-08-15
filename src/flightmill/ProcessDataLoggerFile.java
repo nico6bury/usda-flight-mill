@@ -50,9 +50,15 @@ import flightmill.dataStorageStructs.IntermediateDataLine;
 public class ProcessDataLoggerFile {
 
     // header info
-    private static String TITLE = "USDA-ARS Manhattan, KS\tAug/2023\tSixbury/Rust/Brabec";
-    private static String PROGRAM_NAME = "Flight Mill Compression";
-    private static String VERSION = "v1.1.0";
+    public static String LOCATION = "USDA-ARS Manhattan, KS";
+    public static String DATE() {
+        DateTimeFormatter month_year = DateTimeFormatter.ofPattern("MMM/yyyy");
+        LocalDateTime currentDateTime = LocalDateTime.now();
+        return currentDateTime.format(month_year);
+    }//end DATE()
+    public static String PEOPLE = "Sixbury/Rust/Brabec";
+    public static String PROGRAM_NAME = "Flight Mill Compression";
+    public static String VERSION = "v1.1.0";
 
     private static AppInterface gui;
 
@@ -290,7 +296,7 @@ public class ProcessDataLoggerFile {
         PrintWriter pw = new PrintWriter(outputFile);
 
         // print first section of header
-        pw.printf("%s  %s\n%s\n", PROGRAM_NAME, VERSION, TITLE);
+        pw.printf("%s  %s\n%s\n", PROGRAM_NAME, VERSION, LOCATION + "\t" + DATE() + "\t" + PEOPLE);
 
         // print second section of header
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
