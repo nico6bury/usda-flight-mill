@@ -249,8 +249,9 @@ public class ProcessDataLoggerFile {
         File outputFile = new File(outputFilePath);
         File parentDirectory = outputFile.getParentFile();
         LocalDateTime currentDateTime = LocalDateTime.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-");
-        File newDirectory = new File(parentDirectory.getAbsolutePath() + File.separator + currentDateTime.format(formatter) + OUTPUT_FOLDER_NAME);
+        DateTimeFormatter dir_formatter = DateTimeFormatter.ofPattern("yyyy-MM-");
+        DateTimeFormatter file_formatter = DateTimeFormatter.ofPattern(";d-h-m-s");
+        File newDirectory = new File(parentDirectory.getAbsolutePath() + File.separator + currentDateTime.format(dir_formatter) + OUTPUT_FOLDER_NAME);
         // create the directory if it doesn't exist
         if (ensureDirectoryExists && !newDirectory.exists()) {
             newDirectory.mkdir();
@@ -258,7 +259,8 @@ public class ProcessDataLoggerFile {
         // create the resulting path of the output file
         String priorFileName = outputFile.getName();
         String newExtension = ".OUT";
-        String newFileName = priorFileName.substring(0, priorFileName.lastIndexOf(".")) + newExtension;
+        String current_time_stamp = currentDateTime.format(file_formatter);
+        String newFileName = priorFileName.substring(0, priorFileName.lastIndexOf(".")) + current_time_stamp + newExtension;
         outputFile = new File(newDirectory.getAbsolutePath() + File.separator + newFileName);
 
         return outputFile.getAbsolutePath();
