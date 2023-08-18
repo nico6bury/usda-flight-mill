@@ -295,34 +295,34 @@ public class AppInterface extends javax.swing.JFrame {
         uxStatusText.setText("Gathering Parameters");
         uxStatusText.paintImmediately(uxStatusText.getVisibleRect());
 
-        inputCommandLine.setDataTimeFlg(uxNoDateTimeChk.isSelected());
-        inputCommandLine.setInputFileName(inputText);
-        inputCommandLine.setOutputFileName(uxGetOutputTxt.getText());
-        inputCommandLine.setPeakWidthFlg(uxAddPeakWidthChk.isSelected());
+        inputCommandLine.dataTimeFlg = uxNoDateTimeChk.isSelected();
+        inputCommandLine.inputFileName = inputText;
+        inputCommandLine.outputFileName = uxGetOutputTxt.getText();
+        inputCommandLine.peakWidthFlg = uxAddPeakWidthChk.isSelected();
         if (uxLineSkipChk.isSelected()) {
-            inputCommandLine.setSkipLines(Integer.parseInt(uxLineSkipTxt.getText()));
+            inputCommandLine.skipLines = Integer.parseInt(uxLineSkipTxt.getText());
         }
-        else inputCommandLine.setSkipLines(0);
-        inputCommandLine.setZipFileFlg(uxZipInputChk.isSelected());
-        inputCommandLine.setThreshold(Double.parseDouble(uxGetThresholdTxt.getText()));
+        else inputCommandLine.skipLines = 0;
+        inputCommandLine.zipFileFlg = uxZipInputChk.isSelected();
+        inputCommandLine.threshold = Double.parseDouble(uxGetThresholdTxt.getText());
 
         // just do all the processing, whatever
         try{
             
-            if (inputCommandLine.isZipFileFlg()) {
+            if (inputCommandLine.zipFileFlg) {
                 // update status text
                 uxStatusText.setText("Zipping Input File");
                 uxStatusText.paintImmediately(uxStatusText.getVisibleRect());
                 // actually zipping
-                ProcessDataLoggerFile.zipFile(inputCommandLine.getInputFileName());
+                ProcessDataLoggerFile.zipFile(inputCommandLine.inputFileName);
             }
-            if (inputCommandLine.getInputFileName().endsWith(".zip")) {
+            if (inputCommandLine.inputFileName.endsWith(".zip")) {
                 // update status text
                 uxStatusText.setText("Unzipping Input File");
                 uxStatusText.paintImmediately(uxStatusText.getVisibleRect());
                 // actually unzipping
-                String unzippedFileName = ProcessDataLoggerFile.unzipFile(inputCommandLine.getInputFileName());
-                inputCommandLine.setInputFileName(unzippedFileName);
+                String unzippedFileName = ProcessDataLoggerFile.unzipFile(inputCommandLine.inputFileName);
+                inputCommandLine.inputFileName = unzippedFileName;
             }
     
             // load the imput file
@@ -370,7 +370,7 @@ public class AppInterface extends javax.swing.JFrame {
     private void uxShowFileBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uxShowFileBtnActionPerformed
         // open the file in file explorer
         try {
-            Runtime.getRuntime().exec("explorer.exe /select," + inputCommandLine.getOutputFileName());
+            Runtime.getRuntime().exec("explorer.exe /select," + inputCommandLine.outputFileName);
         }//end trying to open file explorer
         catch(Exception e) {System.out.println("Couldn't open file explorer");}
     }//GEN-LAST:event_uxShowFileBtnActionPerformed

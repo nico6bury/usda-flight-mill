@@ -75,12 +75,12 @@ public class ProcessDataLoggerFile {
                 inputCommandLine = processCommandLine(args);
             }//end else we're using the old command line method
             
-            if (inputCommandLine.isZipFileFlg()) {
-                zipFile(inputCommandLine.getInputFileName());
+            if (inputCommandLine.zipFileFlg) {
+                zipFile(inputCommandLine.inputFileName);
             }
-            if (inputCommandLine.getInputFileName().endsWith(".zip")) {
-                String unzippedFileName = unzipFile(inputCommandLine.getInputFileName());
-                inputCommandLine.setInputFileName(unzippedFileName);
+            if (inputCommandLine.inputFileName.endsWith(".zip")) {
+                String unzippedFileName = unzipFile(inputCommandLine.inputFileName);
+                inputCommandLine.inputFileName = unzippedFileName;
             }
 
             // load the input file
@@ -182,32 +182,32 @@ public class ProcessDataLoggerFile {
         //<editor-fold defaultstate="collapsed" desc="save input parameters for further processing">
         String inputFilePath = cmd.getOptionValue("input");
         if (inputFilePath != null) {
-            inputCommandLine.setInputFileName(inputFilePath);
-            inputCommandLine.setOutputFileName(inputFilePath + ".out");
+            inputCommandLine.inputFileName = inputFilePath;
+            inputCommandLine.outputFileName = inputFilePath + ".out";
         }
 
         String outputFilePath = cmd.getOptionValue("output");
         if (outputFilePath != null) {
-            inputCommandLine.setOutputFileName(outputFilePath);
+            inputCommandLine.outputFileName = outputFilePath;
 //            outputFileName = outputFilePath;
         }
 
         String skipLinesString = cmd.getOptionValue("skipLines");
         if (skipLinesString != null) {
-            inputCommandLine.setSkipLines(Integer.parseInt(skipLinesString));
+            inputCommandLine.skipLines = Integer.parseInt(skipLinesString);
 //            skipLines = Integer.parseInt(skipLinesString);
         }
 
         if (cmd.hasOption("z")) {
-            inputCommandLine.setZipFileFlg(true);
+            inputCommandLine.zipFileFlg = true;
         }
 
         if (cmd.hasOption("ndt")) {
-            inputCommandLine.setDataTimeFlg(false);
+            inputCommandLine.dataTimeFlg = false;
         }
 
         if (cmd.hasOption("pw")) {
-            inputCommandLine.setPeakWidthFlg(true);
+            inputCommandLine.peakWidthFlg = true;
         }
 //</editor-fold>
 
@@ -218,13 +218,13 @@ public class ProcessDataLoggerFile {
     public static List<InputDataLine> LoadInputFile(InputCommandLine icl) 
             throws FileNotFoundException {
 
-        String fileName = icl.getInputFileName();
+        String fileName = icl.inputFileName;
 
         List<InputDataLine> inputDataList = new ArrayList<>();
 
         File inputFile = new File(fileName);
         Scanner myReader = new Scanner(inputFile);
-        for (int idx = 0; idx < icl.getSkipLines(); idx++) {     // skip the header lines
+        for (int idx = 0; idx < icl.skipLines; idx++) {     // skip the header lines
             myReader.nextLine();
         }
         while (myReader.hasNextLine()) {
@@ -278,10 +278,10 @@ public class ProcessDataLoggerFile {
 
         // get the file modified time to adjust output date/times to 
         //   something close to real time
-        FileTime fileTime = getFileCreationDate(new File(icl.getInputFileName()));
+        FileTime fileTime = getFileCreationDate(new File(icl.inputFileName));
 
         // set up array to hold counts of peaks per channel
-        int[] channelCounts = new int[icl.getNumberOfChannelsUsed()];
+        int[] channelCounts = new int[icl.numberOfChannelsUsed];
 
         // count the number of peaks per channel
         for (FinalDataLine idl : inputList) {    
@@ -289,7 +289,7 @@ public class ProcessDataLoggerFile {
         }
 
         // save to output file
-        File outputFile = new File(icl.getOutputFileName());
+        File outputFile = new File(icl.outputFileName);
         if (!outputFile.exists()) {
             outputFile.getParentFile().mkdirs();
         }//end if we need to make the resulting directories
@@ -301,7 +301,7 @@ public class ProcessDataLoggerFile {
         // print second section of header
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         Calendar cal = Calendar.getInstance();
-        pw.printf("File name: %s\nData Processed: %s\n", icl.getInputFileName(), 
+        pw.printf("File name: %s\nData Processed: %s\n", icl.inputFileName, 
                 dateFormat.format(cal.getTime()));
         
         // print third section of header
@@ -323,16 +323,16 @@ public class ProcessDataLoggerFile {
         }//end if there are any inputs
 
         // print counts per channel
-        for (int idx = 0; idx < icl.getNumberOfChannelsUsed(); idx++) {
+        for (int idx = 0; idx < icl.numberOfChannelsUsed; idx++) {
             pw.printf("Chan %2d  Peaks: %5d\n", idx + 1, channelCounts[idx]);
         }
         
         // print headers for the columns we're about to print
         pw.printf("Chan#\tPkTime");
-        if(icl.isDataTimeFlg()){
+        if(icl.dataTimeFlg){
             pw.printf("\tDtTim");
         }//end if we should print the data time data
-        if(icl.isPeakWidthFlg()){
+        if(icl.peakWidthFlg){
             pw.printf("\tPkWidth");
         }//end if we should print the width of the peak
         // print out direction
@@ -343,12 +343,12 @@ public class ProcessDataLoggerFile {
         for (int i = 0; i < inputList.size(); i++) {
             FinalDataLine outputData = inputList.get(i);
             pw.printf("%2d\t%9.3f", outputData.channel + 1, outputData.elapsedTime);
-            if (icl.isDataTimeFlg()) {
+            if (icl.dataTimeFlg) {
                 pw.printf("\t");
                 long tim = new Double(outputData.elapsedTime * 1000).intValue();
                 pw.printf(dateFormat.format(new Date(tim + fileTime.toMillis())));
             }
-            if (icl.isPeakWidthFlg()) {
+            if (icl.peakWidthFlg) {
                 pw.printf("\t%d", outputData.peakWidth);
             }
             // print out direction
@@ -370,7 +370,7 @@ public class ProcessDataLoggerFile {
         int nocu = list.get(0).channels.length;
 
         // find the threshold for each channel
-        icl.setNumberOfChannelsUsed(list.get(0).channels.length);
+        icl.numberOfChannelsUsed = list.get(0).channels.length;
         double[] minVal = new double[nocu];
         double[] maxVal = new double[nocu];
         double[] threshold = new double[nocu];
