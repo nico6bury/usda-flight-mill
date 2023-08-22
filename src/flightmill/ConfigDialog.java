@@ -133,7 +133,7 @@ public class ConfigDialog extends javax.swing.JDialog {
 
     private void uxConfirmConfigBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uxConfirmConfigBtnActionPerformed
         // Update parent icl based on controls
-        parent_icl.dataTimeFlg = uxNoDateTimeChk.isSelected();
+        parent_icl.dateTimeFlg = uxNoDateTimeChk.isSelected();
         parent_icl.peakWidthFlg = uxAddPeakWidthChk.isSelected();
         if (uxLineSkipChk.isSelected()) {
             parent_icl.skipLines = Integer.parseInt(uxLineSkipTxt.getText());
@@ -157,7 +157,7 @@ public class ConfigDialog extends javax.swing.JDialog {
         this.uxGetThresholdTxt.setText(icl.threshold + "");
         this.uxLineSkipChk.setSelected(icl.skipLines > 0);
         this.uxLineSkipTxt.setText("" + icl.skipLines);
-        this.uxNoDateTimeChk.setSelected(icl.dataTimeFlg);
+        this.uxNoDateTimeChk.setSelected(icl.dateTimeFlg);
         this.uxZipInputChk.setSelected(icl.zipFileFlg);
     }//end updateConfig(icl)
 

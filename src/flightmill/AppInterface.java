@@ -355,7 +355,7 @@ public class AppInterface extends javax.swing.JFrame {
         // update config display on main window
         StringBuilder sb = new StringBuilder();
         
-        sb.append("No Date Time: " + inputCommandLine.dataTimeFlg);
+        sb.append("No Date Time: " + inputCommandLine.dateTimeFlg);
         sb.append("\tShow Peak Width: " + inputCommandLine.peakWidthFlg);
         sb.append("\nZip File: " + inputCommandLine.zipFileFlg);
         sb.append("\nLines to Skip: " + inputCommandLine.skipLines);

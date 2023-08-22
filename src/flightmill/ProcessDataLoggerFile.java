@@ -292,7 +292,7 @@ public class ProcessDataLoggerFile {
         }
 
         if (cmd.hasOption("ndt")) {
-            inputCommandLine.dataTimeFlg = false;
+            inputCommandLine.dateTimeFlg = false;
         }
 
         if (cmd.hasOption("pw")) {
@@ -420,7 +420,7 @@ public class ProcessDataLoggerFile {
         pw.printf("Chan#");
         if (icl.doubleColumnFlg) { pw.printf("\tPkTime1\t\tPkTime2"); }
         else { pw.printf("\tPkTime"); }
-        if (icl.dataTimeFlg) {
+        if (icl.dateTimeFlg) {
             pw.printf("\tDtTim");
         }//end if we should print the data time data
         if (icl.peakWidthFlg) {
@@ -436,7 +436,7 @@ public class ProcessDataLoggerFile {
             FinalDataLine outputData = inputList.get(i);
             pw.printf("%2d\t%9.3f", outputData.channel + 1, outputData.elapsedTime1);
             if (icl.doubleColumnFlg) { pw.printf("\t%9.3f", outputData.elapsedTime2); }
-            if (icl.dataTimeFlg) {
+            if (icl.dateTimeFlg) {
                 pw.printf("\t");
                 long tim = new Double(outputData.elapsedTime1 * 1000).intValue();
                 pw.printf(dateFormat.format(new Date(tim + fileTime.toMillis())));
