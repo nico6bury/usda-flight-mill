@@ -45,6 +45,19 @@ public class AppInterface extends javax.swing.JFrame {
 
         // update version and date and stuff
         jTextArea1.setText("\t\tFlight Mill Data File Compression Software " + ProcessDataLoggerFile.VERSION + "\n   \t> compresses 8 channel datafile collected from WinDaq hardware/software\n\n\t\t" + ProcessDataLoggerFile.PEOPLE + "  " + ProcessDataLoggerFile.DATE() + "\n\t\t" + ProcessDataLoggerFile.LOCATION);
+
+        // update config display with our default
+        inputCommandLine = new InputCommandLine();
+        inputCommandLine.dataTimeFlg = false;
+        inputCommandLine.doubleColumnFlg = true;
+        inputCommandLine.peakWidthFlg = true;
+        inputCommandLine.skipLines = 4;
+        inputCommandLine.threshold = 1.5;
+        inputCommandLine.zipFileFlg = false;
+        updateConfigDisplay();
+        // set up config dialog
+        configDialog = new ConfigDialog(this, true);
+        configDialog.parent_icl = inputCommandLine;
     }//end constructor
 
     /**
@@ -240,7 +253,7 @@ public class AppInterface extends javax.swing.JFrame {
     }//GEN-LAST:event_uxGetOutputBtnActionPerformed
 
     public boolean isInputDataReady = false;
-    public InputCommandLine inputCommandLine = null;
+    public InputCommandLine inputCommandLine = new InputCommandLine();
 
     private void uxProcessBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uxProcessBtnActionPerformed
         // check that there's actually a file to open
@@ -252,24 +265,13 @@ public class AppInterface extends javax.swing.JFrame {
             "\nselect a file, or copy and paste the path yourself...");
             return;
         }//end if input text isn't filled in
-        
-        // set up InputCommandLine for all the stuff we need to send
-        inputCommandLine = new InputCommandLine();
 
         // update status label
         uxStatusText.setText("Gathering Parameters");
         uxStatusText.paintImmediately(uxStatusText.getVisibleRect());
 
-        // inputCommandLine.dataTimeFlg = uxNoDateTimeChk.isSelected();
         inputCommandLine.inputFileName = inputText;
         inputCommandLine.outputFileName = uxGetOutputTxt.getText();
-        // inputCommandLine.peakWidthFlg = uxAddPeakWidthChk.isSelected();
-        // if (uxLineSkipChk.isSelected()) {
-        //     inputCommandLine.skipLines = Integer.parseInt(uxLineSkipTxt.getText());
-        // }
-        // else inputCommandLine.skipLines = 0;
-        // inputCommandLine.zipFileFlg = uxZipInputChk.isSelected();
-        // inputCommandLine.threshold = Double.parseDouble(uxGetThresholdTxt.getText());
 
         // just do all the processing, whatever
         try{
@@ -340,9 +342,26 @@ public class AppInterface extends javax.swing.JFrame {
         catch(Exception e) {System.out.println("Couldn't open file explorer");}
     }//GEN-LAST:event_uxShowFileBtnActionPerformed
 
+    ConfigDialog configDialog = new ConfigDialog(this, true);
+
     private void uxShowConfigBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uxShowConfigBtnActionPerformed
-        // TODO add your handling code here:
+        configDialog.updateConfig(inputCommandLine);
+        configDialog.setVisible(true);
+        updateConfigDisplay();
     }//GEN-LAST:event_uxShowConfigBtnActionPerformed
+
+    private void updateConfigDisplay() {
+        // update config display on main window
+        StringBuilder sb = new StringBuilder();
+        
+        sb.append("No Date Time: " + inputCommandLine.dataTimeFlg);
+        sb.append("\tShow Peak Width: " + inputCommandLine.peakWidthFlg);
+        sb.append("\nZip File: " + inputCommandLine.zipFileFlg);
+        sb.append("\nLines to Skip: " + inputCommandLine.skipLines);
+        sb.append("\t\tThreshold for Peak: " + inputCommandLine.threshold);
+
+        uxConfigDisplayText.setText(sb.toString());
+    }//end updateConfigDisplay()
 
     /**
      * @param args the command line arguments

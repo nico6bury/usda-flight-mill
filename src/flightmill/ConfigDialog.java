@@ -4,6 +4,8 @@
  */
 package flightmill;
 
+import flightmill.dataStorageStructs.InputCommandLine;
+
 /**
  *
  * @author Nicholas.Sixbury
@@ -17,6 +19,8 @@ public class ConfigDialog extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();
     }
+
+    public InputCommandLine parent_icl;
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -129,12 +133,34 @@ public class ConfigDialog extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void uxConfirmConfigBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uxConfirmConfigBtnActionPerformed
-        // TODO add your handling code here:
+        // Update parent icl based on controls
+        parent_icl.dataTimeFlg = uxNoDateTimeChk.isSelected();
+        parent_icl.peakWidthFlg = uxAddPeakWidthChk.isSelected();
+        if (uxLineSkipChk.isSelected()) {
+            parent_icl.skipLines = Integer.parseInt(uxLineSkipTxt.getText());
+        }
+        else parent_icl.skipLines = 0;
+        parent_icl.zipFileFlg = uxZipInputChk.isSelected();
+        parent_icl.threshold = Double.parseDouble(uxGetThresholdTxt.getText());
+        // close this dialog window
+        this.setVisible(false);
     }//GEN-LAST:event_uxConfirmConfigBtnActionPerformed
 
     private void uxCancelConfigBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uxCancelConfigBtnActionPerformed
-        // TODO add your handling code here:
+        this.setVisible(false);
     }//GEN-LAST:event_uxCancelConfigBtnActionPerformed
+
+    /*
+     * Updates the controls in this window based on the configuration in the inputCommandLine.
+     */
+    public void updateConfig(InputCommandLine icl) {
+        this.uxAddPeakWidthChk.setSelected(icl.peakWidthFlg);
+        this.uxGetThresholdTxt.setText(icl.threshold + "");
+        this.uxLineSkipChk.setSelected(icl.skipLines > 0);
+        this.uxLineSkipTxt.setText("" + icl.skipLines);
+        this.uxNoDateTimeChk.setSelected(icl.dataTimeFlg);
+        this.uxZipInputChk.setSelected(icl.zipFileFlg);
+    }//end updateConfig(icl)
 
     /**
      * @param args the command line arguments
