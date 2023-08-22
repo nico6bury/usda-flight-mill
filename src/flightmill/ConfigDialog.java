@@ -63,8 +63,18 @@ public class ConfigDialog extends javax.swing.JDialog {
         uxLineSkipTxt.setText("4");
 
         uxConfirmConfigBtn.setText("Confirm");
+        uxConfirmConfigBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                uxConfirmConfigBtnActionPerformed(evt);
+            }
+        });
 
         uxCancelConfigBtn.setText("Cancel");
+        uxCancelConfigBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                uxCancelConfigBtnActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -117,6 +127,14 @@ public class ConfigDialog extends javax.swing.JDialog {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void uxConfirmConfigBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uxConfirmConfigBtnActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_uxConfirmConfigBtnActionPerformed
+
+    private void uxCancelConfigBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uxCancelConfigBtnActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_uxCancelConfigBtnActionPerformed
 
     /**
      * @param args the command line arguments

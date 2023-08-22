@@ -210,6 +210,9 @@
         </Property>
         <Property name="text" type="java.lang.String" value="Edit Config"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="uxShowConfigBtnActionPerformed"/>
+      </Events>
     </Component>
   </SubComponents>
 </Form>

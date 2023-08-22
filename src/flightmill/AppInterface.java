@@ -122,6 +122,11 @@ public class AppInterface extends javax.swing.JFrame {
 
         uxShowConfigBtn.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         uxShowConfigBtn.setText("Edit Config");
+        uxShowConfigBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                uxShowConfigBtnActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -255,16 +260,16 @@ public class AppInterface extends javax.swing.JFrame {
         uxStatusText.setText("Gathering Parameters");
         uxStatusText.paintImmediately(uxStatusText.getVisibleRect());
 
-        inputCommandLine.dataTimeFlg = uxNoDateTimeChk.isSelected();
+        // inputCommandLine.dataTimeFlg = uxNoDateTimeChk.isSelected();
         inputCommandLine.inputFileName = inputText;
         inputCommandLine.outputFileName = uxGetOutputTxt.getText();
-        inputCommandLine.peakWidthFlg = uxAddPeakWidthChk.isSelected();
-        if (uxLineSkipChk.isSelected()) {
-            inputCommandLine.skipLines = Integer.parseInt(uxLineSkipTxt.getText());
-        }
-        else inputCommandLine.skipLines = 0;
-        inputCommandLine.zipFileFlg = uxZipInputChk.isSelected();
-        inputCommandLine.threshold = Double.parseDouble(uxGetThresholdTxt.getText());
+        // inputCommandLine.peakWidthFlg = uxAddPeakWidthChk.isSelected();
+        // if (uxLineSkipChk.isSelected()) {
+        //     inputCommandLine.skipLines = Integer.parseInt(uxLineSkipTxt.getText());
+        // }
+        // else inputCommandLine.skipLines = 0;
+        // inputCommandLine.zipFileFlg = uxZipInputChk.isSelected();
+        // inputCommandLine.threshold = Double.parseDouble(uxGetThresholdTxt.getText());
 
         // just do all the processing, whatever
         try{
@@ -334,6 +339,10 @@ public class AppInterface extends javax.swing.JFrame {
         }//end trying to open file explorer
         catch(Exception e) {System.out.println("Couldn't open file explorer");}
     }//GEN-LAST:event_uxShowFileBtnActionPerformed
+
+    private void uxShowConfigBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uxShowConfigBtnActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_uxShowConfigBtnActionPerformed
 
     /**
      * @param args the command line arguments
