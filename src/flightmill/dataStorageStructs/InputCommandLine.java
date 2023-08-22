@@ -8,7 +8,7 @@ public class InputCommandLine {
     public double timeInterval = 0.01;  // time between data logger readings
     public int numberOfChannelsUsed = 0;    // self explanitory
     public boolean zipFileFlg = false;              // zip input file
-    public boolean dateTimeFlg = true;  // add date time to each output line
+    public boolean dateTimeFlg = false;  // add date time to each output line
     public boolean peakWidthFlg = true; // add date time to each output line
     public boolean doubleColumnFlg = true; // add second peakwidth and elapsedTime
     public double threshold = 1.5;
