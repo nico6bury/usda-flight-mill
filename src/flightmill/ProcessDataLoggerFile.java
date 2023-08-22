@@ -152,7 +152,9 @@ public class ProcessDataLoggerFile {
 
         for (Field field : InputCommandLine.class.getFields()) {
             try {
-                lines.add(field.getName() + ":" + field.get(icl));
+                if (field.getName() != "inputFileName" && field.getName() != "outputFileName") {
+                    lines.add(field.getName() + ":" + field.get(icl));
+                }//end if field isn't just a file path. We don't need to save or display that.
             } catch (IllegalArgumentException e) { e.printStackTrace();
             } catch (IllegalAccessException e) { e.printStackTrace(); }
         }//end making line for each file
@@ -423,6 +425,12 @@ public class ProcessDataLoggerFile {
             pw.printf(dateFormat.format(new Date(tim2)));
             pw.printf("\n");
         }//end if there are any inputs
+
+        // print configuration settings
+        pw.printf("Parameters from Config File:\n");
+        for (String line : getInputCommandLineStrings(icl)) {
+            pw.printf(line + "\n");
+        }
 
         // print counts per channel
         for (int idx = 0; idx < icl.numberOfChannelsUsed; idx++) {
