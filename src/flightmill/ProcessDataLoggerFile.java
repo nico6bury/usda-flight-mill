@@ -91,7 +91,7 @@ public class ProcessDataLoggerFile {
             // sort individual peaks by channel
             List<List<IntermediateDataLine>> channelSortedInputList = separateIntermedDataByChannel(processedInputList);
             // figure out direction from our list of individual peaks
-            List<FinalDataLine> directionedInputList = processDirectionallity(channelSortedInputList);
+            List<FinalDataLine> directionedInputList = processDirectionallity(channelSortedInputList, inputCommandLine);
             // write output file
             makeOutputFile(directionedInputList, inputCommandLine);
         } catch (FileNotFoundException ex) {
@@ -441,7 +441,7 @@ public class ProcessDataLoggerFile {
         return chan_sorted;
     }//end sortIntermediateDataByChannel(intermedDatas)
 
-    public static List<FinalDataLine> processDirectionallity(List<List<IntermediateDataLine>> sortedIntermedDatas) {
+    public static List<FinalDataLine> processDirectionallity(List<List<IntermediateDataLine>> sortedIntermedDatas, InputCommandLine icl) {
         /*
          * Ideas that went into making this method:
          * From beginning of loop, only look forward for pairs. When we find pairs, skip forward to after what we just did.
@@ -450,9 +450,6 @@ public class ProcessDataLoggerFile {
          */
         // initialize variables to help with loop and stuff
         List<FinalDataLine> fdls = new ArrayList<>();
-        double seconds_thresh_normal = 0.300; // three tenths of a second
-        double seconds_thresh_little_slow = 0.500; // half a second
-        double seconds_thresh_slow = 1.000; // full second
 
         for (List<IntermediateDataLine> intermedDatas : sortedIntermedDatas) {
             // try to group all the idls in intermedDatas into fdls
@@ -464,11 +461,12 @@ public class ProcessDataLoggerFile {
                     // Figure out if the time difference between this_idl and the next one is very small
                     IntermediateDataLine next_idl = intermedDatas.get(i+1);
                     // make sure to test for being really slow
-                    double thresh_to_use = seconds_thresh_normal;
+                    double thresh_to_use = icl.thresh_seconds_normal;
                     // get max width of peak, indicator of speed
                     int max_pw = Math.max(this_idl.peakWidth, next_idl.peakWidth);
-                    if (max_pw > 50) {thresh_to_use = seconds_thresh_little_slow;}
-                    if (max_pw > 100) {thresh_to_use = seconds_thresh_slow;}
+                    if (max_pw > icl.thresh_peakWidth_normal) {thresh_to_use = icl.thresh_seconds_normal;}
+                    if (max_pw > icl.thresh_peakWidth_little_slow) {thresh_to_use = icl.thresh_seconds_little_slow;}
+                    if (max_pw > icl.thresh_peakWidth_slow) {thresh_to_use = icl.thresh_seconds_slow;}
                     // figure out if we're probably looking at a pair of notches
                     if (Math.abs(this_idl.elapsedTime - next_idl.elapsedTime) < thresh_to_use) {
                         // we found a pairing

@@ -308,7 +308,7 @@ public class AppInterface extends javax.swing.JFrame {
             // figure out directionallity from those peaks
             uxStatusText.setText("Sifting through peaks to figure out directionallity.");
             uxStatusText.paintImmediately(uxStatusText.getVisibleRect());
-            List<FinalDataLine> directionedInputList = ProcessDataLoggerFile.processDirectionallity(channelSortedInputList);
+            List<FinalDataLine> directionedInputList = ProcessDataLoggerFile.processDirectionallity(channelSortedInputList, inputCommandLine);
             // write output file
             uxStatusText.setText("Writing the output file.");
             uxStatusText.paintImmediately(uxStatusText.getVisibleRect());
