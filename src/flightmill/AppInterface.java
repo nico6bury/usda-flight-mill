@@ -45,6 +45,20 @@ public class AppInterface extends javax.swing.JFrame {
 
         // update version and date and stuff
         jTextArea1.setText("\t\tFlight Mill Data File Compression Software " + ProcessDataLoggerFile.VERSION + "\n   \t> compresses 8 channel datafile collected from WinDaq hardware/software\n\n\t\t" + ProcessDataLoggerFile.PEOPLE + "  " + ProcessDataLoggerFile.DATE() + "\n\t\t" + ProcessDataLoggerFile.LOCATION);
+
+        // load config stuff from file
+        inputCommandLine = ProcessDataLoggerFile.loadInputCommandLine();
+        // update config display with our default
+        // inputCommandLine.dataTimeFlg = false;
+        // inputCommandLine.doubleColumnFlg = true;
+        // inputCommandLine.peakWidthFlg = true;
+        // inputCommandLine.skipLines = 4;
+        // inputCommandLine.threshold = 1.5;
+        // inputCommandLine.zipFileFlg = false;
+        updateConfigDisplay();
+        // set up config dialog
+        configDialog = new ConfigDialog(this, true);
+        configDialog.parent_icl = inputCommandLine;
     }//end constructor
 
     /**
@@ -61,23 +75,20 @@ public class AppInterface extends javax.swing.JFrame {
         uxGetOutputBtn = new javax.swing.JButton();
         uxGetInputTxt = new javax.swing.JTextField();
         uxGetOutputTxt = new javax.swing.JTextField();
-        jLabel1 = new javax.swing.JLabel();
-        uxGetThresholdTxt = new javax.swing.JTextField();
-        uxLineSkipChk = new javax.swing.JCheckBox();
-        uxZipInputChk = new javax.swing.JCheckBox();
-        uxNoDateTimeChk = new javax.swing.JCheckBox();
-        uxAddPeakWidthChk = new javax.swing.JCheckBox();
-        uxLineSkipTxt = new javax.swing.JTextField();
         uxProcessBtn = new javax.swing.JButton();
-        uxStatusText = new javax.swing.JLabel();
         uxShowFileBtn = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        uxConfigDisplayText = new javax.swing.JTextArea();
+        uxShowConfigBtn = new javax.swing.JButton();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        uxStatusText = new javax.swing.JTextArea();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jTextArea1.setColumns(20);
         jTextArea1.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         jTextArea1.setRows(5);
-        jTextArea1.setText("\t\tFlight Mill Data File Compression Software v1.1.0\n   \t> compresses 8 channel datafile collected from WinDaq hardware/software\n\n\t\tSixbury/Rust/Brabec  Aug 2023\n\t\tUSDA-ARS   Manhattan, Kansas");
+        jTextArea1.setText("\t\tFlight Mill Data File Compression Software v1.0.1\n   \t> compresses 8 channel datafile collected from WinDaq hardware/software\n\n\t\tSixbury/Rust/Brabec  July 2023\n\t\tUSDA-ARS   Manhattan, Kansas");
         jScrollPane2.setViewportView(jTextArea1);
 
         uxGetInputBtn.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
@@ -102,29 +113,6 @@ public class AppInterface extends javax.swing.JFrame {
 
         uxGetOutputTxt.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
 
-        jLabel1.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel1.setText(" LED signal threshold:");
-
-        uxGetThresholdTxt.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        uxGetThresholdTxt.setText("1.5");
-
-        uxLineSkipChk.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        uxLineSkipChk.setSelected(true);
-        uxLineSkipChk.setText("Skip, a number of header lines in input file");
-
-        uxZipInputChk.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        uxZipInputChk.setText("Zip Input File and Delete Uncompressed File");
-
-        uxNoDateTimeChk.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        uxNoDateTimeChk.setText("Include Date/Time in each Line of output");
-
-        uxAddPeakWidthChk.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        uxAddPeakWidthChk.setSelected(true);
-        uxAddPeakWidthChk.setText("Add Width of each Peak as a column in output");
-
-        uxLineSkipTxt.setText("4");
-
         uxProcessBtn.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         uxProcessBtn.setText("Process Sample");
         uxProcessBtn.addActionListener(new java.awt.event.ActionListener() {
@@ -141,52 +129,57 @@ public class AppInterface extends javax.swing.JFrame {
             }
         });
 
+        uxConfigDisplayText.setEditable(false);
+        uxConfigDisplayText.setColumns(20);
+        uxConfigDisplayText.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        uxConfigDisplayText.setRows(4);
+        uxConfigDisplayText.setAutoscrolls(false);
+        jScrollPane1.setViewportView(uxConfigDisplayText);
+
+        uxShowConfigBtn.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        uxShowConfigBtn.setText("Edit Config");
+        uxShowConfigBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                uxShowConfigBtnActionPerformed(evt);
+            }
+        });
+
+        uxStatusText.setEditable(false);
+        uxStatusText.setColumns(20);
+        uxStatusText.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        uxStatusText.setRows(1);
+        uxStatusText.setAutoscrolls(false);
+        jScrollPane3.setViewportView(uxStatusText);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(uxGetOutputBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(uxGetInputBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(uxGetInputTxt)
-                            .addComponent(uxGetOutputTxt)))
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(uxGetThresholdTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(uxNoDateTimeChk, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(uxAddPeakWidthChk, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                .addComponent(uxZipInputChk)
-                                .addGroup(layout.createSequentialGroup()
-                                    .addComponent(uxLineSkipChk, javax.swing.GroupLayout.PREFERRED_SIZE, 315, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(uxLineSkipTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(0, 86, Short.MAX_VALUE)
+                                    .addComponent(uxGetOutputBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(uxGetInputBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                        .addComponent(uxShowFileBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(74, 74, 74))
-                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                        .addComponent(uxProcessBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(63, 63, 63))))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(uxStatusText, javax.swing.GroupLayout.PREFERRED_SIZE, 311, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 0, Short.MAX_VALUE)))))
-                .addContainerGap())
+                                    .addComponent(uxGetInputTxt)
+                                    .addComponent(uxGetOutputTxt)))
+                            .addComponent(jScrollPane2))
+                        .addContainerGap())
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 446, Short.MAX_VALUE)
+                            .addComponent(jScrollPane1))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(uxProcessBtn, javax.swing.GroupLayout.DEFAULT_SIZE, 173, Short.MAX_VALUE)
+                            .addComponent(uxShowFileBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(uxShowConfigBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -201,30 +194,19 @@ public class AppInterface extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(uxGetOutputBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(uxGetOutputTxt))
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(18, 18, 18)
-                        .addComponent(uxProcessBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(uxShowFileBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(uxStatusText, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(23, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(30, 30, 30)
-                        .addComponent(uxAddPeakWidthChk, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(6, 6, 6)
-                        .addComponent(uxZipInputChk, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(uxShowConfigBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(uxNoDateTimeChk, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(uxLineSkipChk, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(uxLineSkipTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(uxGetThresholdTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                        .addComponent(uxProcessBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(uxShowFileBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane3)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -275,7 +257,7 @@ public class AppInterface extends javax.swing.JFrame {
     }//GEN-LAST:event_uxGetOutputBtnActionPerformed
 
     public boolean isInputDataReady = false;
-    public InputCommandLine inputCommandLine = null;
+    public InputCommandLine inputCommandLine = new InputCommandLine();
 
     private void uxProcessBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uxProcessBtnActionPerformed
         // check that there's actually a file to open
@@ -287,24 +269,13 @@ public class AppInterface extends javax.swing.JFrame {
             "\nselect a file, or copy and paste the path yourself...");
             return;
         }//end if input text isn't filled in
-        
-        // set up InputCommandLine for all the stuff we need to send
-        inputCommandLine = new InputCommandLine();
 
         // update status label
         uxStatusText.setText("Gathering Parameters");
         uxStatusText.paintImmediately(uxStatusText.getVisibleRect());
 
-        inputCommandLine.dataTimeFlg = uxNoDateTimeChk.isSelected();
         inputCommandLine.inputFileName = inputText;
         inputCommandLine.outputFileName = uxGetOutputTxt.getText();
-        inputCommandLine.peakWidthFlg = uxAddPeakWidthChk.isSelected();
-        if (uxLineSkipChk.isSelected()) {
-            inputCommandLine.skipLines = Integer.parseInt(uxLineSkipTxt.getText());
-        }
-        else inputCommandLine.skipLines = 0;
-        inputCommandLine.zipFileFlg = uxZipInputChk.isSelected();
-        inputCommandLine.threshold = Double.parseDouble(uxGetThresholdTxt.getText());
 
         // just do all the processing, whatever
         try{
@@ -341,7 +312,7 @@ public class AppInterface extends javax.swing.JFrame {
             // figure out directionallity from those peaks
             uxStatusText.setText("Sifting through peaks to figure out directionallity.");
             uxStatusText.paintImmediately(uxStatusText.getVisibleRect());
-            List<FinalDataLine> directionedInputList = ProcessDataLoggerFile.processDirectionallity(channelSortedInputList);
+            List<FinalDataLine> directionedInputList = ProcessDataLoggerFile.processDirectionallity(channelSortedInputList, inputCommandLine);
             // write output file
             uxStatusText.setText("Writing the output file.");
             uxStatusText.paintImmediately(uxStatusText.getVisibleRect());
@@ -375,6 +346,35 @@ public class AppInterface extends javax.swing.JFrame {
         catch(Exception e) {System.out.println("Couldn't open file explorer");}
     }//GEN-LAST:event_uxShowFileBtnActionPerformed
 
+    ConfigDialog configDialog = new ConfigDialog(this, true);
+
+    private void uxShowConfigBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uxShowConfigBtnActionPerformed
+        configDialog.updateConfig(inputCommandLine);
+        configDialog.setVisible(true);
+        updateConfigDisplay();
+    }//GEN-LAST:event_uxShowConfigBtnActionPerformed
+
+    private void updateConfigDisplay() {
+        // update config display on main window
+        StringBuilder sb = new StringBuilder();
+        
+        sb.append("Configuration File with current parameters:");
+        for (String line : ProcessDataLoggerFile.getInputCommandLineStrings(inputCommandLine)) { sb.append("\n" + line); }
+
+        // sb.append("No Date Time: " + inputCommandLine.dateTimeFlg);
+        // sb.append("\tShow Peak Width: " + inputCommandLine.peakWidthFlg);
+        // sb.append("\nZip File: " + inputCommandLine.zipFileFlg);
+        // sb.append("\nLines to Skip: " + inputCommandLine.skipLines);
+        // sb.append("\t\tThreshold for Peak: " + inputCommandLine.threshold);
+
+        uxConfigDisplayText.setText(sb.toString());
+        uxConfigDisplayText.setSelectionStart(0);
+        uxConfigDisplayText.setSelectionEnd(0);
+
+        // write changes to config file as well
+        ProcessDataLoggerFile.saveInputCommandLine(inputCommandLine);
+    }//end updateConfigDisplay()
+
     /**
      * @param args the command line arguments
      */
@@ -390,21 +390,18 @@ public class AppInterface extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTextArea jTextArea1;
-    private javax.swing.JCheckBox uxAddPeakWidthChk;
+    private javax.swing.JTextArea uxConfigDisplayText;
     private javax.swing.JButton uxGetInputBtn;
     private javax.swing.JTextField uxGetInputTxt;
     private javax.swing.JButton uxGetOutputBtn;
     private javax.swing.JTextField uxGetOutputTxt;
-    private javax.swing.JTextField uxGetThresholdTxt;
-    private javax.swing.JCheckBox uxLineSkipChk;
-    private javax.swing.JTextField uxLineSkipTxt;
-    private javax.swing.JCheckBox uxNoDateTimeChk;
     private javax.swing.JButton uxProcessBtn;
+    private javax.swing.JButton uxShowConfigBtn;
     private javax.swing.JButton uxShowFileBtn;
-    private javax.swing.JLabel uxStatusText;
-    private javax.swing.JCheckBox uxZipInputChk;
+    private javax.swing.JTextArea uxStatusText;
     // End of variables declaration//GEN-END:variables
 }

@@ -10,6 +10,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.lang.reflect.Field;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.FileTime;
@@ -58,7 +60,7 @@ public class ProcessDataLoggerFile {
     }//end DATE()
     public static String PEOPLE = "Sixbury/Rust/Brabec";
     public static String PROGRAM_NAME = "Flight Mill Compression";
-    public static String VERSION = "v1.3.0";
+    public static String VERSION = "v1.4.2";
 
     private static AppInterface gui;
 
@@ -91,7 +93,7 @@ public class ProcessDataLoggerFile {
             // sort individual peaks by channel
             List<List<IntermediateDataLine>> channelSortedInputList = separateIntermedDataByChannel(processedInputList);
             // figure out direction from our list of individual peaks
-            List<FinalDataLine> directionedInputList = processDirectionallity(channelSortedInputList);
+            List<FinalDataLine> directionedInputList = processDirectionallity(channelSortedInputList, inputCommandLine);
             // write output file
             makeOutputFile(directionedInputList, inputCommandLine);
         } catch (FileNotFoundException ex) {
@@ -102,6 +104,108 @@ public class ProcessDataLoggerFile {
                     null, ex);
         }
     }//end main method
+
+    /*
+     * Gets the path of a config file next to the jar.
+     * Also makes sure the file exists, creating it if it doesn't exist.
+     */
+    public static File getConfigPath() {
+        try {
+            String executableDir = new File(ProcessDataLoggerFile.class.getProtectionDomain().getCodeSource().getLocation()
+            .toURI()).getParent();
+
+            String configPath = executableDir + "\\" + "flight_mill.config";
+
+            File configFile = new File(configPath);
+            if (!configFile.exists()) {configFile.createNewFile();}
+
+            return configFile;
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+            System.out.println("It seems there was a problem getting the path of the executable.");
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("It seems there was a problem creating the config file.");
+        } return null;
+    }
+
+    /*
+     * Serializes and writes input command line values to a file.
+     */
+    public static void saveInputCommandLine(InputCommandLine icl) {
+        File configFile = getConfigPath();
+        PrintWriter pw = null;
+        try {
+            pw = new PrintWriter(configFile);
+            for (String line : getInputCommandLineStrings(icl)) { pw.printf(line + "\n"); }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            System.out.println("Couldn't find config file.");
+        } finally { if (pw != null) { pw.close(); } }
+    }//end saveInputCommandLine(icl)
+    
+    /*
+     * Gets a list of lines formatted in the way we format the config file.
+     */
+    public static List<String> getInputCommandLineStrings(InputCommandLine icl) {
+        List<String> lines = new ArrayList<String>();
+
+        for (Field field : InputCommandLine.class.getFields()) {
+            try {
+                if (field.getName() != "inputFileName" && field.getName() != "outputFileName") {
+                    lines.add(field.getName() + ":" + field.get(icl));
+                }//end if field isn't just a file path. We don't need to save or display that.
+            } catch (IllegalArgumentException e) { e.printStackTrace();
+            } catch (IllegalAccessException e) { e.printStackTrace(); }
+        }//end making line for each file
+
+        return lines;
+    }//end getInputCommandLineStrings(icl)
+
+    /*
+    * Reads and deserializes input command lines values from a file.
+    */
+    public static InputCommandLine loadInputCommandLine() {
+        InputCommandLine icl = new InputCommandLine();
+
+        File configFile = getConfigPath();
+        try {
+            for (String line : Files.readAllLines(configFile.toPath())) {
+                // separate string information from line
+                int split_index = line.indexOf(":");
+                String field_name = line.substring(0, split_index);
+                String field_value = line.substring(split_index + 1, line.length());
+                // determine which field we're looking at
+                Field this_field = InputCommandLine.class.getField(field_name);
+                switch (this_field.getType().getName()) {
+                    case "java.lang.String":
+                        this_field.set(icl, field_value);
+                        break;
+                    case "int":
+                        this_field.setInt(icl, Integer.parseInt(field_value));
+                        break;
+                    case "double":
+                        this_field.setDouble(icl, Double.parseDouble(field_value));
+                        break;
+                    case "boolean":
+                        this_field.set(icl, Boolean.parseBoolean(field_value));
+                        break;
+                    default:
+                        System.out.println("Unsupported type for inputCommandLine: " + this_field.getType().getName());
+                        break;
+                }//end switch case
+            }//end looping through lines in file
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("Problem loading config file.");
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+            System.out.println("Couldn't find one of the fields specified in the config file.");
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+            System.out.println("Couldn't access one of the fields in inputCommandLine.");
+        } return icl;
+    }//end loadInputCommandLine()
 
     // parses options from a GUI
     public static InputCommandLine processGUI() {
@@ -203,7 +307,7 @@ public class ProcessDataLoggerFile {
         }
 
         if (cmd.hasOption("ndt")) {
-            inputCommandLine.dataTimeFlg = false;
+            inputCommandLine.dateTimeFlg = false;
         }
 
         if (cmd.hasOption("pw")) {
@@ -322,6 +426,12 @@ public class ProcessDataLoggerFile {
             pw.printf("\n");
         }//end if there are any inputs
 
+        // print configuration settings
+        pw.printf("Parameters from Config File:\n");
+        for (String line : getInputCommandLineStrings(icl)) {
+            pw.printf(line + "\n");
+        }
+
         // print counts per channel
         for (int idx = 0; idx < icl.numberOfChannelsUsed; idx++) {
             pw.printf("Chan %2d  Peaks: %5d\n", idx + 1, channelCounts[idx]);
@@ -331,7 +441,7 @@ public class ProcessDataLoggerFile {
         pw.printf("Chan#");
         if (icl.doubleColumnFlg) { pw.printf("\tPkTime1\t\tPkTime2"); }
         else { pw.printf("\tPkTime"); }
-        if (icl.dataTimeFlg) {
+        if (icl.dateTimeFlg) {
             pw.printf("\tDtTim");
         }//end if we should print the data time data
         if (icl.peakWidthFlg) {
@@ -347,7 +457,7 @@ public class ProcessDataLoggerFile {
             FinalDataLine outputData = inputList.get(i);
             pw.printf("%2d\t%9.3f", outputData.channel + 1, outputData.elapsedTime1);
             if (icl.doubleColumnFlg) { pw.printf("\t%9.3f", outputData.elapsedTime2); }
-            if (icl.dataTimeFlg) {
+            if (icl.dateTimeFlg) {
                 pw.printf("\t");
                 long tim = new Double(outputData.elapsedTime1 * 1000).intValue();
                 pw.printf(dateFormat.format(new Date(tim + fileTime.toMillis())));
@@ -441,7 +551,7 @@ public class ProcessDataLoggerFile {
         return chan_sorted;
     }//end sortIntermediateDataByChannel(intermedDatas)
 
-    public static List<FinalDataLine> processDirectionallity(List<List<IntermediateDataLine>> sortedIntermedDatas) {
+    public static List<FinalDataLine> processDirectionallity(List<List<IntermediateDataLine>> sortedIntermedDatas, InputCommandLine icl) {
         /*
          * Ideas that went into making this method:
          * From beginning of loop, only look forward for pairs. When we find pairs, skip forward to after what we just did.
@@ -450,9 +560,6 @@ public class ProcessDataLoggerFile {
          */
         // initialize variables to help with loop and stuff
         List<FinalDataLine> fdls = new ArrayList<>();
-        double seconds_thresh_normal = 0.300; // three tenths of a second
-        double seconds_thresh_little_slow = 0.500; // half a second
-        double seconds_thresh_slow = 1.000; // full second
 
         for (List<IntermediateDataLine> intermedDatas : sortedIntermedDatas) {
             // try to group all the idls in intermedDatas into fdls
@@ -464,11 +571,12 @@ public class ProcessDataLoggerFile {
                     // Figure out if the time difference between this_idl and the next one is very small
                     IntermediateDataLine next_idl = intermedDatas.get(i+1);
                     // make sure to test for being really slow
-                    double thresh_to_use = seconds_thresh_normal;
+                    double thresh_to_use = icl.thresh_seconds_fast;
                     // get max width of peak, indicator of speed
                     int max_pw = Math.max(this_idl.peakWidth, next_idl.peakWidth);
-                    if (max_pw > 50) {thresh_to_use = seconds_thresh_little_slow;}
-                    if (max_pw > 100) {thresh_to_use = seconds_thresh_slow;}
+                    if (max_pw > icl.thresh_peakWidth_fast) {thresh_to_use = icl.thresh_seconds_fast;}
+                    if (max_pw > icl.thresh_peakWidth_medium) {thresh_to_use = icl.thresh_seconds_medium;}
+                    if (max_pw > icl.thresh_peakWidth_slow) {thresh_to_use = icl.thresh_seconds_slow;}
                     // figure out if we're probably looking at a pair of notches
                     if (Math.abs(this_idl.elapsedTime - next_idl.elapsedTime) < thresh_to_use) {
                         // we found a pairing

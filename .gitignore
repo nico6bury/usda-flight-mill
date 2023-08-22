@@ -50,3 +50,4 @@ bin/
 
 # Ignore the compiled jar file of the software
 FlightMill.jar
+flight_mill.config
