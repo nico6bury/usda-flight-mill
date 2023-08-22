@@ -58,7 +58,7 @@ public class ProcessDataLoggerFile {
     }//end DATE()
     public static String PEOPLE = "Sixbury/Rust/Brabec";
     public static String PROGRAM_NAME = "Flight Mill Compression";
-    public static String VERSION = "v1.2.1";
+    public static String VERSION = "v1.3.0";
 
     private static AppInterface gui;
 
