@@ -366,6 +366,8 @@ public class AppInterface extends javax.swing.JFrame {
         // sb.append("\t\tThreshold for Peak: " + inputCommandLine.threshold);
 
         uxConfigDisplayText.setText(sb.toString());
+        uxConfigDisplayText.setSelectionStart(0);
+        uxConfigDisplayText.setSelectionEnd(0);
 
         // write changes to config file as well
         ProcessDataLoggerFile.saveInputCommandLine(inputCommandLine);
