@@ -355,11 +355,13 @@ public class AppInterface extends javax.swing.JFrame {
         // update config display on main window
         StringBuilder sb = new StringBuilder();
         
-        sb.append("No Date Time: " + inputCommandLine.dateTimeFlg);
-        sb.append("\tShow Peak Width: " + inputCommandLine.peakWidthFlg);
-        sb.append("\nZip File: " + inputCommandLine.zipFileFlg);
-        sb.append("\nLines to Skip: " + inputCommandLine.skipLines);
-        sb.append("\t\tThreshold for Peak: " + inputCommandLine.threshold);
+        for (String line : ProcessDataLoggerFile.getInputCommandLineStrings(inputCommandLine)) { sb.append(line); }
+
+        // sb.append("No Date Time: " + inputCommandLine.dateTimeFlg);
+        // sb.append("\tShow Peak Width: " + inputCommandLine.peakWidthFlg);
+        // sb.append("\nZip File: " + inputCommandLine.zipFileFlg);
+        // sb.append("\nLines to Skip: " + inputCommandLine.skipLines);
+        // sb.append("\t\tThreshold for Peak: " + inputCommandLine.threshold);
 
         uxConfigDisplayText.setText(sb.toString());
 
