@@ -308,9 +308,9 @@ public class ProcessDataLoggerFile {
         if(inputList.size() > 0){
             // do some time calculations
             FinalDataLine lastDataLine = inputList.get(inputList.size() - 1);
-            long tim1 = fileTime.toMillis() - (long)(lastDataLine.elapsedTime * 1000);
-            long tim2 = tim1 + (long)(lastDataLine.elapsedTime * 1000);
-            double minutesDuration = lastDataLine.elapsedTime / 60;
+            long tim1 = fileTime.toMillis() - (long)(lastDataLine.elapsedTime1 * 1000);
+            long tim2 = tim1 + (long)(lastDataLine.elapsedTime1 * 1000);
+            double minutesDuration = lastDataLine.elapsedTime1 / 60;
             // print out the time stuff
             pw.printf("Data Collected in %1.1f minutes\t", minutesDuration);
 
@@ -328,12 +328,15 @@ public class ProcessDataLoggerFile {
         }
         
         // print headers for the columns we're about to print
-        pw.printf("Chan#\tPkTime");
-        if(icl.dataTimeFlg){
+        pw.printf("Chan#");
+        if (icl.doubleColumnFlg) { pw.printf("\tPkTime1\t\tPkTime2"); }
+        else { pw.printf("\tPkTime"); }
+        if (icl.dataTimeFlg) {
             pw.printf("\tDtTim");
         }//end if we should print the data time data
-        if(icl.peakWidthFlg){
-            pw.printf("\tPkWidth");
+        if (icl.peakWidthFlg) {
+            if (icl.doubleColumnFlg) { pw.printf("\t\tPkWdth1\tPkWdth2"); }
+            else { pw.printf("\tPkWidth"); }
         }//end if we should print the width of the peak
         // print out direction
         pw.printf("\tDirec");
@@ -342,15 +345,17 @@ public class ProcessDataLoggerFile {
         // print out data ordered by channel and in elapsed time order
         for (int i = 0; i < inputList.size(); i++) {
             FinalDataLine outputData = inputList.get(i);
-            pw.printf("%2d\t%9.3f", outputData.channel + 1, outputData.elapsedTime);
+            pw.printf("%2d\t%9.3f", outputData.channel + 1, outputData.elapsedTime1);
+            if (icl.doubleColumnFlg) { pw.printf("\t%9.3f", outputData.elapsedTime2); }
             if (icl.dataTimeFlg) {
                 pw.printf("\t");
-                long tim = new Double(outputData.elapsedTime * 1000).intValue();
+                long tim = new Double(outputData.elapsedTime1 * 1000).intValue();
                 pw.printf(dateFormat.format(new Date(tim + fileTime.toMillis())));
-            }
+            }//end if we're printing time for output
             if (icl.peakWidthFlg) {
-                pw.printf("\t%d", outputData.peakWidth);
-            }
+                pw.printf("\t%d", outputData.peakWidth1);
+                if (icl.doubleColumnFlg) { pw.printf("\t%d", outputData.peakWidth2); }
+            }//end if we're printing peak width
             // print out direction
             pw.printf("\t%d", outputData.direction);
             pw.printf("\n");
