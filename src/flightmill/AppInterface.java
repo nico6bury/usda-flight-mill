@@ -61,23 +61,19 @@ public class AppInterface extends javax.swing.JFrame {
         uxGetOutputBtn = new javax.swing.JButton();
         uxGetInputTxt = new javax.swing.JTextField();
         uxGetOutputTxt = new javax.swing.JTextField();
-        jLabel1 = new javax.swing.JLabel();
-        uxGetThresholdTxt = new javax.swing.JTextField();
-        uxLineSkipChk = new javax.swing.JCheckBox();
-        uxZipInputChk = new javax.swing.JCheckBox();
-        uxNoDateTimeChk = new javax.swing.JCheckBox();
-        uxAddPeakWidthChk = new javax.swing.JCheckBox();
-        uxLineSkipTxt = new javax.swing.JTextField();
         uxProcessBtn = new javax.swing.JButton();
         uxStatusText = new javax.swing.JLabel();
         uxShowFileBtn = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        uxConfigDisplayText = new javax.swing.JTextArea();
+        uxShowConfigBtn = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jTextArea1.setColumns(20);
         jTextArea1.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         jTextArea1.setRows(5);
-        jTextArea1.setText("\t\tFlight Mill Data File Compression Software v1.1.0\n   \t> compresses 8 channel datafile collected from WinDaq hardware/software\n\n\t\tSixbury/Rust/Brabec  Aug 2023\n\t\tUSDA-ARS   Manhattan, Kansas");
+        jTextArea1.setText("\t\tFlight Mill Data File Compression Software v1.0.1\n   \t> compresses 8 channel datafile collected from WinDaq hardware/software\n\n\t\tSixbury/Rust/Brabec  July 2023\n\t\tUSDA-ARS   Manhattan, Kansas");
         jScrollPane2.setViewportView(jTextArea1);
 
         uxGetInputBtn.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
@@ -102,29 +98,6 @@ public class AppInterface extends javax.swing.JFrame {
 
         uxGetOutputTxt.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
 
-        jLabel1.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel1.setText(" LED signal threshold:");
-
-        uxGetThresholdTxt.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        uxGetThresholdTxt.setText("1.5");
-
-        uxLineSkipChk.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        uxLineSkipChk.setSelected(true);
-        uxLineSkipChk.setText("Skip, a number of header lines in input file");
-
-        uxZipInputChk.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        uxZipInputChk.setText("Zip Input File and Delete Uncompressed File");
-
-        uxNoDateTimeChk.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        uxNoDateTimeChk.setText("Include Date/Time in each Line of output");
-
-        uxAddPeakWidthChk.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        uxAddPeakWidthChk.setSelected(true);
-        uxAddPeakWidthChk.setText("Add Width of each Peak as a column in output");
-
-        uxLineSkipTxt.setText("4");
-
         uxProcessBtn.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         uxProcessBtn.setText("Process Sample");
         uxProcessBtn.addActionListener(new java.awt.event.ActionListener() {
@@ -141,14 +114,23 @@ public class AppInterface extends javax.swing.JFrame {
             }
         });
 
+        uxConfigDisplayText.setEditable(false);
+        uxConfigDisplayText.setColumns(20);
+        uxConfigDisplayText.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        uxConfigDisplayText.setRows(5);
+        jScrollPane1.setViewportView(uxConfigDisplayText);
+
+        uxShowConfigBtn.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        uxShowConfigBtn.setText("Edit Config");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(uxGetOutputBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(uxGetInputBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -156,36 +138,25 @@ public class AppInterface extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(uxGetInputTxt)
                             .addComponent(uxGetOutputTxt)))
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane2)
                     .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 459, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(uxStatusText, javax.swing.GroupLayout.PREFERRED_SIZE, 459, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(uxGetThresholdTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(uxNoDateTimeChk, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(uxAddPeakWidthChk, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                .addComponent(uxZipInputChk)
-                                .addGroup(layout.createSequentialGroup()
-                                    .addComponent(uxLineSkipChk, javax.swing.GroupLayout.PREFERRED_SIZE, 315, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(uxLineSkipTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(0, 86, Short.MAX_VALUE)
+                                .addGap(26, 26, 26)
+                                .addComponent(uxProcessBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(25, 25, 25))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addGap(39, 39, 39)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                        .addComponent(uxShowFileBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(74, 74, 74))
+                                        .addComponent(uxShowConfigBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(38, 38, 38))
                                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                        .addComponent(uxProcessBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(63, 63, 63))))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(uxStatusText, javax.swing.GroupLayout.PREFERRED_SIZE, 311, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 0, Short.MAX_VALUE)))))
+                                        .addComponent(uxShowFileBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(33, 33, 33)))))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -201,30 +172,19 @@ public class AppInterface extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(uxGetOutputBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(uxGetOutputTxt))
+                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(18, 18, 18)
-                        .addComponent(uxProcessBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(uxShowFileBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(uxStatusText, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(23, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(30, 30, 30)
-                        .addComponent(uxAddPeakWidthChk, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(6, 6, 6)
-                        .addComponent(uxZipInputChk, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(uxNoDateTimeChk, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(uxLineSkipChk, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(uxLineSkipTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(uxShowConfigBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(uxGetThresholdTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                        .addComponent(uxProcessBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(uxShowFileBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(uxStatusText, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -390,21 +350,17 @@ public class AppInterface extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTextArea jTextArea1;
-    private javax.swing.JCheckBox uxAddPeakWidthChk;
+    private javax.swing.JTextArea uxConfigDisplayText;
     private javax.swing.JButton uxGetInputBtn;
     private javax.swing.JTextField uxGetInputTxt;
     private javax.swing.JButton uxGetOutputBtn;
     private javax.swing.JTextField uxGetOutputTxt;
-    private javax.swing.JTextField uxGetThresholdTxt;
-    private javax.swing.JCheckBox uxLineSkipChk;
-    private javax.swing.JTextField uxLineSkipTxt;
-    private javax.swing.JCheckBox uxNoDateTimeChk;
     private javax.swing.JButton uxProcessBtn;
+    private javax.swing.JButton uxShowConfigBtn;
     private javax.swing.JButton uxShowFileBtn;
     private javax.swing.JLabel uxStatusText;
-    private javax.swing.JCheckBox uxZipInputChk;
     // End of variables declaration//GEN-END:variables
 }
