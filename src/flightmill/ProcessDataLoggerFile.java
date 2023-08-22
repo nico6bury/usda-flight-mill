@@ -461,11 +461,11 @@ public class ProcessDataLoggerFile {
                     // Figure out if the time difference between this_idl and the next one is very small
                     IntermediateDataLine next_idl = intermedDatas.get(i+1);
                     // make sure to test for being really slow
-                    double thresh_to_use = icl.thresh_seconds_normal;
+                    double thresh_to_use = icl.thresh_seconds_fast;
                     // get max width of peak, indicator of speed
                     int max_pw = Math.max(this_idl.peakWidth, next_idl.peakWidth);
-                    if (max_pw > icl.thresh_peakWidth_normal) {thresh_to_use = icl.thresh_seconds_normal;}
-                    if (max_pw > icl.thresh_peakWidth_little_slow) {thresh_to_use = icl.thresh_seconds_little_slow;}
+                    if (max_pw > icl.thresh_peakWidth_fast) {thresh_to_use = icl.thresh_seconds_fast;}
+                    if (max_pw > icl.thresh_peakWidth_medium) {thresh_to_use = icl.thresh_seconds_medium;}
                     if (max_pw > icl.thresh_peakWidth_slow) {thresh_to_use = icl.thresh_seconds_slow;}
                     // figure out if we're probably looking at a pair of notches
                     if (Math.abs(this_idl.elapsedTime - next_idl.elapsedTime) < thresh_to_use) {
