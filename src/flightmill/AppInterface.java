@@ -355,7 +355,8 @@ public class AppInterface extends javax.swing.JFrame {
         // update config display on main window
         StringBuilder sb = new StringBuilder();
         
-        for (String line : ProcessDataLoggerFile.getInputCommandLineStrings(inputCommandLine)) { sb.append(line); }
+        sb.append("Configuration File with current parameters:");
+        for (String line : ProcessDataLoggerFile.getInputCommandLineStrings(inputCommandLine)) { sb.append("\n" + line); }
 
         // sb.append("No Date Time: " + inputCommandLine.dateTimeFlg);
         // sb.append("\tShow Peak Width: " + inputCommandLine.peakWidthFlg);
