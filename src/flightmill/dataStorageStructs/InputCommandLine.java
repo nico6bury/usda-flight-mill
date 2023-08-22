@@ -2,8 +2,8 @@ package flightmill.dataStorageStructs;
 
 // class to hold parsed input command options
 public class InputCommandLine {
-    public String inputFileName = "ns-1-26-23-meeting-test.csv";
-    public String outputFileName = "ns-1-26-23-meeting-test.csv.out";
+    public String inputFileName = "default_input.csv";
+    public String outputFileName = "default_input.out";
     public int skipLines = 3;    // header lines at top of data logger file
     public double timeInterval = 0.01;  // time between data logger readings
     public int numberOfChannelsUsed = 0;    // self explanitory
