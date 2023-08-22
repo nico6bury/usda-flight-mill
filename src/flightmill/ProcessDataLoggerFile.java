@@ -137,7 +137,7 @@ public class ProcessDataLoggerFile {
         PrintWriter pw = null;
         try {
             pw = new PrintWriter(configFile);
-            for (String line : getInputCommandLineStrings(icl)) { pw.printf(line); }
+            for (String line : getInputCommandLineStrings(icl)) { pw.printf(line + "\n"); }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
             System.out.println("Couldn't find config file.");
