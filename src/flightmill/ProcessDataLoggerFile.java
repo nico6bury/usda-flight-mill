@@ -137,16 +137,29 @@ public class ProcessDataLoggerFile {
         PrintWriter pw = null;
         try {
             pw = new PrintWriter(configFile);
-            for (Field field : InputCommandLine.class.getFields()) {
-                pw.printf("%s:%s\n", field.getName(), field.get(icl).toString());
-            }
+            for (String line : getInputCommandLineStrings(icl)) { pw.printf(line); }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
             System.out.println("Couldn't find config file.");
-        } catch (IllegalAccessException e) { e.printStackTrace(); }
-        finally { if (pw != null) { pw.close(); } }
+        } finally { if (pw != null) { pw.close(); } }
     }//end saveInputCommandLine(icl)
     
+    /*
+     * Gets a list of lines formatted in the way we format the config file.
+     */
+    public static List<String> getInputCommandLineStrings(InputCommandLine icl) {
+        List<String> lines = new ArrayList<String>();
+
+        for (Field field : InputCommandLine.class.getFields()) {
+            try {
+                lines.add(field.getName() + ":" + field.get(icl));
+            } catch (IllegalArgumentException e) { e.printStackTrace();
+            } catch (IllegalAccessException e) { e.printStackTrace(); }
+        }//end making line for each file
+
+        return lines;
+    }//end getInputCommandLineStrings(icl)
+
     /*
     * Reads and deserializes input command lines values from a file.
     */
