@@ -10,6 +10,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.lang.reflect.Field;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.FileTime;
@@ -102,6 +104,93 @@ public class ProcessDataLoggerFile {
                     null, ex);
         }
     }//end main method
+
+    /*
+     * Gets the path of a config file next to the jar.
+     * Also makes sure the file exists, creating it if it doesn't exist.
+     */
+    public static File getConfigPath() {
+        try {
+            String executableDir = new File(ProcessDataLoggerFile.class.getProtectionDomain().getCodeSource().getLocation()
+            .toURI()).getParent();
+
+            String configPath = executableDir + "\\" + "flight_mill.config";
+
+            File configFile = new File(configPath);
+            if (!configFile.exists()) {configFile.createNewFile();}
+
+            return configFile;
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+            System.out.println("It seems there was a problem getting the path of the executable.");
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("It seems there was a problem creating the config file.");
+        } return null;
+    }
+
+    /*
+     * Serializes and writes input command line values to a file.
+     */
+    public static void saveInputCommandLine(InputCommandLine icl) {
+        File configFile = getConfigPath();
+        PrintWriter pw = null;
+        try {
+            pw = new PrintWriter(configFile);
+            for (Field field : InputCommandLine.class.getFields()) {
+                pw.printf("%s:%s\n", field.getName(), field.get(icl).toString());
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            System.out.println("Couldn't find config file.");
+        } catch (IllegalAccessException e) { e.printStackTrace(); }
+        finally { if (pw != null) { pw.close(); } }
+    }//end saveInputCommandLine(icl)
+    
+    /*
+    * Reads and deserializes input command lines values from a file.
+    */
+    public static InputCommandLine loadInputCommandLine() {
+        InputCommandLine icl = new InputCommandLine();
+
+        File configFile = getConfigPath();
+        try {
+            for (String line : Files.readAllLines(configFile.toPath())) {
+                // separate string information from line
+                int split_index = line.indexOf(":");
+                String field_name = line.substring(0, split_index);
+                String field_value = line.substring(split_index + 1, line.length());
+                // determine which field we're looking at
+                Field this_field = InputCommandLine.class.getField(field_name);
+                switch (this_field.getType().getName()) {
+                    case "java.lang.String":
+                        this_field.set(icl, field_value);
+                        break;
+                    case "int":
+                        this_field.setInt(icl, Integer.parseInt(field_value));
+                        break;
+                    case "double":
+                        this_field.setDouble(icl, Double.parseDouble(field_value));
+                        break;
+                    case "boolean":
+                        this_field.set(icl, Boolean.parseBoolean(field_value));
+                        break;
+                    default:
+                        System.out.println("Unsupported type for inputCommandLine: " + this_field.getType().getName());
+                        break;
+                }//end switch case
+            }//end looping through lines in file
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("Problem loading config file.");
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+            System.out.println("Couldn't find one of the fields specified in the config file.");
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+            System.out.println("Couldn't access one of the fields in inputCommandLine.");
+        } return icl;
+    }//end loadInputCommandLine()
 
     // parses options from a GUI
     public static InputCommandLine processGUI() {

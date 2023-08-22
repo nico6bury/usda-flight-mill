@@ -46,14 +46,15 @@ public class AppInterface extends javax.swing.JFrame {
         // update version and date and stuff
         jTextArea1.setText("\t\tFlight Mill Data File Compression Software " + ProcessDataLoggerFile.VERSION + "\n   \t> compresses 8 channel datafile collected from WinDaq hardware/software\n\n\t\t" + ProcessDataLoggerFile.PEOPLE + "  " + ProcessDataLoggerFile.DATE() + "\n\t\t" + ProcessDataLoggerFile.LOCATION);
 
+        // load config stuff from file
+        inputCommandLine = ProcessDataLoggerFile.loadInputCommandLine();
         // update config display with our default
-        inputCommandLine = new InputCommandLine();
-        inputCommandLine.dataTimeFlg = false;
-        inputCommandLine.doubleColumnFlg = true;
-        inputCommandLine.peakWidthFlg = true;
-        inputCommandLine.skipLines = 4;
-        inputCommandLine.threshold = 1.5;
-        inputCommandLine.zipFileFlg = false;
+        // inputCommandLine.dataTimeFlg = false;
+        // inputCommandLine.doubleColumnFlg = true;
+        // inputCommandLine.peakWidthFlg = true;
+        // inputCommandLine.skipLines = 4;
+        // inputCommandLine.threshold = 1.5;
+        // inputCommandLine.zipFileFlg = false;
         updateConfigDisplay();
         // set up config dialog
         configDialog = new ConfigDialog(this, true);
@@ -361,6 +362,9 @@ public class AppInterface extends javax.swing.JFrame {
         sb.append("\t\tThreshold for Peak: " + inputCommandLine.threshold);
 
         uxConfigDisplayText.setText(sb.toString());
+
+        // write changes to config file as well
+        ProcessDataLoggerFile.saveInputCommandLine(inputCommandLine);
     }//end updateConfigDisplay()
 
     /**
