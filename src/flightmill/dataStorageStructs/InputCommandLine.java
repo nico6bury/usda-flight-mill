@@ -10,5 +10,6 @@ public class InputCommandLine {
     public boolean zipFileFlg = false;              // zip input file
     public boolean dataTimeFlg = true;  // add date time to each output line
     public boolean peakWidthFlg = false; // add date time to each output line
+    public boolean doubleColumnFlg = false; // add second peakwidth and elapsedTime
     public double threshold = 1.5;
 }//end class InputCommandLine
