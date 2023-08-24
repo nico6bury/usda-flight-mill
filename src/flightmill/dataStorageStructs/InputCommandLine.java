@@ -5,7 +5,6 @@ public class InputCommandLine {
     public String inputFileName = "default_input.csv";
     public String outputFileName = "default_input.out";
     public int skipLines = 4;    // header lines at top of data logger file
-    public double timeInterval = 0.01;  // time between data logger readings
     public int numberOfChannelsUsed = 0;    // self explanitory
     public boolean zipFileFlg = false;              // zip input file
     public boolean dateTimeFlg = false;  // add date time to each output line
