@@ -52,10 +52,10 @@ public class FinalDataLine {
     public FinalDataLine(IntermediateDataLine idl) {
         this.channel = idl.channel;
         this.elapsedTime1 = idl.elapsedTime;
-        this.elapsedTime2 = idl.elapsedTime;
+        this.elapsedTime2 = -1;
         this.value = idl.value;
         this.peakWidth1 = idl.peakWidth;
-        this.peakWidth2 = 0;
+        this.peakWidth2 = -1;
         this.direction = 0;
     }//end no direction constructor
 
