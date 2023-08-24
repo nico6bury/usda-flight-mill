@@ -360,7 +360,7 @@ public class ProcessDataLoggerFile {
         File parentDirectory = outputFile.getParentFile();
         LocalDateTime currentDateTime = LocalDateTime.now();
         DateTimeFormatter dir_formatter = DateTimeFormatter.ofPattern("yyyy-MM-");
-        DateTimeFormatter file_formatter = DateTimeFormatter.ofPattern(";d-h-m-s");
+        DateTimeFormatter file_formatter = DateTimeFormatter.ofPattern(";d-H-m-s");
         File newDirectory = new File(parentDirectory.getAbsolutePath() + File.separator + currentDateTime.format(dir_formatter) + OUTPUT_FOLDER_NAME);
         // create the directory if it doesn't exist
         if (ensureDirectoryExists && !newDirectory.exists()) {
