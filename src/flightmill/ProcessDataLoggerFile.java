@@ -77,7 +77,7 @@ public class ProcessDataLoggerFile {
                 inputCommandLine = processCommandLine(args);
             }//end else we're using the old command line method
             
-            if (inputCommandLine.zipFileFlg) {
+            if (inputCommandLine.zip_input_file) {
                 zipFile(inputCommandLine.inputFileName);
             }
             if (inputCommandLine.inputFileName.endsWith(".zip")) {
@@ -303,15 +303,15 @@ public class ProcessDataLoggerFile {
         }
 
         if (cmd.hasOption("z")) {
-            inputCommandLine.zipFileFlg = true;
+            inputCommandLine.zip_input_file = true;
         }
 
         if (cmd.hasOption("ndt")) {
-            inputCommandLine.dateTimeFlg = false;
+            inputCommandLine.add_date_time_column = false;
         }
 
         if (cmd.hasOption("pw")) {
-            inputCommandLine.peakWidthFlg = true;
+            inputCommandLine.add_peak_width_column = true;
         }
 //</editor-fold>
 
@@ -439,22 +439,22 @@ public class ProcessDataLoggerFile {
         
         // print headers for the columns we're about to print
         pw.printf("Chan#");
-        if (icl.doubleColumnFlg) { pw.printf("\tPkTime1\t        PkTime2"); }
+        if (icl.add_second_peak_columns) { pw.printf("\tPkTime1\t        PkTime2"); }
         else { pw.printf("\tPkTime"); }
-        if (icl.dateTimeFlg) {
+        if (icl.add_date_time_column) {
             pw.printf("\tDtTim");
         }//end if we should print the data time data
-        if (icl.peakWidthFlg) {
-            if (icl.doubleColumnFlg) { pw.printf("\t    PkWdth1\tPkWdth2"); }
+        if (icl.add_peak_width_column) {
+            if (icl.add_second_peak_columns) { pw.printf("\t    PkWdth1\tPkWdth2"); }
             else { pw.printf("\tPkWidth"); }
         }//end if we should print the width of the peak
         // print out direction
         pw.printf("\tDirec");
         // print out revolution
-        if (icl.revolutionChk) {
+        if (icl.add_revolution_column) {
             pw.printf("\t  Rev");
         }//end if we should print out diff between start peak times
-        if (icl.widthRatioFlg) {
+        if (icl.add_width_ratio_column) {
             pw.printf("\tWRtio");
         }//end if we should print out width ratio
         
@@ -463,23 +463,23 @@ public class ProcessDataLoggerFile {
         for (int i = 0; i < inputList.size(); i++) {
             FinalDataLine outputData = inputList.get(i);
             pw.printf("%2d\t%9.3f", outputData.channel + 1, outputData.elapsedTime1);
-            if (icl.doubleColumnFlg) { pw.printf("\t%9.3f", outputData.elapsedTime2); }
-            if (icl.dateTimeFlg) {
+            if (icl.add_second_peak_columns) { pw.printf("\t%9.3f", outputData.elapsedTime2); }
+            if (icl.add_date_time_column) {
                 pw.printf("\t");
                 long tim = new Double(outputData.elapsedTime1 * 1000).intValue();
                 pw.printf(dateFormat.format(new Date(tim + fileTime.toMillis())));
             }//end if we're printing time for output
-            if (icl.peakWidthFlg) {
+            if (icl.add_peak_width_column) {
                 pw.printf("\t%d", outputData.peakWidth1);
-                if (icl.doubleColumnFlg) { pw.printf("\t%d", outputData.peakWidth2); }
+                if (icl.add_second_peak_columns) { pw.printf("\t%d", outputData.peakWidth2); }
             }//end if we're printing peak width
             // print out direction
             pw.printf("\t%d", outputData.direction);
-            if (icl.revolutionChk) {
+            if (icl.add_revolution_column) {
                 if (i == 0 || inputList.get(i-1).channel != outputData.channel) { pw.printf("\t%6.3f", outputData.elapsedTime1); }
                 else { pw.printf("\t%6.3f", outputData.elapsedTime1 - inputList.get(i-1).elapsedTime1); }
             }//end if we should print revolution time (diff between peak times)
-            if (icl.widthRatioFlg) {
+            if (icl.add_width_ratio_column) {
                 if (outputData.direction != 0) {
                     double minPeakWidth = Math.min(outputData.peakWidth1, outputData.peakWidth2);
                     double maxPeakWidth = Math.max(outputData.peakWidth1, outputData.peakWidth2);

@@ -280,7 +280,7 @@ public class AppInterface extends javax.swing.JFrame {
         // just do all the processing, whatever
         try{
             
-            if (inputCommandLine.zipFileFlg) {
+            if (inputCommandLine.zip_input_file) {
                 // update status text
                 uxStatusText.setText("Zipping Input File");
                 uxStatusText.paintImmediately(uxStatusText.getVisibleRect());

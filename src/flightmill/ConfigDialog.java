@@ -162,17 +162,17 @@ public class ConfigDialog extends javax.swing.JDialog {
 
     private void uxConfirmConfigBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uxConfirmConfigBtnActionPerformed
         // Update parent icl based on controls
-        parent_icl.dateTimeFlg = uxNoDateTimeChk.isSelected();
-        parent_icl.peakWidthFlg = uxAddPeakWidthChk.isSelected();
+        parent_icl.add_date_time_column = uxNoDateTimeChk.isSelected();
+        parent_icl.add_peak_width_column = uxAddPeakWidthChk.isSelected();
         if (uxLineSkipChk.isSelected()) {
             parent_icl.skipLines = Integer.parseInt(uxLineSkipTxt.getText());
         }//end if we're doing line skip
         else parent_icl.skipLines = 0;
-        parent_icl.zipFileFlg = uxZipInputChk.isSelected();
+        parent_icl.zip_input_file = uxZipInputChk.isSelected();
         parent_icl.threshold = Double.parseDouble(uxGetThresholdTxt.getText());
-        parent_icl.doubleColumnFlg = uxDoubleColumnChk.isSelected();
-        parent_icl.revolutionChk = uxRevolutionChk.isSelected();
-        parent_icl.widthRatioFlg = uxWidthRatioChk.isSelected();
+        parent_icl.add_second_peak_columns = uxDoubleColumnChk.isSelected();
+        parent_icl.add_revolution_column = uxRevolutionChk.isSelected();
+        parent_icl.add_width_ratio_column = uxWidthRatioChk.isSelected();
         // close this dialog window
         this.setVisible(false);
     }//GEN-LAST:event_uxConfirmConfigBtnActionPerformed
@@ -185,15 +185,15 @@ public class ConfigDialog extends javax.swing.JDialog {
      * Updates the controls in this window based on the configuration in the inputCommandLine.
      */
     public void updateConfig(InputCommandLine icl) {
-        this.uxAddPeakWidthChk.setSelected(icl.peakWidthFlg);
+        this.uxAddPeakWidthChk.setSelected(icl.add_peak_width_column);
         this.uxGetThresholdTxt.setText(icl.threshold + "");
         this.uxLineSkipChk.setSelected(icl.skipLines > 0);
         this.uxLineSkipTxt.setText("" + icl.skipLines);
-        this.uxNoDateTimeChk.setSelected(icl.dateTimeFlg);
-        this.uxZipInputChk.setSelected(icl.zipFileFlg);
-        this.uxDoubleColumnChk.setSelected(icl.doubleColumnFlg);
-        this.uxRevolutionChk.setSelected(icl.revolutionChk);
-        this.uxWidthRatioChk.setSelected(icl.widthRatioFlg);
+        this.uxNoDateTimeChk.setSelected(icl.add_date_time_column);
+        this.uxZipInputChk.setSelected(icl.zip_input_file);
+        this.uxDoubleColumnChk.setSelected(icl.add_second_peak_columns);
+        this.uxRevolutionChk.setSelected(icl.add_revolution_column);
+        this.uxWidthRatioChk.setSelected(icl.add_width_ratio_column);
     }//end updateConfig(icl)
 
     /**
