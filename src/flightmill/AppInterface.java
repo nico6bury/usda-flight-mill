@@ -45,20 +45,15 @@ public class AppInterface extends javax.swing.JFrame {
 
         // update version and date and stuff
         jTextArea1.setText("\t\tFlight Mill Data File Compression Software " + ProcessDataLoggerFile.VERSION + "\n   \t> compresses 8 channel datafile collected from WinDaq hardware/software\n\n\t\t" + ProcessDataLoggerFile.PEOPLE + "  " + ProcessDataLoggerFile.DATE() + "\n\t\t" + ProcessDataLoggerFile.LOCATION);
-
+        this.setTitle("USDA-ARS FMDFCS " + ProcessDataLoggerFile.VERSION);
         // load config stuff from file
         inputCommandLine = ProcessDataLoggerFile.loadInputCommandLine();
-        // update config display with our default
-        // inputCommandLine.dataTimeFlg = false;
-        // inputCommandLine.doubleColumnFlg = true;
-        // inputCommandLine.peakWidthFlg = true;
-        // inputCommandLine.skipLines = 4;
-        // inputCommandLine.threshold = 1.5;
-        // inputCommandLine.zipFileFlg = false;
         updateConfigDisplay();
         // set up config dialog
         configDialog = new ConfigDialog(this, true);
         configDialog.parent_icl = inputCommandLine;
+        // initialize uxStatusText
+        uxStatusText.setText("Please select a file to process.");
     }//end constructor
 
     /**
@@ -85,6 +80,7 @@ public class AppInterface extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
+        jTextArea1.setEditable(false);
         jTextArea1.setColumns(20);
         jTextArea1.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         jTextArea1.setRows(5);
@@ -229,9 +225,15 @@ public class AppInterface extends javax.swing.JFrame {
         @Override
         public void actionPerformed(ActionEvent e) {
             System.out.println(e.getActionCommand());
-            lastInputFile = fileChooser.getSelectedFile();
-            uxGetInputTxt.setText(lastInputFile.getAbsolutePath());
-            uxGetOutputTxt.setText(ProcessDataLoggerFile.reformatOutputFile(lastInputFile.getAbsolutePath(), false));
+            if (e.getActionCommand() == "ApproveSelection") {
+                lastInputFile = fileChooser.getSelectedFile();
+                uxGetInputTxt.setText(lastInputFile.getAbsolutePath());
+                uxGetOutputTxt.setText(ProcessDataLoggerFile.reformatOutputFile(lastInputFile.getAbsolutePath(), false));
+                uxStatusText.setText("Click \"Process Sample\" button to get results.");
+            }//end if selection was approved
+            else if (e.getActionCommand() == "CancelSelection") {
+                uxStatusText.setText("Please select a file and click confirm on the file dialog.");
+            }//end else if user cancelled
         }//end actionPerformed
     };
 
