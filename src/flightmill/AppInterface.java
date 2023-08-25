@@ -45,7 +45,7 @@ public class AppInterface extends javax.swing.JFrame {
 
         // update version and date and stuff
         jTextArea1.setText("\t\tFlight Mill Data File Compression Software " + ProcessDataLoggerFile.VERSION + "\n   \t> compresses 8 channel datafile collected from WinDaq hardware/software\n\n\t\t" + ProcessDataLoggerFile.PEOPLE + "  " + ProcessDataLoggerFile.DATE() + "\n\t\t" + ProcessDataLoggerFile.LOCATION);
-
+        this.setTitle("USDA-ARS FMDFCS " + ProcessDataLoggerFile.VERSION);
         // load config stuff from file
         inputCommandLine = ProcessDataLoggerFile.loadInputCommandLine();
         // update config display with our default
