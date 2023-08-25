@@ -48,13 +48,6 @@ public class AppInterface extends javax.swing.JFrame {
         this.setTitle("USDA-ARS FMDFCS " + ProcessDataLoggerFile.VERSION);
         // load config stuff from file
         inputCommandLine = ProcessDataLoggerFile.loadInputCommandLine();
-        // update config display with our default
-        // inputCommandLine.dataTimeFlg = false;
-        // inputCommandLine.doubleColumnFlg = true;
-        // inputCommandLine.peakWidthFlg = true;
-        // inputCommandLine.skipLines = 4;
-        // inputCommandLine.threshold = 1.5;
-        // inputCommandLine.zipFileFlg = false;
         updateConfigDisplay();
         // set up config dialog
         configDialog = new ConfigDialog(this, true);
