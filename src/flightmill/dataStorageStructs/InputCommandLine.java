@@ -10,6 +10,8 @@ public class InputCommandLine {
     public boolean dateTimeFlg = false;  // add date time to each output line
     public boolean peakWidthFlg = true; // add date time to each output line
     public boolean doubleColumnFlg = true; // add second peakwidth and elapsedTime
+    public boolean widthRatioFlg = false;
+    public boolean revolutionChk = true;
     public double threshold = 1.5;
     public double thresh_seconds_fast = 0.300;
     public double thresh_seconds_medium = 0.500;
