@@ -60,7 +60,7 @@ public class ProcessDataLoggerFile {
     }//end DATE()
     public static String PEOPLE = "Sixbury/Rust/Brabec";
     public static String PROGRAM_NAME = "Flight Mill Compression";
-    public static String VERSION = "v1.4.3";
+    public static String VERSION = "v1.5.0";
 
     private static AppInterface gui;
 
@@ -77,7 +77,7 @@ public class ProcessDataLoggerFile {
                 inputCommandLine = processCommandLine(args);
             }//end else we're using the old command line method
             
-            if (inputCommandLine.zipFileFlg) {
+            if (inputCommandLine.zip_input_file) {
                 zipFile(inputCommandLine.inputFileName);
             }
             if (inputCommandLine.inputFileName.endsWith(".zip")) {
@@ -303,15 +303,15 @@ public class ProcessDataLoggerFile {
         }
 
         if (cmd.hasOption("z")) {
-            inputCommandLine.zipFileFlg = true;
+            inputCommandLine.zip_input_file = true;
         }
 
         if (cmd.hasOption("ndt")) {
-            inputCommandLine.dateTimeFlg = false;
+            inputCommandLine.add_date_time_column = false;
         }
 
         if (cmd.hasOption("pw")) {
-            inputCommandLine.peakWidthFlg = true;
+            inputCommandLine.add_peak_width_column = true;
         }
 //</editor-fold>
 
@@ -360,7 +360,7 @@ public class ProcessDataLoggerFile {
         File parentDirectory = outputFile.getParentFile();
         LocalDateTime currentDateTime = LocalDateTime.now();
         DateTimeFormatter dir_formatter = DateTimeFormatter.ofPattern("yyyy-MM-");
-        DateTimeFormatter file_formatter = DateTimeFormatter.ofPattern(";d-h-m-s");
+        DateTimeFormatter file_formatter = DateTimeFormatter.ofPattern(";d-H-m-s");
         File newDirectory = new File(parentDirectory.getAbsolutePath() + File.separator + currentDateTime.format(dir_formatter) + OUTPUT_FOLDER_NAME);
         // create the directory if it doesn't exist
         if (ensureDirectoryExists && !newDirectory.exists()) {
@@ -439,35 +439,55 @@ public class ProcessDataLoggerFile {
         
         // print headers for the columns we're about to print
         pw.printf("Chan#");
-        if (icl.doubleColumnFlg) { pw.printf("\tPkTime1\t\tPkTime2"); }
+        if (icl.add_second_peak_columns) { pw.printf("\tPkTime1\t        PkTime2"); }
         else { pw.printf("\tPkTime"); }
-        if (icl.dateTimeFlg) {
+        if (icl.add_date_time_column) {
             pw.printf("\tDtTim");
         }//end if we should print the data time data
-        if (icl.peakWidthFlg) {
-            if (icl.doubleColumnFlg) { pw.printf("\t\tPkWdth1\tPkWdth2"); }
+        if (icl.add_peak_width_column) {
+            if (icl.add_second_peak_columns) { pw.printf("\t    PkWdth1\tPkWdth2"); }
             else { pw.printf("\tPkWidth"); }
         }//end if we should print the width of the peak
         // print out direction
         pw.printf("\tDirec");
-        pw.printf("\n");
+        // print out revolution
+        if (icl.add_revolution_column) {
+            pw.printf("\t  Rev");
+        }//end if we should print out diff between start peak times
+        if (icl.add_width_ratio_column) {
+            pw.printf("\tWRtio");
+        }//end if we should print out width ratio
         
+        pw.printf("\n");
         // print out data ordered by channel and in elapsed time order
         for (int i = 0; i < inputList.size(); i++) {
             FinalDataLine outputData = inputList.get(i);
             pw.printf("%2d\t%9.3f", outputData.channel + 1, outputData.elapsedTime1);
-            if (icl.doubleColumnFlg) { pw.printf("\t%9.3f", outputData.elapsedTime2); }
-            if (icl.dateTimeFlg) {
+            if (icl.add_second_peak_columns) { pw.printf("\t%9.3f", outputData.elapsedTime2); }
+            if (icl.add_date_time_column) {
                 pw.printf("\t");
                 long tim = new Double(outputData.elapsedTime1 * 1000).intValue();
                 pw.printf(dateFormat.format(new Date(tim + fileTime.toMillis())));
             }//end if we're printing time for output
-            if (icl.peakWidthFlg) {
+            if (icl.add_peak_width_column) {
                 pw.printf("\t%d", outputData.peakWidth1);
-                if (icl.doubleColumnFlg) { pw.printf("\t%d", outputData.peakWidth2); }
+                if (icl.add_second_peak_columns) { pw.printf("\t%d", outputData.peakWidth2); }
             }//end if we're printing peak width
             // print out direction
             pw.printf("\t%d", outputData.direction);
+            if (icl.add_revolution_column) {
+                if (i == 0 || inputList.get(i-1).channel != outputData.channel) { pw.printf("\t%6.3f", outputData.elapsedTime1); }
+                else { pw.printf("\t%6.3f", outputData.elapsedTime1 - inputList.get(i-1).elapsedTime1); }
+            }//end if we should print revolution time (diff between peak times)
+            if (icl.add_width_ratio_column) {
+                if (outputData.direction != 0) {
+                    double minPeakWidth = Math.min(outputData.peakWidth1, outputData.peakWidth2);
+                    double maxPeakWidth = Math.max(outputData.peakWidth1, outputData.peakWidth2);
+                    double ratio = minPeakWidth / maxPeakWidth;
+                    pw.printf("\t%4.3f", ratio);
+                }//end if we have valid direction here probably
+                else { pw.printf("\t   "); }
+            }//end if we should print width ratio
             pw.printf("\n");
         }//end looping over all the stuff to print out
         

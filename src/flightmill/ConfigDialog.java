@@ -39,6 +39,9 @@ public class ConfigDialog extends javax.swing.JDialog {
         uxLineSkipTxt = new javax.swing.JTextField();
         uxConfirmConfigBtn = new javax.swing.JButton();
         uxCancelConfigBtn = new javax.swing.JButton();
+        uxRevolutionChk = new javax.swing.JCheckBox();
+        uxDoubleColumnChk = new javax.swing.JCheckBox();
+        uxWidthRatioChk = new javax.swing.JCheckBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Edit Configuration Options");
@@ -80,29 +83,49 @@ public class ConfigDialog extends javax.swing.JDialog {
             }
         });
 
+        uxRevolutionChk.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        uxRevolutionChk.setSelected(true);
+        uxRevolutionChk.setText("Add Peak Time difference (revolution) column");
+
+        uxDoubleColumnChk.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        uxDoubleColumnChk.setSelected(true);
+        uxDoubleColumnChk.setText("Add Second Peak Width and Peak Time columns");
+
+        uxWidthRatioChk.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        uxWidthRatioChk.setText("Add Peak Width ratio column");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(14, 14, 14)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(uxLineSkipChk, javax.swing.GroupLayout.PREFERRED_SIZE, 315, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(uxLineSkipTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(uxNoDateTimeChk, javax.swing.GroupLayout.PREFERRED_SIZE, 315, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(uxZipInputChk)
-                    .addComponent(uxAddPeakWidthChk)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(uxGetThresholdTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(uxCancelConfigBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(uxConfirmConfigBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 174, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(19, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(uxCancelConfigBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(uxConfirmConfigBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 174, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                        .addGap(14, 14, 14)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(uxLineSkipChk, javax.swing.GroupLayout.PREFERRED_SIZE, 315, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(uxLineSkipTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(uxGetThresholdTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addComponent(uxZipInputChk, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(uxAddPeakWidthChk, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 329, Short.MAX_VALUE)
+                                .addComponent(uxNoDateTimeChk, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addComponent(uxRevolutionChk, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(uxDoubleColumnChk, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 331, Short.MAX_VALUE)
+                                .addComponent(uxWidthRatioChk, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -121,11 +144,17 @@ public class ConfigDialog extends javax.swing.JDialog {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(uxGetThresholdTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(uxDoubleColumnChk, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(uxRevolutionChk, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(uxWidthRatioChk, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(uxCancelConfigBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(uxConfirmConfigBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         pack();
@@ -133,14 +162,17 @@ public class ConfigDialog extends javax.swing.JDialog {
 
     private void uxConfirmConfigBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uxConfirmConfigBtnActionPerformed
         // Update parent icl based on controls
-        parent_icl.dateTimeFlg = uxNoDateTimeChk.isSelected();
-        parent_icl.peakWidthFlg = uxAddPeakWidthChk.isSelected();
+        parent_icl.add_date_time_column = uxNoDateTimeChk.isSelected();
+        parent_icl.add_peak_width_column = uxAddPeakWidthChk.isSelected();
         if (uxLineSkipChk.isSelected()) {
             parent_icl.skipLines = Integer.parseInt(uxLineSkipTxt.getText());
-        }
+        }//end if we're doing line skip
         else parent_icl.skipLines = 0;
-        parent_icl.zipFileFlg = uxZipInputChk.isSelected();
+        parent_icl.zip_input_file = uxZipInputChk.isSelected();
         parent_icl.threshold = Double.parseDouble(uxGetThresholdTxt.getText());
+        parent_icl.add_second_peak_columns = uxDoubleColumnChk.isSelected();
+        parent_icl.add_revolution_column = uxRevolutionChk.isSelected();
+        parent_icl.add_width_ratio_column = uxWidthRatioChk.isSelected();
         // close this dialog window
         this.setVisible(false);
     }//GEN-LAST:event_uxConfirmConfigBtnActionPerformed
@@ -153,12 +185,15 @@ public class ConfigDialog extends javax.swing.JDialog {
      * Updates the controls in this window based on the configuration in the inputCommandLine.
      */
     public void updateConfig(InputCommandLine icl) {
-        this.uxAddPeakWidthChk.setSelected(icl.peakWidthFlg);
+        this.uxAddPeakWidthChk.setSelected(icl.add_peak_width_column);
         this.uxGetThresholdTxt.setText(icl.threshold + "");
         this.uxLineSkipChk.setSelected(icl.skipLines > 0);
         this.uxLineSkipTxt.setText("" + icl.skipLines);
-        this.uxNoDateTimeChk.setSelected(icl.dateTimeFlg);
-        this.uxZipInputChk.setSelected(icl.zipFileFlg);
+        this.uxNoDateTimeChk.setSelected(icl.add_date_time_column);
+        this.uxZipInputChk.setSelected(icl.zip_input_file);
+        this.uxDoubleColumnChk.setSelected(icl.add_second_peak_columns);
+        this.uxRevolutionChk.setSelected(icl.add_revolution_column);
+        this.uxWidthRatioChk.setSelected(icl.add_width_ratio_column);
     }//end updateConfig(icl)
 
     /**
@@ -208,10 +243,13 @@ public class ConfigDialog extends javax.swing.JDialog {
     private javax.swing.JCheckBox uxAddPeakWidthChk;
     private javax.swing.JButton uxCancelConfigBtn;
     private javax.swing.JButton uxConfirmConfigBtn;
+    private javax.swing.JCheckBox uxDoubleColumnChk;
     private javax.swing.JTextField uxGetThresholdTxt;
     private javax.swing.JCheckBox uxLineSkipChk;
     private javax.swing.JTextField uxLineSkipTxt;
     private javax.swing.JCheckBox uxNoDateTimeChk;
+    private javax.swing.JCheckBox uxRevolutionChk;
+    private javax.swing.JCheckBox uxWidthRatioChk;
     private javax.swing.JCheckBox uxZipInputChk;
     // End of variables declaration//GEN-END:variables
 }
