@@ -52,6 +52,8 @@ public class AppInterface extends javax.swing.JFrame {
         // set up config dialog
         configDialog = new ConfigDialog(this, true);
         configDialog.parent_icl = inputCommandLine;
+        // initialize uxStatusText
+        uxStatusText.setText("Please select a file to process.");
     }//end constructor
 
     /**
@@ -223,9 +225,15 @@ public class AppInterface extends javax.swing.JFrame {
         @Override
         public void actionPerformed(ActionEvent e) {
             System.out.println(e.getActionCommand());
-            lastInputFile = fileChooser.getSelectedFile();
-            uxGetInputTxt.setText(lastInputFile.getAbsolutePath());
-            uxGetOutputTxt.setText(ProcessDataLoggerFile.reformatOutputFile(lastInputFile.getAbsolutePath(), false));
+            if (e.getActionCommand() == "ApproveSelection") {
+                lastInputFile = fileChooser.getSelectedFile();
+                uxGetInputTxt.setText(lastInputFile.getAbsolutePath());
+                uxGetOutputTxt.setText(ProcessDataLoggerFile.reformatOutputFile(lastInputFile.getAbsolutePath(), false));
+                uxStatusText.setText("Click \"Process Sample\" button to get results.");
+            }//end if selection was approved
+            else if (e.getActionCommand() == "CancelSelection") {
+                uxStatusText.setText("Please select a file and click confirm on the file dialog.");
+            }//end else if user cancelled
         }//end actionPerformed
     };
 
