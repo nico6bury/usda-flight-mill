@@ -439,19 +439,26 @@ public class ProcessDataLoggerFile {
         
         // print headers for the columns we're about to print
         pw.printf("Chan#");
-        if (icl.doubleColumnFlg) { pw.printf("\tPkTime1\t\tPkTime2"); }
+        if (icl.doubleColumnFlg) { pw.printf("\tPkTime1\t        PkTime2"); }
         else { pw.printf("\tPkTime"); }
         if (icl.dateTimeFlg) {
             pw.printf("\tDtTim");
         }//end if we should print the data time data
         if (icl.peakWidthFlg) {
-            if (icl.doubleColumnFlg) { pw.printf("\t\tPkWdth1\tPkWdth2"); }
+            if (icl.doubleColumnFlg) { pw.printf("\t    PkWdth1\tPkWdth2"); }
             else { pw.printf("\tPkWidth"); }
         }//end if we should print the width of the peak
         // print out direction
         pw.printf("\tDirec");
-        pw.printf("\n");
+        // print out revolution
+        if (icl.revolutionChk) {
+            pw.printf("\t  Rev");
+        }//end if we should print out diff between start peak times
+        if (icl.widthRatioFlg) {
+            pw.printf("\tWRtio");
+        }//end if we should print out width ratio
         
+        pw.printf("\n");
         // print out data ordered by channel and in elapsed time order
         for (int i = 0; i < inputList.size(); i++) {
             FinalDataLine outputData = inputList.get(i);
@@ -468,6 +475,19 @@ public class ProcessDataLoggerFile {
             }//end if we're printing peak width
             // print out direction
             pw.printf("\t%d", outputData.direction);
+            if (icl.revolutionChk) {
+                if (i == 0 || inputList.get(i-1).channel != outputData.channel) { pw.printf("\t%6.3f", outputData.elapsedTime1); }
+                else { pw.printf("\t%6.3f", outputData.elapsedTime1 - inputList.get(i-1).elapsedTime1); }
+            }//end if we should print revolution time (diff between peak times)
+            if (icl.widthRatioFlg) {
+                if (outputData.direction != 0) {
+                    double minPeakWidth = Math.min(outputData.peakWidth1, outputData.peakWidth2);
+                    double maxPeakWidth = Math.max(outputData.peakWidth1, outputData.peakWidth2);
+                    double ratio = minPeakWidth / maxPeakWidth;
+                    pw.printf("\t%4.3f", ratio);
+                }//end if we have valid direction here probably
+                else { pw.printf("\t   "); }
+            }//end if we should print width ratio
             pw.printf("\n");
         }//end looping over all the stuff to print out
         
