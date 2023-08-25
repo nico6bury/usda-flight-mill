@@ -166,10 +166,13 @@ public class ConfigDialog extends javax.swing.JDialog {
         parent_icl.peakWidthFlg = uxAddPeakWidthChk.isSelected();
         if (uxLineSkipChk.isSelected()) {
             parent_icl.skipLines = Integer.parseInt(uxLineSkipTxt.getText());
-        }
+        }//end if we're doing line skip
         else parent_icl.skipLines = 0;
         parent_icl.zipFileFlg = uxZipInputChk.isSelected();
         parent_icl.threshold = Double.parseDouble(uxGetThresholdTxt.getText());
+        parent_icl.doubleColumnFlg = uxDoubleColumnChk.isSelected();
+        parent_icl.revolutionChk = uxRevolutionChk.isSelected();
+        parent_icl.widthRatioFlg = uxWidthRatioChk.isSelected();
         // close this dialog window
         this.setVisible(false);
     }//GEN-LAST:event_uxConfirmConfigBtnActionPerformed
@@ -188,6 +191,9 @@ public class ConfigDialog extends javax.swing.JDialog {
         this.uxLineSkipTxt.setText("" + icl.skipLines);
         this.uxNoDateTimeChk.setSelected(icl.dateTimeFlg);
         this.uxZipInputChk.setSelected(icl.zipFileFlg);
+        this.uxDoubleColumnChk.setSelected(icl.doubleColumnFlg);
+        this.uxRevolutionChk.setSelected(icl.revolutionChk);
+        this.uxWidthRatioChk.setSelected(icl.widthRatioFlg);
     }//end updateConfig(icl)
 
     /**
