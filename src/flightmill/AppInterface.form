@@ -23,15 +23,28 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Group type="102" alignment="0" attributes="0">
+          <Group type="102" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
+                  <Group type="102" attributes="0">
+                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                          <Component id="jScrollPane3" pref="446" max="32767" attributes="0"/>
+                          <Component id="jScrollPane1" max="32767" attributes="0"/>
+                      </Group>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                          <Component id="uxProcessBtn" alignment="0" pref="185" max="32767" attributes="0"/>
+                          <Component id="uxShowFileBtn" alignment="0" max="32767" attributes="0"/>
+                          <Component id="uxShowConfigBtn" alignment="0" max="32767" attributes="0"/>
+                      </Group>
+                      <EmptySpace min="39" max="32767" attributes="0"/>
+                  </Group>
                   <Group type="102" attributes="0">
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" alignment="0" attributes="0">
                               <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                                  <Component id="uxGetOutputBtn" max="32767" attributes="0"/>
                                   <Component id="uxGetInputBtn" max="32767" attributes="0"/>
+                                  <Component id="uxGetOutputBtn" max="32767" attributes="0"/>
                               </Group>
                               <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
@@ -40,21 +53,13 @@
                               </Group>
                           </Group>
                           <Component id="jScrollPane2" alignment="0" max="32767" attributes="0"/>
+                          <Group type="102" alignment="0" attributes="0">
+                              <Component id="uxGetCollectionTimeBtn" min="-2" pref="173" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="uxGetCollectionTimeTxt" min="-2" pref="458" max="-2" attributes="0"/>
+                          </Group>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
-                  </Group>
-                  <Group type="102" attributes="0">
-                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                          <Component id="jScrollPane3" pref="446" max="32767" attributes="0"/>
-                          <Component id="jScrollPane1" max="32767" attributes="0"/>
-                      </Group>
-                      <EmptySpace type="separate" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                          <Component id="uxProcessBtn" alignment="0" pref="173" max="32767" attributes="0"/>
-                          <Component id="uxShowFileBtn" alignment="0" max="32767" attributes="0"/>
-                          <Component id="uxShowConfigBtn" alignment="0" max="32767" attributes="0"/>
-                      </Group>
-                      <EmptySpace min="39" max="32767" attributes="0"/>
                   </Group>
               </Group>
           </Group>
@@ -75,7 +80,12 @@
                   <Component id="uxGetOutputBtn" max="32767" attributes="0"/>
                   <Component id="uxGetOutputTxt" max="32767" attributes="0"/>
               </Group>
-              <EmptySpace type="separate" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="uxGetCollectionTimeBtn" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="uxGetCollectionTimeTxt" alignment="3" max="32767" attributes="0"/>
+              </Group>
+              <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" max="-2" attributes="0">
                   <Group type="102" attributes="0">
                       <Component id="uxShowConfigBtn" min="-2" pref="37" max="-2" attributes="0"/>
@@ -86,8 +96,8 @@
                   </Group>
                   <Group type="102" attributes="0">
                       <Component id="jScrollPane1" min="-2" pref="92" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="jScrollPane3" max="32767" attributes="0"/>
+                      <EmptySpace max="32767" attributes="0"/>
+                      <Component id="jScrollPane3" min="-2" pref="49" max="-2" attributes="0"/>
                   </Group>
               </Group>
               <EmptySpace max="32767" attributes="0"/>
@@ -111,7 +121,7 @@
               <Font name="Tahoma" size="14" style="0"/>
             </Property>
             <Property name="rows" type="int" value="5"/>
-            <Property name="text" type="java.lang.String" value="&#x9;&#x9;Flight Mill Data File Compression Software v1.0.1&#xa;   &#x9;&gt; compresses 8 channel datafile collected from WinDaq hardware/software&#xa;&#xa;&#x9;&#x9;Sixbury/Rust/Brabec  July 2023&#xa;&#x9;&#x9;USDA-ARS   Manhattan, Kansas"/>
+            <Property name="text" type="java.lang.String" value="&#x9;&#x9;Flight Mill Data File Compression Software v1.0.1&#xa;   &#x9;&gt; compresses 8 channel datafile collected from WinDaq hardware/software&#xa;&#x9;Note: The entirety of this header is auto-generated within the constructor&#xa;&#x9;&#x9;Sixbury/Rust/Brabec  autogenerated&#xa;&#x9;&#x9;USDA-ARS   Manhattan, Kansas"/>
           </Properties>
         </Component>
       </SubComponents>
@@ -145,6 +155,7 @@
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Tahoma" size="14" style="0"/>
         </Property>
+        <Property name="horizontalAlignment" type="int" value="11"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="uxGetOutputTxt">
@@ -152,6 +163,7 @@
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Tahoma" size="14" style="0"/>
         </Property>
+        <Property name="horizontalAlignment" type="int" value="11"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JButton" name="uxProcessBtn">
@@ -225,5 +237,24 @@
         </Component>
       </SubComponents>
     </Container>
+    <Component class="javax.swing.JButton" name="uxGetCollectionTimeBtn">
+      <Properties>
+        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+          <Font name="Tahoma" size="14" style="0"/>
+        </Property>
+        <Property name="text" type="java.lang.String" value="Select Collection Time"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="uxGetCollectionTimeBtnActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JTextField" name="uxGetCollectionTimeTxt">
+      <Properties>
+        <Property name="editable" type="boolean" value="false"/>
+        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+          <Font name="Tahoma" size="14" style="0"/>
+        </Property>
+      </Properties>
+    </Component>
   </SubComponents>
 </Form>
