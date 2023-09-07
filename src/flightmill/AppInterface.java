@@ -113,6 +113,7 @@ public class AppInterface extends javax.swing.JFrame {
             }
         });
 
+        uxGetInputTxt.setEditable(false);
         uxGetInputTxt.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         uxGetInputTxt.setHorizontalAlignment(javax.swing.JTextField.TRAILING);
 
