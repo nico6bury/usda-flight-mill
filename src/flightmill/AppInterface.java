@@ -9,6 +9,7 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -382,10 +383,12 @@ public class AppInterface extends javax.swing.JFrame {
     }//GEN-LAST:event_uxShowConfigBtnActionPerformed
 
     DateTimeDialog dtDialog = new DateTimeDialog(this, true);
+    DateTimeFormatter dtFormatter = DateTimeFormatter.ofPattern("MMM d, yyyy h:mm a");
 
     private void uxGetCollectionTimeBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uxGetCollectionTimeBtnActionPerformed
         // TODO add your handling code here:
         dtDialog.setVisible(true);
+        uxGetCollectionTimeTxt.setText(dtDialog.dateTime.format(dtFormatter));
     }//GEN-LAST:event_uxGetCollectionTimeBtnActionPerformed
 
     private void updateConfigDisplay() {
