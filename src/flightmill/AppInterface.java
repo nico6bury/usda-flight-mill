@@ -54,6 +54,8 @@ public class AppInterface extends javax.swing.JFrame {
         configDialog.parent_icl = inputCommandLine;
         // initialize uxStatusText
         uxStatusText.setText("Please select a file to process.");
+        // set up date time dialog
+
     }//end constructor
 
     /**
@@ -379,8 +381,11 @@ public class AppInterface extends javax.swing.JFrame {
         updateConfigDisplay();
     }//GEN-LAST:event_uxShowConfigBtnActionPerformed
 
+    DateTimeDialog dtDialog = new DateTimeDialog(this, true);
+
     private void uxGetCollectionTimeBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uxGetCollectionTimeBtnActionPerformed
         // TODO add your handling code here:
+        dtDialog.setVisible(true);
     }//GEN-LAST:event_uxGetCollectionTimeBtnActionPerformed
 
     private void updateConfigDisplay() {
