@@ -124,6 +124,10 @@ public class DateTimeDialog extends javax.swing.JDialog {
         this.setVisible(false);
     }//GEN-LAST:event_uxConfirmConfigBtnActionPerformed
 
+    public void updateDateTime() {
+        uxDateTimePicker.setDateTimePermissive(dateTime);
+    }//end updateDateTime()
+
     /**
      * @param args the command line arguments
      */

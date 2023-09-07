@@ -9,6 +9,9 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.attribute.FileTime;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.logging.Level;
@@ -270,6 +273,10 @@ public class AppInterface extends javax.swing.JFrame {
         // actually show the dialog
         fileChooser.addActionListener(actionListener);
         fileChooser.showOpenDialog(this);
+        // reset collection time
+        FileTime fileTime = ProcessDataLoggerFile.getFileCreationDate(new File(uxGetInputTxt.getText()));
+        dtDialog.dateTime = LocalDateTime.ofInstant(fileTime.toInstant(), ZoneId.systemDefault());
+        updateTimeDisplay();
     }//GEN-LAST:event_uxGetInputBtnActionPerformed
 
     private void uxGetOutputBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uxGetOutputBtnActionPerformed
@@ -386,10 +393,14 @@ public class AppInterface extends javax.swing.JFrame {
     DateTimeFormatter dtFormatter = DateTimeFormatter.ofPattern("MMM d, yyyy h:mm a");
 
     private void uxGetCollectionTimeBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uxGetCollectionTimeBtnActionPerformed
-        // TODO add your handling code here:
+        dtDialog.updateDateTime();
         dtDialog.setVisible(true);
-        uxGetCollectionTimeTxt.setText(dtDialog.dateTime.format(dtFormatter));
+        updateTimeDisplay();
     }//GEN-LAST:event_uxGetCollectionTimeBtnActionPerformed
+
+    private void updateTimeDisplay() {
+        uxGetCollectionTimeTxt.setText(dtDialog.dateTime.format(dtFormatter));
+    }//end updateTimeDisplay
 
     private void updateConfigDisplay() {
         // update config display on main window
