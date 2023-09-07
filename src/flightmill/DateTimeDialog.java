@@ -4,7 +4,13 @@
  */
 package flightmill;
 
+import java.time.LocalDateTime;
+
+import javax.swing.JOptionPane;
+
+import com.github.lgooddatepicker.components.DatePickerSettings;
 import com.github.lgooddatepicker.components.DateTimePicker;
+import com.github.lgooddatepicker.components.TimePickerSettings;
 
 /**
  *
@@ -20,7 +26,20 @@ public class DateTimeDialog extends javax.swing.JDialog {
     public DateTimeDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+
+        // set setttings for date time picker
+        // DatePickerSettings dateSettings = new DatePickerSettings();
+        // TimePickerSettings timeSettings = new TimePickerSettings();
+        // timeSettings.setAllowKeyboardEditing(true);
+        // timeSettings.setDisplaySpinnerButtons(true);
+        // timeSettings.setDisplayToggleTimeMenuButton(true);
+        // timeSettings.setInitialTimeToNow();
+        // uxDateTimePicker = new DateTimePicker(dateSettings, timeSettings);
+        // uxDateTimePicker.setFont(new java.awt.Font("Segoe UI", 0, 18));
+        // uxDateTimePicker.setDateTimeStrict(LocalDateTime.now());
     }//end constructor
+
+    public LocalDateTime dateTime = LocalDateTime.now();
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -30,7 +49,14 @@ public class DateTimeDialog extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        uxDateTimePicker = new com.github.lgooddatepicker.components.DateTimePicker();
+        DatePickerSettings dateSettings = new DatePickerSettings();
+        TimePickerSettings timeSettings = new TimePickerSettings();
+        timeSettings.setAllowKeyboardEditing(true);
+        timeSettings.setDisplaySpinnerButtons(true);
+        timeSettings.setDisplayToggleTimeMenuButton(true);
+        timeSettings.setInitialTimeToNow();
+        uxDateTimePicker = new DateTimePicker(dateSettings, timeSettings);
+        ;
         uxCancelConfigBtn = new javax.swing.JButton();
         uxConfirmConfigBtn = new javax.swing.JButton();
 
@@ -88,18 +114,12 @@ public class DateTimeDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_uxCancelConfigBtnActionPerformed
 
     private void uxConfirmConfigBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uxConfirmConfigBtnActionPerformed
-        // // Update parent icl based on controls
-        // parent_icl.add_date_time_column = uxNoDateTimeChk.isSelected();
-        // parent_icl.add_peak_width_column = uxAddPeakWidthChk.isSelected();
-        // if (uxLineSkipChk.isSelected()) {
-        //     parent_icl.skipLines = Integer.parseInt(uxLineSkipTxt.getText());
-        // }//end if we're doing line skip
-        // else parent_icl.skipLines = 0;
-        // parent_icl.zip_input_file = uxZipInputChk.isSelected();
-        // parent_icl.threshold = Double.parseDouble(uxGetThresholdTxt.getText());
-        // parent_icl.add_second_peak_columns = uxDoubleColumnChk.isSelected();
-        // parent_icl.add_revolution_column = uxRevolutionChk.isSelected();
-        // parent_icl.add_width_ratio_column = uxWidthRatioChk.isSelected();
+        uxDateTimePicker.validate();
+        LocalDateTime tempDateTime = uxDateTimePicker.getDateTimePermissive();
+        if ( tempDateTime == null ) {
+            JOptionPane.showMessageDialog(this, "Date and/or Time chosen were invalid.\nIgnoring Selection...");
+        }//end if we couldn't get valid time from DateTimePicker
+        else { dateTime = tempDateTime; }
         // close this dialog window
         this.setVisible(false);
     }//GEN-LAST:event_uxConfirmConfigBtnActionPerformed
