@@ -449,10 +449,10 @@ public class ProcessDataLoggerFile {
         
         // print headers for the columns we're about to print
         pw.printf("Chan#");
-        if (icl.add_second_peak_columns) { pw.printf("\tPkTime1\t        PkTime2"); }
+        if (icl.add_second_peak_columns) { pw.printf("\tPkTime1\t        PkTime2  "); }
         else { pw.printf("\tPkTime"); }
         if (icl.add_date_time_column) {
-            pw.printf("\tDtTim");
+            pw.printf("\tDate and Time");
         }//end if we should print the data time data
         if (icl.add_peak_width_column) {
             if (icl.add_second_peak_columns) { pw.printf("\t    PkWdth1\tPkWdth2"); }
