@@ -336,6 +336,7 @@ public class AppInterface extends javax.swing.JFrame {
             uxStatusText.setText("Loading input file into memory.");
             uxStatusText.paintImmediately(uxStatusText.getVisibleRect());
             List<InputDataLine> inputList = ProcessDataLoggerFile.LoadInputFile(inputCommandLine);
+            double duration = ProcessDataLoggerFile.getDuration(inputList);
             // make list of individual peaks
             uxStatusText.setText("Finding list of individual peaks.");
             uxStatusText.paintImmediately(uxStatusText.getVisibleRect());
@@ -352,7 +353,7 @@ public class AppInterface extends javax.swing.JFrame {
             // write output file
             uxStatusText.setText("Writing the output file.");
             uxStatusText.paintImmediately(uxStatusText.getVisibleRect());
-            ProcessDataLoggerFile.makeOutputFile(directionedInputList, inputCommandLine);
+            ProcessDataLoggerFile.makeOutputFile(duration, directionedInputList, inputCommandLine);
             // tell the user what happened
             uxStatusText.setText("Files have finished processing.");
             uxStatusText.paintImmediately(uxStatusText.getVisibleRect());
