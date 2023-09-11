@@ -117,10 +117,11 @@ public class AppInterface extends javax.swing.JFrame {
 
         uxGetInputTxt.setEditable(false);
         uxGetInputTxt.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        uxGetInputTxt.setHorizontalAlignment(javax.swing.JTextField.TRAILING);
+        uxGetInputTxt.setHorizontalAlignment(javax.swing.JTextField.LEFT);
 
+        uxGetOutputTxt.setEditable(false);
         uxGetOutputTxt.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        uxGetOutputTxt.setHorizontalAlignment(javax.swing.JTextField.TRAILING);
+        uxGetOutputTxt.setHorizontalAlignment(javax.swing.JTextField.LEFT);
 
         uxProcessBtn.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         uxProcessBtn.setText("Process Sample");
@@ -277,9 +278,10 @@ public class AppInterface extends javax.swing.JFrame {
             System.out.println(e.getActionCommand());
             if (e.getActionCommand() == "ApproveSelection") {
                 lastInputFile = fileChooser.getSelectedFile();
+                lastOutputFile = ProcessDataLoggerFile.reformatOutputFile(lastInputFile.getAbsolutePath(), false);
                 uxDirectoryTxt.setText(lastInputFile.getParent());
                 uxGetInputTxt.setText(lastInputFile.getName());
-                uxGetOutputTxt.setText(ProcessDataLoggerFile.reformatOutputFile(lastInputFile.getAbsolutePath(), false).getName());
+                uxGetOutputTxt.setText(lastOutputFile.getName());
                 uxStatusText.setText("Click \"Process Sample\" button to get results.");
             }//end if selection was approved
             else if (e.getActionCommand() == "CancelSelection") {
@@ -331,8 +333,8 @@ public class AppInterface extends javax.swing.JFrame {
         uxStatusText.setText("Gathering Parameters");
         uxStatusText.paintImmediately(uxStatusText.getVisibleRect());
 
-        inputCommandLine.inputFileName = inputText;
-        inputCommandLine.outputFileName = uxGetOutputTxt.getText();
+        inputCommandLine.inputFileName = lastInputFile.getAbsolutePath();
+        inputCommandLine.outputFileName = lastOutputFile.getAbsolutePath();
 
         // just do all the processing, whatever
         try{
