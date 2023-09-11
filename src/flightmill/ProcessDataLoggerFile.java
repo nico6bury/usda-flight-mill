@@ -364,7 +364,7 @@ public class ProcessDataLoggerFile {
      * @param ensureDirectoryExists If this is true, then this method will create a new directory if it doesn't already exist.
      * @return Returns a resulting path as a String
      */
-    public static String reformatOutputFile(String outputFilePath, boolean ensureDirectoryExists) {
+    public static File reformatOutputFile(String outputFilePath, boolean ensureDirectoryExists) {
         // figure out the path of the output directory
         File outputFile = new File(outputFilePath);
         File parentDirectory = outputFile.getParentFile();
@@ -383,7 +383,7 @@ public class ProcessDataLoggerFile {
         String newFileName = priorFileName.substring(0, priorFileName.lastIndexOf(".")) + current_time_stamp + newExtension;
         outputFile = new File(newDirectory.getAbsolutePath() + File.separator + newFileName);
 
-        return outputFile.getAbsolutePath();
+        return outputFile;
     }//end reformatOutputFile(outputFilePath)
 
     // write out the collated data
