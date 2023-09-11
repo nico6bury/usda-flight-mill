@@ -277,8 +277,9 @@ public class AppInterface extends javax.swing.JFrame {
             System.out.println(e.getActionCommand());
             if (e.getActionCommand() == "ApproveSelection") {
                 lastInputFile = fileChooser.getSelectedFile();
-                uxGetInputTxt.setText(lastInputFile.getAbsolutePath());
-                uxGetOutputTxt.setText(ProcessDataLoggerFile.reformatOutputFile(lastInputFile.getAbsolutePath(), false));
+                uxDirectoryTxt.setText(lastInputFile.getParent());
+                uxGetInputTxt.setText(lastInputFile.getName());
+                uxGetOutputTxt.setText(ProcessDataLoggerFile.reformatOutputFile(lastInputFile.getAbsolutePath(), false).getName());
                 uxStatusText.setText("Click \"Process Sample\" button to get results.");
             }//end if selection was approved
             else if (e.getActionCommand() == "CancelSelection") {
