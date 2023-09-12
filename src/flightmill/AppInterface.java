@@ -324,10 +324,14 @@ public class AppInterface extends javax.swing.JFrame {
         if (inputText.isEmpty()) {
             // display message about empty file path
             JOptionPane.showMessageDialog(this, "You haven't selected a file to process." +
-            "\nPlease click the \"Select Input File\" button to " +
-            "\nselect a file, or copy and paste the path yourself...");
+            "\nPlease click the \"Select Input File\" button to select a file.");
             return;
         }//end if input text isn't filled in
+        if (uxGetCollectionTimeTxt.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "You haven't selected a time.\n" + 
+            "Please select the time when the data was collected.");
+            return;
+        }//end if collection time isn't filled in
 
         // update status label
         uxStatusText.setText("Gathering Parameters");
