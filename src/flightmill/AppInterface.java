@@ -87,6 +87,8 @@ public class AppInterface extends javax.swing.JFrame {
         uxGetCollectionTimeTxt = new javax.swing.JTextField();
         uxDirectoryTxt = new javax.swing.JTextField();
         uxDirectoryLbl = new javax.swing.JButton();
+        uxConfirmCollectionTimeBtn = new javax.swing.JButton();
+        uxConfirmCollectionTimeTxt = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -185,6 +187,17 @@ public class AppInterface extends javax.swing.JFrame {
             }
         });
 
+        uxConfirmCollectionTimeBtn.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        uxConfirmCollectionTimeBtn.setText("Confirm Collection Start Time");
+        uxConfirmCollectionTimeBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                uxConfirmCollectionTimeBtnActionPerformed(evt);
+            }
+        });
+
+        uxConfirmCollectionTimeTxt.setEditable(false);
+        uxConfirmCollectionTimeTxt.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -217,7 +230,11 @@ public class AppInterface extends javax.swing.JFrame {
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addComponent(uxProcessBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .addComponent(uxShowFileBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 185, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(uxShowConfigBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 185, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                    .addComponent(uxShowConfigBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 185, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(uxConfirmCollectionTimeBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 240, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(uxConfirmCollectionTimeTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 391, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -243,17 +260,20 @@ public class AppInterface extends javax.swing.JFrame {
                     .addComponent(uxGetCollectionTimeBtn)
                     .addComponent(uxGetCollectionTimeTxt))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(uxProcessBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(uxConfirmCollectionTimeBtn)
+                    .addComponent(uxConfirmCollectionTimeTxt))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(uxProcessBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(uxShowFileBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(uxShowConfigBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)))
         );
 
         pack();
@@ -431,6 +451,10 @@ public class AppInterface extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_uxDirectoryLblActionPerformed
 
+    private void uxConfirmCollectionTimeBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uxConfirmCollectionTimeBtnActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_uxConfirmCollectionTimeBtnActionPerformed
+
     private void updateTimeDisplay() {
         uxGetCollectionTimeTxt.setText(dtDialog.dateTime.format(dtFormatter));
     }//end updateTimeDisplay
@@ -476,6 +500,8 @@ public class AppInterface extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTextArea jTextArea1;
     private javax.swing.JTextArea uxConfigDisplayText;
+    private javax.swing.JButton uxConfirmCollectionTimeBtn;
+    private javax.swing.JTextField uxConfirmCollectionTimeTxt;
     private javax.swing.JButton uxDirectoryLbl;
     private javax.swing.JTextField uxDirectoryTxt;
     private javax.swing.JButton uxGetCollectionTimeBtn;
