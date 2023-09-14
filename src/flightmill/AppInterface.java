@@ -347,11 +347,16 @@ public class AppInterface extends javax.swing.JFrame {
             "\nPlease click the \"Select Input File\" button to select a file.");
             return;
         }//end if input text isn't filled in
-        if (uxGetCollectionTimeTxt.getText().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "You haven't selected a time.\n" + 
-            "Please select the time when the data was collected.");
+        if (uxGetCollectionTimeTxt.getText().isEmpty() || uxConfirmCollectionTimeTxt.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "You haven't selected a time for both selections.\n" + 
+            "Please select the time when the data was collected for both inputs.");
             return;
         }//end if collection time isn't filled in
+        if (!uxGetCollectionTimeTxt.getText().equals(uxConfirmCollectionTimeTxt.getText())) {
+            JOptionPane.showMessageDialog(this, "Collection times do not match.\n" +
+            "Please select the same time for both collection time inputs.");
+            return;
+        }//end if collection times don't match
 
         // update status label
         uxStatusText.setText("Gathering Parameters");
