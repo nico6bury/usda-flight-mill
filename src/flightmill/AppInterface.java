@@ -412,6 +412,9 @@ public class AppInterface extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Files have finished processing.");
             // enable "show in folder" button
             uxShowFileBtn.setEnabled(true);
+            // clear collection time
+            uxGetCollectionTimeTxt.setText("");
+            uxConfirmCollectionTimeTxt.setText("");
         }//end trying to do whatever
         catch (FileNotFoundException ex) {
             uxStatusText.setText("File not found. Aborting...");
