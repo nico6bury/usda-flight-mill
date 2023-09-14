@@ -18,10 +18,10 @@ import java.nio.file.attribute.FileTime;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Scanner;
@@ -87,7 +87,7 @@ public class ProcessDataLoggerFile {
 
             // load the input file
             List<InputDataLine> inputList = LoadInputFile(inputCommandLine);
-            // TODO: Get last input line
+            // Get last input line
             double duration = getDuration(inputList);
             // make list of individual peaks
             List<IntermediateDataLine> processedInputList = processInput(inputList,
@@ -97,7 +97,8 @@ public class ProcessDataLoggerFile {
             // figure out direction from our list of individual peaks
             List<FinalDataLine> directionedInputList = processDirectionallity(channelSortedInputList, inputCommandLine);
             // write output file
-            makeOutputFile(duration, directionedInputList, inputCommandLine);
+            LocalDateTime localTime = LocalDateTime.ofInstant(getFileCreationDate(new File(inputCommandLine.inputFileName)).toInstant(), ZoneId.systemDefault());
+            makeOutputFile(duration, directionedInputList, inputCommandLine, localTime);
         } catch (FileNotFoundException ex) {
             Logger.getLogger(ProcessDataLoggerFile.class.getName()).log(Level.SEVERE, 
                     null, ex);
@@ -388,12 +389,7 @@ public class ProcessDataLoggerFile {
 
     // write out the collated data
     public static void makeOutputFile(double duration, List<FinalDataLine> inputList,
-            InputCommandLine icl) throws FileNotFoundException {
-
-        // get the file modified time to adjust output date/times to 
-        //   something close to real time
-        FileTime fileTime = getFileCreationDate(new File(icl.inputFileName));
-
+            InputCommandLine icl, LocalDateTime startTime) throws FileNotFoundException {
         // set up array to hold counts of peaks per channel
         int[] channelCounts = new int[icl.numberOfChannelsUsed];
 
@@ -413,6 +409,7 @@ public class ProcessDataLoggerFile {
         pw.printf("%s  %s\n%s\n", PROGRAM_NAME, VERSION, LOCATION + "\t" + DATE() + "\t" + PEOPLE);
 
         // print second section of header
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         Calendar cal = Calendar.getInstance();
         pw.printf("File name: %s\nData Processed: %s\n", icl.inputFileName, 
@@ -420,18 +417,15 @@ public class ProcessDataLoggerFile {
         
         // print third section of header
         if(inputList.size() > 0){
-            // do some time calculations
-            long tim1 = fileTime.toMillis() - (long)(duration * 1000);
-            long tim2 = tim1 + (long)(duration * 1000);
             double minutesDuration = duration / 60;
             // print out the time stuff
             pw.printf("Data Collected in %1.1f minutes\t", minutesDuration);
 
             // new line with date
             pw.printf("\nStart-End date/time: ");
-            pw.printf(dateFormat.format(new Date(tim1)));
+            pw.printf(startTime.format(dtf));
             pw.printf("  -  ");
-            pw.printf(dateFormat.format(new Date(tim2)));
+            pw.printf(startTime.plusSeconds(Math.round(duration)).format(dtf));
             pw.printf("\n");
         }//end if there are any inputs
         else { pw.close(); return; }
@@ -476,8 +470,7 @@ public class ProcessDataLoggerFile {
             if (icl.add_second_peak_columns) { pw.printf("\t%9.3f", outputData.elapsedTime2); }
             if (icl.add_date_time_column) {
                 pw.printf("\t");
-                long tim = new Double(outputData.elapsedTime1 * 1000).intValue() - (long)(duration * 1000);
-                pw.printf(dateFormat.format(new Date(tim + fileTime.toMillis())));
+                pw.printf(startTime.plusSeconds((int)Math.floor(outputData.elapsedTime1)).format(dtf));
             }//end if we're printing time for output
             if (icl.add_peak_width_column) {
                 pw.printf("\t%d", outputData.peakWidth1);

@@ -405,7 +405,7 @@ public class AppInterface extends javax.swing.JFrame {
             // write output file
             uxStatusText.setText("Writing the output file.");
             uxStatusText.paintImmediately(uxStatusText.getVisibleRect());
-            ProcessDataLoggerFile.makeOutputFile(duration, directionedInputList, inputCommandLine);
+            ProcessDataLoggerFile.makeOutputFile(duration, directionedInputList, inputCommandLine, dtDialog1.dateTime);
             // tell the user what happened
             uxStatusText.setText("Files have finished processing.");
             uxStatusText.paintImmediately(uxStatusText.getVisibleRect());
