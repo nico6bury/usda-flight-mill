@@ -438,25 +438,32 @@ public class AppInterface extends javax.swing.JFrame {
         updateConfigDisplay();
     }//GEN-LAST:event_uxShowConfigBtnActionPerformed
 
-    DateTimeDialog dtDialog = new DateTimeDialog(this, true);
+    DateTimeDialog dtDialog1 = new DateTimeDialog(this, true);
+    DateTimeDialog dtDialog2 = new DateTimeDialog(this, true);
     DateTimeFormatter dtFormatter = DateTimeFormatter.ofPattern("MMM d, yyyy h:mm a");
 
     private void uxGetCollectionTimeBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uxGetCollectionTimeBtnActionPerformed
-        dtDialog.updateDateTime();
-        dtDialog.setVisible(true);
-        updateTimeDisplay();
+        dtDialog1.updateDateTime();
+        dtDialog1.setVisible(true);
+        updateTimeDisplay1();
     }//GEN-LAST:event_uxGetCollectionTimeBtnActionPerformed
-
-    private void uxDirectoryLblActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uxDirectoryLblActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_uxDirectoryLblActionPerformed
-
+    
     private void uxConfirmCollectionTimeBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uxConfirmCollectionTimeBtnActionPerformed
-        // TODO add your handling code here:
+        dtDialog2.updateDateTime();
+        dtDialog2.setVisible(true);
+        updateTimeDisplay2();
     }//GEN-LAST:event_uxConfirmCollectionTimeBtnActionPerformed
 
-    private void updateTimeDisplay() {
-        uxGetCollectionTimeTxt.setText(dtDialog.dateTime.format(dtFormatter));
+    private void uxDirectoryLblActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uxDirectoryLblActionPerformed
+        // this doesn't do anything
+    }//GEN-LAST:event_uxDirectoryLblActionPerformed
+
+    private void updateTimeDisplay1() {
+        uxGetCollectionTimeTxt.setText(dtDialog1.dateTime.format(dtFormatter));
+    }//end updateTimeDisplay
+
+    private void updateTimeDisplay2() {
+        uxConfirmCollectionTimeTxt.setText(dtDialog2.dateTime.format(dtFormatter));
     }//end updateTimeDisplay
 
     private void updateConfigDisplay() {
