@@ -4,6 +4,7 @@
  */
 package flightmill;
 
+import java.awt.event.KeyEvent;
 import java.time.LocalDateTime;
 
 import javax.swing.JOptionPane;
@@ -19,6 +20,7 @@ import com.github.lgooddatepicker.components.TimePickerSettings;
 public class DateTimeDialog extends javax.swing.JDialog {
 
     DateTimePicker dtPicker = new DateTimePicker();
+    public boolean is_input_valid = false;
 
     /**
      * Creates new form DateTimeDialog
@@ -63,6 +65,11 @@ public class DateTimeDialog extends javax.swing.JDialog {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Date Time Dialog Chooser");
         setModal(true);
+        addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                formKeyPressed(evt);
+            }
+        });
 
         uxDateTimePicker.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
 
@@ -110,6 +117,7 @@ public class DateTimeDialog extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void uxCancelConfigBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uxCancelConfigBtnActionPerformed
+        is_input_valid = false;
         this.setVisible(false);
     }//GEN-LAST:event_uxCancelConfigBtnActionPerformed
 
@@ -121,8 +129,18 @@ public class DateTimeDialog extends javax.swing.JDialog {
         }//end if we couldn't get valid time from DateTimePicker
         else { dateTime = tempDateTime; }
         // close this dialog window
+        is_input_valid = true;
         this.setVisible(false);
     }//GEN-LAST:event_uxConfirmConfigBtnActionPerformed
+
+    private void formKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_formKeyPressed
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            uxConfirmConfigBtnActionPerformed(null);
+        }//end if user pressed enter
+        else if (evt.getKeyCode() == KeyEvent.VK_ESCAPE) {
+            uxCancelConfigBtnActionPerformed(null);
+        }//end if user pressed cancel
+    }//GEN-LAST:event_formKeyPressed
 
     public void updateDateTime() {
         uxDateTimePicker.setDateTimePermissive(dateTime);

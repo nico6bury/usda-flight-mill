@@ -453,13 +453,17 @@ public class AppInterface extends javax.swing.JFrame {
     private void uxGetCollectionTimeBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uxGetCollectionTimeBtnActionPerformed
         dtDialog1.updateDateTime();
         dtDialog1.setVisible(true);
-        updateTimeDisplay1();
+        if (dtDialog1.is_input_valid) {
+            updateTimeDisplay1();
+        }//end if date time is valid
     }//GEN-LAST:event_uxGetCollectionTimeBtnActionPerformed
     
     private void uxConfirmCollectionTimeBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uxConfirmCollectionTimeBtnActionPerformed
         dtDialog2.updateDateTime();
         dtDialog2.setVisible(true);
-        updateTimeDisplay2();
+        if (dtDialog2.is_input_valid) {
+            updateTimeDisplay2();
+        }//end if date time is valid
     }//GEN-LAST:event_uxConfirmCollectionTimeBtnActionPerformed
 
     private void uxDirectoryLblActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uxDirectoryLblActionPerformed
