@@ -9,3 +9,5 @@ Please note that for compilation purposes, the main method in AppInterface.java 
 In terms of development environments, the repository contains configurations for both VS Code and Apache NetBeans. Apache NetBeans should be able to compile everything as is, but with VS Code, you'll need the java extension.
 
 The recommended version of java to use is Java 8.
+
+One other thing to note is how the version number works. Of course, it's completely arbitrary, but to make it easier to switch the number over, everything relates back to the static string in ProcessDataLoggerFile, called VERSION. So, to change the version, just change that variable, and everything else should follow suit.
