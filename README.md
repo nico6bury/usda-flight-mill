@@ -2,6 +2,14 @@
 
 This program is meant to take output from the Flight Mill through WinDaq. Files from WinDaq are converted to csv files, and then entered into this application to be processed. This results in a text file, which might or might not be compressed. The original program was developed by Bill Rust, but continuing development will be done by Nicholas Sixbury as of March 2023.
 
+## Explanation of Flight Mill Terms
+
+[Add something about peaks and bouts and all that, what we learn from the data, and how to read output files]
+
+## Explanation of Sample Files
+
+[Add something here about running the sample files so anyone can look at the input/output themselves. I should maybe also add the Flight Mill user guide to this repo.]
+
 ## Compilation and Environment
 
 Please note that for compilation purposes, the main method in AppInterface.java should be treated as the true main method. The main method in ProcessDataLoggerFile is an artifact from an earlier point in this software's history, back when it was a CLI app.
