@@ -12,7 +12,9 @@ The original program was developed by Bill Rust, but continuing development will
 
 ## Explanation of Sample Files
 
-[Add something here about running the sample files so anyone can look at the input/output themselves. I should maybe also add the Flight Mill user guide to this repo.]
+Several sample files can be foung in the /data/old or obsolete files/ folder from earlier in development. If you'd simply like to take a look at an hour or real data, then please use the /data/hour_long_sample_data.csv file.
+
+For additional information on operating the software and collecting data with the flight mill, please refer to the flight mill user guide.
 
 ## Compilation and Environment
 
