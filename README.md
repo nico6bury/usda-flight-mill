@@ -6,9 +6,9 @@ This results in a text file, which might or might not be compressed.
 
 The original program was developed by Bill Rust, but continuing development will be done by Nicholas Sixbury as of March 2023.
 
-## Peaks and Bouts
+## Peaks, Bouts, and Revolutions
 
-The flight mill has flags that spin in a circle, as propelled by the attached insect. Each flag has a notch, such that whenever the flag passes the sensor, the flag will be detected twice.
+The flight mill has flags that spin in a circle, as propelled by the attached insect. Each flag has a notch, such that whenever the flag passes the sensor, the flag will be detected twice. Now, it should be noted that the flight mill currently has eight channels, and a flag for each. The channels are all independent, and simply allow for multiple readings at once.
 
 However, the flight mill's hardware does not output that information in a way that's useful for a human to read through. For every four miliseconds, the flight mill will give a voltage reading. When there's nothing in front of the sensor, the reading will be close to zero, and when there is something in front of the sensor, the reading will be closer to 3. As such, we decide that if the voltage reading is higher than 1.5, then there is something in front of the sensor.
 
@@ -19,6 +19,8 @@ In flight mill terms, a peak is a contiguous stretch of readings in which the fl
 It should be noted that for the purposes of output by the program, the final output file will have one line for each flag pass, instead of keeping the peaks split up.
 
 Now, the insect attached to the flight mill won't necessarily fly for the enitre time it's on the flight mill. It might rest for a bit. In flight mill terms, we refer to the periods of activity in between rest as bouts. Bouts are not currently processed by the flight mill software.
+
+Another flight mill term is revolution. A revolution is the time it took for the flag to go all the way around the flight mill in a complete circle. If the option is enabled, then this reading will be shown in seconds under the "Rev" heading.
 
 ## Reading the Output Files
 
