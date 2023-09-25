@@ -163,7 +163,7 @@ public class ProcessDataLoggerFile {
 
         for (Field field : InputCommandLine.class.getFields()) {
             try {
-                if (field.getName() != "inputFileName" && field.getName() != "outputFileName") {
+                if (field.getName() != "inputFileName" && field.getName() != "outputFileName" && field.getName() != "numberOfChannelsUsed") {
                     lines.add(field.getName() + ":" + field.get(icl));
                 }//end if field isn't just a file path. We don't need to save or display that.
             } catch (IllegalArgumentException e) { e.printStackTrace();
