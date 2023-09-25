@@ -6,11 +6,25 @@ This results in a text file, which might or might not be compressed.
 
 The original program was developed by Bill Rust, but continuing development will be done by Nicholas Sixbury as of March 2023.
 
-## Explanation of Flight Mill Terms
+## Peaks and Bouts
 
-[Add something about peaks and bouts and all that, what we learn from the data, and how to read output files]
+The flight mill has flags that spin in a circle, as propelled by the attached insect. Each flag has a notch, such that whenever the flag passes the sensor, the flag will be detected twice.
 
-## Explanation of Sample Files
+However, the flight mill's hardware does not output that information in a way that's useful for a human to read through. For every four miliseconds, the flight mill will give a voltage reading. When there's nothing in front of the sensor, the reading will be close to zero, and when there is something in front of the sensor, the reading will be closer to 3. As such, we decide that if the voltage reading is higher than 1.5, then there is something in front of the sensor.
+
+From this, we can determine the points at which the flag was in front of the sensor, but there's a lot of empty space as well. Each time part of the flag passes in front of the sensor, it will generate multiple lines of data, proportional to how long it was in front of the sensor. From this, we can understand our definition of a peak.
+
+In flight mill terms, a peak is a contiguous stretch of readings in which the flight mill registered an object being detected. Each time the flag passes the sensor in a normal fashion, we expect to see two peaks. The flags are shaped so that one peak will be bigger than the other, so from the ordering of these peaks, we can determine the direction.
+
+It should be noted that for the purposes of output by the program, the final output file will have one line for each flag pass, instead of keeping the peaks split up.
+
+Now, the insect attached to the flight mill won't necessarily fly for the enitre time it's on the flight mill. It might rest for a bit. In flight mill terms, we refer to the periods of activity in between rest as bouts. Bouts are not currently processed by the flight mill software.
+
+## Reading the Output Files
+
+[add bits about what we learn form the data and how to read the output files.]
+
+## Sample Files
 
 Several sample files can be foung in the /data/old or obsolete files/ folder from earlier in development. If you'd simply like to take a look at an hour or real data, then please use the /data/hour_long_sample_data.csv file.
 
