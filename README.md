@@ -18,13 +18,13 @@ In flight mill terms, a peak is a contiguous stretch of readings in which the fl
 
 It should be noted that for the purposes of output by the program, the final output file will have one line for each flag pass, instead of keeping the peaks split up.
 
-Now, the insect attached to the flight mill won't necessarily fly for the enitre time it's on the flight mill. It might rest for a bit. In flight mill terms, we refer to the periods of activity in between rest as bouts. Bouts are not currently processed by the flight mill software.
+Now, the insect attached to the flight mill won't necessarily fly for the enitre time it's on the flight mill; it might rest for a bit. In flight mill terms, we refer to the periods of activity in between rest as bouts. Bouts are not currently processed by the flight mill software.
 
 Another flight mill term is revolution. A revolution is the time it took for the flag to go all the way around the flight mill in a complete circle. If the option is enabled, then this reading will be shown in seconds under the "Rev" heading.
 
 ## Reading the Output Files
 
-[The following section about the output file will assume that you are using the default config. In order to reset your config, simply delete flight_mill.config and restart the program.]
+[The following section about the output file will assume that you are using the default config. In order to reset your config, simply delete the flight_mill.config file and restart the program.]
 
 As discussed previously, each time the flag passes the sensor in the flight mill in a normal fashion, two peaks will be generated, and these two peaks will be put on one line in the output file. Of these two peaks, the first peak occured at PkTime1, and the second peak occured at PkTime2.
 
