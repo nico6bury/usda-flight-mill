@@ -22,7 +22,7 @@ Now, the insect attached to the flight mill won't necessarily fly for the enitre
 
 ## Reading the Output Files
 
-[add bits about what we learn form the data and how to read the output files.]
+[add bits about what we learn from the data and how to read the output files.]
 
 ## Sample Files
 
