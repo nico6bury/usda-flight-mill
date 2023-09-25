@@ -24,7 +24,15 @@ Another flight mill term is revolution. A revolution is the time it took for the
 
 ## Reading the Output Files
 
-[add bits about what we learn from the data and how to read the output files.]
+[The following section about the output file will assume that you are using the default config. In order to reset your config, simply delete flight_mill.config and restart the program.]
+
+As discussed previously, each time the flag passes the sensor in the flight mill in a normal fashion, two peaks will be generated, and these two peaks will be put on one line in the output file. Of these two peaks, the first peak occured at PkTime1, and the second peak occured at PkTime2.
+
+The columns for peak width (PkWdth1 and PkWdth2) work similarly. The peak width, for any that might wonder, is the number of 4-milisecond readings that are labelled as one peak. So, a peak width of 8, for example, would indicate that the peak lasted approximately 32 miliseconds.
+
+From the peak widths, we can tell direction. If the first peak width is smaller than the second, then we know the insect is flying forwards, which is indicated by a direction of 1. If the insect went backwards, as indicated by the first peak width being higher than the second, that would give a direction of -1. If the direction is 0, that indicates that we couldn't find a second part of the flag for that peak reading. This generally occurs when the insect is going extremely slowly, so direction readings of 0 generally indicate the insect is at rest.
+
+Based on the given date and time when collections started, the program will give a date and time of each peak. This can be useful for 24-hour-plus data collection, as you can see when the insects are most active.
 
 ## Sample Files
 
