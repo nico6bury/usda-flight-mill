@@ -18,10 +18,10 @@ import java.nio.file.attribute.FileTime;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Scanner;
@@ -60,7 +60,7 @@ public class ProcessDataLoggerFile {
     }//end DATE()
     public static String PEOPLE = "Sixbury/Rust/Brabec";
     public static String PROGRAM_NAME = "Flight Mill Compression";
-    public static String VERSION = "v1.5.1";
+    public static String VERSION = "v1.7.4";
 
     private static AppInterface gui;
 
@@ -87,6 +87,8 @@ public class ProcessDataLoggerFile {
 
             // load the input file
             List<InputDataLine> inputList = LoadInputFile(inputCommandLine);
+            // Get last input line
+            double duration = getDuration(inputList);
             // make list of individual peaks
             List<IntermediateDataLine> processedInputList = processInput(inputList,
                     inputCommandLine);
@@ -95,7 +97,8 @@ public class ProcessDataLoggerFile {
             // figure out direction from our list of individual peaks
             List<FinalDataLine> directionedInputList = processDirectionallity(channelSortedInputList, inputCommandLine);
             // write output file
-            makeOutputFile(directionedInputList, inputCommandLine);
+            LocalDateTime localTime = LocalDateTime.ofInstant(getFileCreationDate(new File(inputCommandLine.inputFileName)).toInstant(), ZoneId.systemDefault());
+            makeOutputFile(duration, directionedInputList, inputCommandLine, localTime);
         } catch (FileNotFoundException ex) {
             Logger.getLogger(ProcessDataLoggerFile.class.getName()).log(Level.SEVERE, 
                     null, ex);
@@ -104,6 +107,14 @@ public class ProcessDataLoggerFile {
                     null, ex);
         }
     }//end main method
+
+    public static double getDuration(List<InputDataLine> inputList) {
+        if (inputList.size() > 0) {
+            InputDataLine lastDataLine = inputList.get(inputList.size() - 1);
+            return lastDataLine.time;
+        }//end if list isn't empty
+        else { return 0; }
+    }//end getDuration
 
     /*
      * Gets the path of a config file next to the jar.
@@ -152,7 +163,7 @@ public class ProcessDataLoggerFile {
 
         for (Field field : InputCommandLine.class.getFields()) {
             try {
-                if (field.getName() != "inputFileName" && field.getName() != "outputFileName") {
+                if (field.getName() != "inputFileName" && field.getName() != "outputFileName" && field.getName() != "numberOfChannelsUsed") {
                     lines.add(field.getName() + ":" + field.get(icl));
                 }//end if field isn't just a file path. We don't need to save or display that.
             } catch (IllegalArgumentException e) { e.printStackTrace();
@@ -354,7 +365,7 @@ public class ProcessDataLoggerFile {
      * @param ensureDirectoryExists If this is true, then this method will create a new directory if it doesn't already exist.
      * @return Returns a resulting path as a String
      */
-    public static String reformatOutputFile(String outputFilePath, boolean ensureDirectoryExists) {
+    public static File reformatOutputFile(String outputFilePath, boolean ensureDirectoryExists) {
         // figure out the path of the output directory
         File outputFile = new File(outputFilePath);
         File parentDirectory = outputFile.getParentFile();
@@ -373,17 +384,12 @@ public class ProcessDataLoggerFile {
         String newFileName = priorFileName.substring(0, priorFileName.lastIndexOf(".")) + current_time_stamp + newExtension;
         outputFile = new File(newDirectory.getAbsolutePath() + File.separator + newFileName);
 
-        return outputFile.getAbsolutePath();
+        return outputFile;
     }//end reformatOutputFile(outputFilePath)
 
     // write out the collated data
-    public static void makeOutputFile(List<FinalDataLine> inputList,
-            InputCommandLine icl) throws FileNotFoundException {
-
-        // get the file modified time to adjust output date/times to 
-        //   something close to real time
-        FileTime fileTime = getFileCreationDate(new File(icl.inputFileName));
-
+    public static void makeOutputFile(double duration, List<FinalDataLine> inputList,
+            InputCommandLine icl, LocalDateTime startTime) throws FileNotFoundException {
         // set up array to hold counts of peaks per channel
         int[] channelCounts = new int[icl.numberOfChannelsUsed];
 
@@ -403,6 +409,7 @@ public class ProcessDataLoggerFile {
         pw.printf("%s  %s\n%s\n", PROGRAM_NAME, VERSION, LOCATION + "\t" + DATE() + "\t" + PEOPLE);
 
         // print second section of header
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         Calendar cal = Calendar.getInstance();
         pw.printf("File name: %s\nData Processed: %s\n", icl.inputFileName, 
@@ -410,21 +417,18 @@ public class ProcessDataLoggerFile {
         
         // print third section of header
         if(inputList.size() > 0){
-            // do some time calculations
-            FinalDataLine lastDataLine = inputList.get(inputList.size() - 1);
-            long tim1 = fileTime.toMillis() - (long)(lastDataLine.elapsedTime1 * 1000);
-            long tim2 = tim1 + (long)(lastDataLine.elapsedTime1 * 1000);
-            double minutesDuration = lastDataLine.elapsedTime1 / 60;
+            double minutesDuration = duration / 60;
             // print out the time stuff
             pw.printf("Data Collected in %1.1f minutes\t", minutesDuration);
 
             // new line with date
             pw.printf("\nStart-End date/time: ");
-            pw.printf(dateFormat.format(new Date(tim1)));
+            pw.printf(startTime.format(dtf));
             pw.printf("  -  ");
-            pw.printf(dateFormat.format(new Date(tim2)));
+            pw.printf(startTime.plusSeconds(Math.round(duration)).format(dtf));
             pw.printf("\n");
         }//end if there are any inputs
+        else { pw.close(); return; }
 
         // print configuration settings
         pw.printf("Parameters from Config File:\n");
@@ -439,10 +443,10 @@ public class ProcessDataLoggerFile {
         
         // print headers for the columns we're about to print
         pw.printf("Chan#");
-        if (icl.add_second_peak_columns) { pw.printf("\tPkTime1\t        PkTime2"); }
+        if (icl.add_second_peak_columns) { pw.printf("\tPkTime1\t        PkTime2  "); }
         else { pw.printf("\tPkTime"); }
         if (icl.add_date_time_column) {
-            pw.printf("\tDtTim");
+            pw.printf("\tDate and Time");
         }//end if we should print the data time data
         if (icl.add_peak_width_column) {
             if (icl.add_second_peak_columns) { pw.printf("\t    PkWdth1\tPkWdth2"); }
@@ -466,8 +470,7 @@ public class ProcessDataLoggerFile {
             if (icl.add_second_peak_columns) { pw.printf("\t%9.3f", outputData.elapsedTime2); }
             if (icl.add_date_time_column) {
                 pw.printf("\t");
-                long tim = new Double(outputData.elapsedTime1 * 1000).intValue();
-                pw.printf(dateFormat.format(new Date(tim + fileTime.toMillis())));
+                pw.printf(startTime.plusSeconds((int)Math.floor(outputData.elapsedTime1)).format(dtf));
             }//end if we're printing time for output
             if (icl.add_peak_width_column) {
                 pw.printf("\t%d", outputData.peakWidth1);

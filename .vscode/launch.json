@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "DateTimeDialog",
+            "request": "launch",
+            "mainClass": "flightmill.DateTimeDialog",
+            "projectName": "FlightMill_5b14dc91"
+        },
+        {
+            "type": "java",
             "name": "AppInterface",
             "request": "launch",
             "mainClass": "flightmill.AppInterface",

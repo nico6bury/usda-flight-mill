@@ -7,7 +7,7 @@ public class InputCommandLine {
     public int skipLines = 4;    // header lines at top of data logger file
     public int numberOfChannelsUsed = 0;    // number of channels used, should probably end up being 8
     public boolean zip_input_file = false;              // zip input file
-    public boolean add_date_time_column = false;  // add date time to each output line
+    public boolean add_date_time_column = true;  // add date time to each output line
     public boolean add_peak_width_column = true; // add peak width to each output line
     public boolean add_second_peak_columns = true; // add second peakwidth and elapsedTime to each output line
     public boolean add_width_ratio_column = false; // add ratio between first and second peakwidth to each output line
