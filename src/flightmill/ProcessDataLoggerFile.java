@@ -431,10 +431,16 @@ public class ProcessDataLoggerFile {
                 wip_split_file_so_far = new ArrayList<String>();
                 System.out.println(String.format("Finished processing split file with path \"%s\".", new_icl.inputFileName));
                 split_writer.close();
+                // try to desperately save as much memory as possible
+                split_file = null;
+                split_writer = null;
             }//end if we need to split this off into a new file
         }//end looping while we have more to read from full file
 
         myReader.close();
+        // try to desperately clear as much memory as we can
+        myReader = null;
+        full_input_file = null;
 
         return splitFiles;
     }//end SplitInputFile(icl)
@@ -504,9 +510,19 @@ public class ProcessDataLoggerFile {
         int[] channelCounts = new int[icl.numberOfChannelsUsed];
 
         // count the number of peaks per channel
-        for (FinalDataLine idl : inputList) {    
-            channelCounts[idl.channel]++;
-        }
+        for (FinalDataLine idl : inputList) {
+            try {
+                channelCounts[idl.channel]++;
+            } catch (ArrayIndexOutOfBoundsException aioobe) {
+                System.out.println(String.format("We've encountered an ArrayIndexOutOfBoundsException in a place that that shouldn't happen. The array channelCounts has length %d, and we tried to access index %d of it, which didn't work. The final data line seems to think it is channel number %d. What. Furthermore, icl.numberOfChannelsUsed for %s is %d. This should not ever happen.", channelCounts.length, idl.channel, idl.channel, icl.inputFileName, icl.numberOfChannelsUsed));
+                System.out.println("In order to try and fix this problem with channelCounts, I'm going to manually overwride channelCounts to have length 8 instead of whatever it had before. You shouldn't see this message more than once per file, or at all really.");
+                int[] temp_channelCounts = new int[8];
+                for (int i = 0; i < Math.min(channelCounts.length, temp_channelCounts.length); i++) {
+                    temp_channelCounts[i] = channelCounts[i];
+                }//end adding previous channel count data into new array
+                channelCounts = temp_channelCounts;
+            }//end catching phantom exceptions
+        }//end getting count of peak numbers per channel
 
         // save to output file
         File outputFile = new File(icl.outputFileName);
