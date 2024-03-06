@@ -392,47 +392,25 @@ public class AppInterface extends javax.swing.JFrame {
             if (file_okay_to_run) {
                 uxStatusText.setText("File seems okay");
                 uxStatusText.paintImmediately(uxStatusText.getVisibleRect());
-                // load the input file
-                uxStatusText.setText("Loading input file into memory.");
-                uxStatusText.paintImmediately(uxStatusText.getVisibleRect());
-                List<InputDataLine> inputList = ProcessDataLoggerFile.LoadInputFile(inputCommandLine);
-                double duration = ProcessDataLoggerFile.getDuration(inputList);
-                // make list of individual peaks
-                uxStatusText.setText("Finding list of individual peaks.");
-                uxStatusText.paintImmediately(uxStatusText.getVisibleRect());
-                List<IntermediateDataLine> processedInputList = ProcessDataLoggerFile.processInput(inputList,
-                        inputCommandLine);
-                // sort peaks by channel
-                uxStatusText.setText("Sorting peaks by channel to ease processing.");
-                uxStatusText.paintImmediately(uxStatusText.getVisibleRect());
-                List<List<IntermediateDataLine>> channelSortedInputList = ProcessDataLoggerFile.separateIntermedDataByChannel(processedInputList);
-                // figure out directionallity from those peaks
-                uxStatusText.setText("Sifting through peaks to figure out directionallity.");
-                uxStatusText.paintImmediately(uxStatusText.getVisibleRect());
-                List<FinalDataLine> directionedInputList = ProcessDataLoggerFile.processDirectionallity(channelSortedInputList, inputCommandLine);
-                // write output file
-                uxStatusText.setText("Writing the output file.");
-                uxStatusText.paintImmediately(uxStatusText.getVisibleRect());
-                ProcessDataLoggerFile.makeOutputFile(duration, directionedInputList, inputCommandLine, dtDialog1.dateTime);
-                // tell the user what happened
-                uxStatusText.setText("Files have finished processing.");
-                uxStatusText.paintImmediately(uxStatusText.getVisibleRect());
-                JOptionPane.showMessageDialog(this, "Files have finished processing.");
-                // enable "show in folder" button
-                uxShowFileBtn.setEnabled(true);
+                doFileProcessing(inputCommandLine, 1, 1);
+                JOptionPane.showMessageDialog(this, String.format("%d File has finished processing.", 1));
             }//end if we can have list of 1, no split required
             else {
                 uxStatusText.setText("File size is too big. Splitting into multiple smaller files...");
                 uxStatusText.paintImmediately(uxStatusText.getVisibleRect());
                 List<InputCommandLine> files_to_process = ProcessDataLoggerFile.SplitInputFile(inputCommandLine);
-                StringBuilder messageBuilder = new StringBuilder();
-                messageBuilder.append(String.format("Your file has been split into %d smaller files. You will need to process each of them individually to prevent memory problems. The files have been added to the same folder as the original, at path \"%s\". The names of the split files are:\n", files_to_process.size(), inputCommandLine.inputFileName));
-                for (InputCommandLine split_file : files_to_process) {
-                    messageBuilder.append(String.format("\"%s\"\n", split_file.inputFileName));
-                }//end looping over split_files
-                uxStatusText.setText("File has been split. Please re-select individual files to process.");
-                uxStatusText.paintImmediately(uxStatusText.getVisibleRect());
-                JOptionPane.showMessageDialog(this, messageBuilder.toString());
+                for (int i = 0; i < files_to_process.size(); i++) {
+                    doFileProcessing(files_to_process.get(i), i+1, files_to_process.size());
+                }//end looping over each split file we made
+                JOptionPane.showMessageDialog(this, String.format("%d Files have finished processing.", files_to_process.size()));
+                // StringBuilder messageBuilder = new StringBuilder();
+                // messageBuilder.append(String.format("Your file has been split into %d smaller files. You will need to process each of them individually to prevent memory problems. The files have been added to the same folder as the original, at path \"%s\". The names of the split files are:\n", files_to_process.size(), inputCommandLine.inputFileName));
+                // for (InputCommandLine split_file : files_to_process) {
+                //     messageBuilder.append(String.format("\"%s\"\n", split_file.inputFileName));
+                // }//end looping over split_files
+                // uxStatusText.setText("File has been split. Please re-select individual files to process.");
+                // uxStatusText.paintImmediately(uxStatusText.getVisibleRect());
+                // JOptionPane.showMessageDialog(this, messageBuilder.toString());
             }//end else we need to split file and process each individually
             
             // clear collection time
@@ -453,10 +431,47 @@ public class AppInterface extends javax.swing.JFrame {
         }//end catching IOExceptions
     }//GEN-LAST:event_uxProcessBtnActionPerformed
 
+    /**
+     * Does the whole gui and processing stuff for one file. Extracted into a method for convenience with ux_ProcessBtnActionPerformed
+     * @param icl THe inputCommandLine for the file in question
+     * @param curFileNum
+     * @param totFileNum
+     * @throws FileNotFoundException 
+     */
+    private void doFileProcessing(InputCommandLine icl, int curFileNum, int totFileNum) throws FileNotFoundException {
+        // load the input file
+        uxStatusText.setText(String.format("Loading input file %d of %d into memory.", curFileNum, totFileNum));
+        uxStatusText.paintImmediately(uxStatusText.getVisibleRect());
+        List<InputDataLine> inputList = ProcessDataLoggerFile.LoadInputFile(icl);
+        double duration = ProcessDataLoggerFile.getDuration(inputList);
+        // make list of individual peaks
+        uxStatusText.setText(String.format("Finding list of individual peaks for file %d of %d.", curFileNum, totFileNum));
+        uxStatusText.paintImmediately(uxStatusText.getVisibleRect());
+        List<IntermediateDataLine> processedInputList = ProcessDataLoggerFile.processInput(inputList,
+                inputCommandLine);
+        // sort peaks by channel
+        uxStatusText.setText(String.format("Sorting peaks by channel to ease processing for file %d of %d.", curFileNum, totFileNum));
+        uxStatusText.paintImmediately(uxStatusText.getVisibleRect());
+        List<List<IntermediateDataLine>> channelSortedInputList = ProcessDataLoggerFile.separateIntermedDataByChannel(processedInputList);
+        // figure out directionallity from those peaks
+        uxStatusText.setText(String.format("Sifting through peaks to figure out directionallity for file %d of %d.", curFileNum, totFileNum));
+        uxStatusText.paintImmediately(uxStatusText.getVisibleRect());
+        List<FinalDataLine> directionedInputList = ProcessDataLoggerFile.processDirectionallity(channelSortedInputList, inputCommandLine);
+        // write output file
+        uxStatusText.setText(String.format("Writing the output for file %d of %d.", curFileNum, totFileNum));
+        uxStatusText.paintImmediately(uxStatusText.getVisibleRect());
+        ProcessDataLoggerFile.makeOutputFile(duration, directionedInputList, icl, dtDialog1.dateTime);
+        // tell the user what happened
+        uxStatusText.setText(String.format("File %d has finished processing.", curFileNum));
+        uxStatusText.paintImmediately(uxStatusText.getVisibleRect());
+        // enable "show in folder" button
+        uxShowFileBtn.setEnabled(true);
+    }//end doFileProcessing()
+
     private void uxShowFileBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uxShowFileBtnActionPerformed
         // open the file in file explorer
         try {
-            Runtime.getRuntime().exec("explorer.exe /select," + inputCommandLine.outputFileName);
+            Runtime.getRuntime().exec("explorer.exe /select," + inputCommandLine.inputFileName);
         }//end trying to open file explorer
         catch(Exception e) {System.out.println("Couldn't open file explorer");}
     }//GEN-LAST:event_uxShowFileBtnActionPerformed
