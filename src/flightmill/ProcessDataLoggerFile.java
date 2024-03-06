@@ -359,7 +359,7 @@ public class ProcessDataLoggerFile {
     * but a limit of 6hr is set in an attempt to make the program
     * work as smoothly as possible.
     */
-    static long file_size_byte_limit = 108000000;
+    static long file_size_byte_limit = 650000000;
     /*
      * expected max number of data lines in file under file_size_byte_limit.
      * Does not include header lines, of which there are 4 by default.
