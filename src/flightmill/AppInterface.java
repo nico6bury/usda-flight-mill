@@ -392,34 +392,7 @@ public class AppInterface extends javax.swing.JFrame {
             if (file_okay_to_run) {
                 uxStatusText.setText("File seems okay");
                 uxStatusText.paintImmediately(uxStatusText.getVisibleRect());
-                // load the input file
-                uxStatusText.setText("Loading input file into memory.");
-                uxStatusText.paintImmediately(uxStatusText.getVisibleRect());
-                List<InputDataLine> inputList = ProcessDataLoggerFile.LoadInputFile(inputCommandLine);
-                double duration = ProcessDataLoggerFile.getDuration(inputList);
-                // make list of individual peaks
-                uxStatusText.setText("Finding list of individual peaks.");
-                uxStatusText.paintImmediately(uxStatusText.getVisibleRect());
-                List<IntermediateDataLine> processedInputList = ProcessDataLoggerFile.processInput(inputList,
-                        inputCommandLine);
-                // sort peaks by channel
-                uxStatusText.setText("Sorting peaks by channel to ease processing.");
-                uxStatusText.paintImmediately(uxStatusText.getVisibleRect());
-                List<List<IntermediateDataLine>> channelSortedInputList = ProcessDataLoggerFile.separateIntermedDataByChannel(processedInputList);
-                // figure out directionallity from those peaks
-                uxStatusText.setText("Sifting through peaks to figure out directionallity.");
-                uxStatusText.paintImmediately(uxStatusText.getVisibleRect());
-                List<FinalDataLine> directionedInputList = ProcessDataLoggerFile.processDirectionallity(channelSortedInputList, inputCommandLine);
-                // write output file
-                uxStatusText.setText("Writing the output file.");
-                uxStatusText.paintImmediately(uxStatusText.getVisibleRect());
-                ProcessDataLoggerFile.makeOutputFile(duration, directionedInputList, inputCommandLine, dtDialog1.dateTime);
-                // tell the user what happened
-                uxStatusText.setText("Files have finished processing.");
-                uxStatusText.paintImmediately(uxStatusText.getVisibleRect());
-                JOptionPane.showMessageDialog(this, "Files have finished processing.");
-                // enable "show in folder" button
-                uxShowFileBtn.setEnabled(true);
+                doFileProcessing(inputCommandLine, 1, 1);
             }//end if we can have list of 1, no split required
             else {
                 uxStatusText.setText("File size is too big. Splitting into multiple smaller files...");
@@ -452,6 +425,44 @@ public class AppInterface extends javax.swing.JFrame {
                     null, ex);
         }//end catching IOExceptions
     }//GEN-LAST:event_uxProcessBtnActionPerformed
+
+    /**
+     * Does the whole gui and processing stuff for one file. Extracted into a method for convenience with ux_ProcessBtnActionPerformed
+     * @param icl THe inputCommandLine for the file in question
+     * @param curFileNum
+     * @param totFileNum
+     * @throws FileNotFoundException 
+     */
+    private void doFileProcessing(InputCommandLine icl, int curFileNum, int totFileNum) throws FileNotFoundException {
+        // load the input file
+        uxStatusText.setText(String.format("Loading input file %d of %d into memory.", curFileNum, totFileNum));
+        uxStatusText.paintImmediately(uxStatusText.getVisibleRect());
+        List<InputDataLine> inputList = ProcessDataLoggerFile.LoadInputFile(icl);
+        double duration = ProcessDataLoggerFile.getDuration(inputList);
+        // make list of individual peaks
+        uxStatusText.setText(String.format("Finding list of individual peaks for file %d of %d.", curFileNum, totFileNum));
+        uxStatusText.paintImmediately(uxStatusText.getVisibleRect());
+        List<IntermediateDataLine> processedInputList = ProcessDataLoggerFile.processInput(inputList,
+                inputCommandLine);
+        // sort peaks by channel
+        uxStatusText.setText(String.format("Sorting peaks by channel to ease processing for file %d of %d.", curFileNum, totFileNum));
+        uxStatusText.paintImmediately(uxStatusText.getVisibleRect());
+        List<List<IntermediateDataLine>> channelSortedInputList = ProcessDataLoggerFile.separateIntermedDataByChannel(processedInputList);
+        // figure out directionallity from those peaks
+        uxStatusText.setText(String.format("Sifting through peaks to figure out directionallity for file %d of %d.", curFileNum, totFileNum));
+        uxStatusText.paintImmediately(uxStatusText.getVisibleRect());
+        List<FinalDataLine> directionedInputList = ProcessDataLoggerFile.processDirectionallity(channelSortedInputList, inputCommandLine);
+        // write output file
+        uxStatusText.setText(String.format("Writing the output for file %d of %d.", curFileNum, totFileNum));
+        uxStatusText.paintImmediately(uxStatusText.getVisibleRect());
+        ProcessDataLoggerFile.makeOutputFile(duration, directionedInputList, icl, dtDialog1.dateTime);
+        // tell the user what happened
+        uxStatusText.setText(String.format("%d Files have finished processing.", totFileNum));
+        uxStatusText.paintImmediately(uxStatusText.getVisibleRect());
+        JOptionPane.showMessageDialog(this, String.format("%d Files have finished processing.", totFileNum));
+        // enable "show in folder" button
+        uxShowFileBtn.setEnabled(true);
+    }
 
     private void uxShowFileBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uxShowFileBtnActionPerformed
         // open the file in file explorer
