@@ -384,34 +384,57 @@ public class AppInterface extends javax.swing.JFrame {
                 inputCommandLine.inputFileName = unzippedFileName;
             }
     
-            // load the imput file
-            uxStatusText.setText("Loading input file into memory.");
+            // test that input file isn't too big
+            uxStatusText.setText("Testing size of input file");
             uxStatusText.paintImmediately(uxStatusText.getVisibleRect());
-            List<InputDataLine> inputList = ProcessDataLoggerFile.LoadInputFile(inputCommandLine);
-            double duration = ProcessDataLoggerFile.getDuration(inputList);
-            // make list of individual peaks
-            uxStatusText.setText("Finding list of individual peaks.");
-            uxStatusText.paintImmediately(uxStatusText.getVisibleRect());
-            List<IntermediateDataLine> processedInputList = ProcessDataLoggerFile.processInput(inputList,
-                    inputCommandLine);
-            // sort peaks by channel
-            uxStatusText.setText("Sorting peaks by channel to ease processing.");
-            uxStatusText.paintImmediately(uxStatusText.getVisibleRect());
-            List<List<IntermediateDataLine>> channelSortedInputList = ProcessDataLoggerFile.separateIntermedDataByChannel(processedInputList);
-            // figure out directionallity from those peaks
-            uxStatusText.setText("Sifting through peaks to figure out directionallity.");
-            uxStatusText.paintImmediately(uxStatusText.getVisibleRect());
-            List<FinalDataLine> directionedInputList = ProcessDataLoggerFile.processDirectionallity(channelSortedInputList, inputCommandLine);
-            // write output file
-            uxStatusText.setText("Writing the output file.");
-            uxStatusText.paintImmediately(uxStatusText.getVisibleRect());
-            ProcessDataLoggerFile.makeOutputFile(duration, directionedInputList, inputCommandLine, dtDialog1.dateTime);
-            // tell the user what happened
-            uxStatusText.setText("Files have finished processing.");
-            uxStatusText.paintImmediately(uxStatusText.getVisibleRect());
-            JOptionPane.showMessageDialog(this, "Files have finished processing.");
-            // enable "show in folder" button
-            uxShowFileBtn.setEnabled(true);
+            boolean file_okay_to_run = ProcessDataLoggerFile.TestInputFileSize(inputCommandLine);
+            // split file into multiple files if necessary without loading them in
+            if (file_okay_to_run) {
+                uxStatusText.setText("File seems okay");
+                uxStatusText.paintImmediately(uxStatusText.getVisibleRect());
+                // load the input file
+                uxStatusText.setText("Loading input file into memory.");
+                uxStatusText.paintImmediately(uxStatusText.getVisibleRect());
+                List<InputDataLine> inputList = ProcessDataLoggerFile.LoadInputFile(inputCommandLine);
+                double duration = ProcessDataLoggerFile.getDuration(inputList);
+                // make list of individual peaks
+                uxStatusText.setText("Finding list of individual peaks.");
+                uxStatusText.paintImmediately(uxStatusText.getVisibleRect());
+                List<IntermediateDataLine> processedInputList = ProcessDataLoggerFile.processInput(inputList,
+                        inputCommandLine);
+                // sort peaks by channel
+                uxStatusText.setText("Sorting peaks by channel to ease processing.");
+                uxStatusText.paintImmediately(uxStatusText.getVisibleRect());
+                List<List<IntermediateDataLine>> channelSortedInputList = ProcessDataLoggerFile.separateIntermedDataByChannel(processedInputList);
+                // figure out directionallity from those peaks
+                uxStatusText.setText("Sifting through peaks to figure out directionallity.");
+                uxStatusText.paintImmediately(uxStatusText.getVisibleRect());
+                List<FinalDataLine> directionedInputList = ProcessDataLoggerFile.processDirectionallity(channelSortedInputList, inputCommandLine);
+                // write output file
+                uxStatusText.setText("Writing the output file.");
+                uxStatusText.paintImmediately(uxStatusText.getVisibleRect());
+                ProcessDataLoggerFile.makeOutputFile(duration, directionedInputList, inputCommandLine, dtDialog1.dateTime);
+                // tell the user what happened
+                uxStatusText.setText("Files have finished processing.");
+                uxStatusText.paintImmediately(uxStatusText.getVisibleRect());
+                JOptionPane.showMessageDialog(this, "Files have finished processing.");
+                // enable "show in folder" button
+                uxShowFileBtn.setEnabled(true);
+            }//end if we can have list of 1, no split required
+            else {
+                uxStatusText.setText("File size is too big. Splitting into multiple smaller files...");
+                uxStatusText.paintImmediately(uxStatusText.getVisibleRect());
+                List<InputCommandLine> files_to_process = ProcessDataLoggerFile.SplitInputFile(inputCommandLine);
+                StringBuilder messageBuilder = new StringBuilder();
+                messageBuilder.append(String.format("Your file has been split into %d smaller files. You will need to process each of them individually to prevent memory problems. The files have been added to the same folder as the original, at path \"%s\". The names of the split files are:\n", files_to_process.size(), inputCommandLine.inputFileName));
+                for (InputCommandLine split_file : files_to_process) {
+                    messageBuilder.append(String.format("\"%s\"\n", split_file.inputFileName));
+                }//end looping over split_files
+                uxStatusText.setText("File has been split. Please re-select individual files to process.");
+                uxStatusText.paintImmediately(uxStatusText.getVisibleRect());
+                JOptionPane.showMessageDialog(this, messageBuilder.toString());
+            }//end else we need to split file and process each individually
+            
             // clear collection time
             uxGetCollectionTimeTxt.setText("");
             uxConfirmCollectionTimeTxt.setText("");

@@ -19,4 +19,32 @@ public class InputCommandLine {
     public double thresh_peakWidth_fast = 0;
     public double thresh_peakWidth_medium = 50;
     public double thresh_peakWidth_slow = 100;
+
+    /**
+     * Sets all to default
+     */
+    public InputCommandLine() {}
+
+    /**
+     * Copy constructor
+     */
+    public InputCommandLine(InputCommandLine other) {
+        this.inputFileName = other.inputFileName;
+        this.outputFileName = other.outputFileName;
+        this.skipLines = other.skipLines;
+        this.numberOfChannelsUsed = other.numberOfChannelsUsed;
+        this.zip_input_file = other.zip_input_file;
+        this.add_date_time_column = other.add_date_time_column;
+        this.add_peak_width_column = other.add_peak_width_column;
+        this.add_second_peak_columns = other.add_second_peak_columns;
+        this.add_width_ratio_column = other.add_width_ratio_column;
+        this.add_revolution_column = other.add_revolution_column;
+        this.threshold = other.threshold;
+        this.thresh_seconds_fast = other.thresh_seconds_fast;
+        this.thresh_seconds_medium = other.thresh_seconds_medium;
+        this.thresh_seconds_slow = other.thresh_seconds_slow;
+        this.thresh_peakWidth_fast = other.thresh_peakWidth_fast;
+        this.thresh_peakWidth_medium = other.thresh_peakWidth_medium;
+        this.thresh_peakWidth_slow = other.thresh_peakWidth_slow;
+    }//end copy constructor
 }//end class InputCommandLine

@@ -60,7 +60,7 @@ public class ProcessDataLoggerFile {
     }//end DATE()
     public static String PEOPLE = "Sixbury/Rust/Brabec";
     public static String PROGRAM_NAME = "Flight Mill Compression";
-    public static String VERSION = "v1.7.4";
+    public static String VERSION = "v1.8.0";
 
     private static AppInterface gui;
 
@@ -328,6 +328,115 @@ public class ProcessDataLoggerFile {
 
         return inputCommandLine;
     }//end processCommandLine(args)
+
+    /**
+     * Tests whether an input file is too big to be loaded in all at once
+     * @param icl InputCommandLine to specify file path.
+     * @return Returns true if file is fine, or false if file needs to be split
+     */
+    public static boolean TestInputFileSize(InputCommandLine icl) {
+        
+        // end of explanation
+
+        String fileName = icl.inputFileName;
+        File inputFile = new File(fileName);
+        long file_size_bytes = inputFile.length();
+
+        if (file_size_bytes <= file_size_byte_limit) {return true;}
+        else {return false;}
+    }//end TestInputFileSize(icl)
+
+    /*
+    * A 6hr data file seems to contain 5,400,000 lines. We test for
+    * length, and from our samples, it seems that files tend to
+    * have a size a bit less than 120 bytes per line. Therefore,
+    * to split files greater than 6hrs in size, we're setting the
+    * limit at 650,000,000 to be conservative.
+
+    for 1hr files, we set it at 108,000,000 hytes
+    * 
+    * To be clear, the program has handled 24 hr files fine before,
+    * but a limit of 6hr is set in an attempt to make the program
+    * work as smoothly as possible.
+    */
+    static long file_size_byte_limit = 108000000;
+    /*
+     * expected max number of data lines in file under file_size_byte_limit.
+     * Does not include header lines, of which there are 4 by default.
+     */
+    static long file_line_limit = 900000;
+
+    /**
+     * Splits a file specified by icl into multiple smaller files based
+     * on file_size_byte_limit.
+     * @param icl The inputCommandLine for the file to split.
+     * @return Returns inputCommandLines for each file created. The physical files are also created in the filesystem along with all necessary header and line information.
+     * @throws IOException Likely if we couldn't create a split file
+     */
+    public static List<InputCommandLine> SplitInputFile(InputCommandLine icl) throws IOException {
+        List<InputCommandLine> splitFiles = new ArrayList<InputCommandLine>();
+
+        String filename = icl.inputFileName;
+        String filename_without_extension = filename.substring(0, filename.lastIndexOf("."));
+        String file_extension = filename.substring(filename.lastIndexOf("."));
+
+        File full_input_file = new File(filename);
+        Scanner myReader = new Scanner(full_input_file);
+
+        List<String> header_lines = new ArrayList<String>();
+
+        for (int idx = 0; idx < icl.skipLines; idx++) {
+            String this_header_line = myReader.nextLine();
+            header_lines.add(this_header_line);
+        }//end adding each header line to separate array first
+
+        long lines_so_far = 0;
+        long lines_since_last_split = 0;
+
+        List<String> wip_split_file_so_far = new ArrayList<String>();
+
+        while (myReader.hasNextLine()) {
+            // read the line from full input file
+            String this_line = myReader.nextLine();
+            // maintenance on loop variables
+            wip_split_file_so_far.add(this_line);
+            lines_so_far++;
+            lines_since_last_split++;
+            // test for splititude
+            if (lines_since_last_split >= file_line_limit || !myReader.hasNextLine()) {
+                System.out.println(String.format("Found another point to split file. %d lines since last split, %d lines so far. This seems to be file No%d that we\'re creating.", lines_since_last_split, lines_so_far, (splitFiles.size() + 1)));
+                // figure out header for new file
+                String file_name_addition = String.format("-split-%d",splitFiles.size() + 1);
+                String new_file_path = filename_without_extension + file_name_addition + file_extension;
+                File split_file = new File(new_file_path);
+                if (split_file.exists()) {
+                    split_file.delete();
+                }//end if we need to re-create the file
+                split_file.createNewFile();
+                // actually write what we want to the new file
+                PrintWriter split_writer = new PrintWriter(split_file);
+                for (String header_line : header_lines) {
+                    split_writer.println(header_line);
+                }//end printing each header line to file
+                for (String data_line : wip_split_file_so_far) {
+                    split_writer.println(data_line);
+                }//end printing each data line to file
+                // add the new inputCommandLine
+                InputCommandLine new_icl = new InputCommandLine(icl);
+                new_icl.inputFileName = split_file.getAbsolutePath();
+                splitFiles.add(new_icl);
+                // loop var maintenance
+                lines_since_last_split = 0;
+                wip_split_file_so_far = new ArrayList<String>();
+                System.out.println(String.format("Finished processing split file with path \"%s\".", new_icl.inputFileName));
+                split_writer.close();
+            }//end if we need to split this off into a new file
+        }//end looping while we have more to read from full file
+
+        myReader.close();
+
+        return splitFiles;
+    }//end SplitInputFile(icl)
 
     // load the input file into an input list
     public static List<InputDataLine> LoadInputFile(InputCommandLine icl) 
