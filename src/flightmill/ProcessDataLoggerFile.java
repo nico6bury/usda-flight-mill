@@ -424,6 +424,7 @@ public class ProcessDataLoggerFile {
                 // add the new inputCommandLine
                 InputCommandLine new_icl = new InputCommandLine(icl);
                 new_icl.inputFileName = split_file.getAbsolutePath();
+                new_icl.outputFileName = reformatOutputFile(split_file.getAbsolutePath(), false).getAbsolutePath();
                 splitFiles.add(new_icl);
                 // loop var maintenance
                 lines_since_last_split = 0;
