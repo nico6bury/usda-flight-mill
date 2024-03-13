@@ -406,9 +406,10 @@ public class AppInterface extends javax.swing.JFrame {
                     InputCommandLine this_icl = files_to_process.get(i);
                     // load file and get all lines
                     List<InputDataLine> this_input = doFileProcessingJustLoadInput(this_icl, i+1, files_to_process.size());
-                    // get duration and add to running total
-                    double this_duration = ProcessDataLoggerFile.getDuration(this_input);
-                    total_duration += this_duration;
+                    // get duration from last file
+                    if (i == files_to_process.size() - 1) {
+                        total_duration = ProcessDataLoggerFile.getDuration(this_input);
+                    }//end if we're on the last file
                     // get list of peaks, sorted by channel
                     List<List<IntermediateDataLine>> this_channel_sorted_peaks = doFileProcessingToSortedPeaks(this_input, this_icl, i+1, files_to_process.size());
                     // desperately try to save memory
