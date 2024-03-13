@@ -13,6 +13,7 @@ import java.io.IOException;
 // import java.time.LocalDateTime;
 // import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -399,18 +400,58 @@ public class AppInterface extends javax.swing.JFrame {
                 uxStatusText.setText("File size is too big. Splitting into multiple smaller files...");
                 uxStatusText.paintImmediately(uxStatusText.getVisibleRect());
                 List<InputCommandLine> files_to_process = ProcessDataLoggerFile.SplitInputFile(inputCommandLine);
+                List<List<IntermediateDataLine>> all_peaks_channel_sorted = new ArrayList<List<IntermediateDataLine>>();
+                double total_duration = 0;
                 for (int i = 0; i < files_to_process.size(); i++) {
-                    doFileProcessing(files_to_process.get(i), i+1, files_to_process.size());
+                    InputCommandLine this_icl = files_to_process.get(i);
+                    // load file and get all lines
+                    List<InputDataLine> this_input = doFileProcessingJustLoadInput(this_icl, i+1, files_to_process.size());
+                    // get duration and add to running total
+                    double this_duration = ProcessDataLoggerFile.getDuration(this_input);
+                    total_duration += this_duration;
+                    // get list of peaks, sorted by channel
+                    List<List<IntermediateDataLine>> this_channel_sorted_peaks = doFileProcessingToSortedPeaks(this_input, this_icl, i+1, files_to_process.size());
+                    // desperately try to save memory
+                    this_input = null;
+                    // for each channel, we want to fix any end and beginning values and add them to channelSortedPeaks
+                    for (int j = 0; j < this_channel_sorted_peaks.size(); j++) {
+                        // make sure all_peaks_channel_sorted is big enough to handle us
+                        if (all_peaks_channel_sorted.size() < j + 1) {
+                            List<IntermediateDataLine> new_channel_list = new ArrayList<IntermediateDataLine>();
+                            all_peaks_channel_sorted.add(new_channel_list);
+                        }//end if we need to increase size of all_peaks_channel_sorted to accomadate upcoming changes
+                        // check first element of this_channel_sorted_peaks[j] with last element all_peaks_channel_sorted[j] if all_peaks_channel_sorted[j] not empty
+                        if (all_peaks_channel_sorted.get(j).size() > 0 && this_channel_sorted_peaks.get(j).size() > 0) {
+                            // Make sure first and last peaks are not screwed up
+                            int all_peaks_last_index = all_peaks_channel_sorted.get(j).size() - 1;
+                            IntermediateDataLine last_peak = all_peaks_channel_sorted.get(j).get(all_peaks_last_index);
+                            IntermediateDataLine next_peak = this_channel_sorted_peaks.get(j).get(0);
+                            if (last_peak.elapsedTime + last_peak.peakWidth * 0.004 >= next_peak.elapsedTime) {
+                                // print out that we actually had this happen
+                                System.out.println("It seems we actually have a split peak. Here are the details:");
+                                System.out.println(String.format("last_peak started at time %d and ended at time %d.", last_peak.elapsedTime, last_peak.elapsedTime + (last_peak.peakWidth * 0.004)));
+                                System.out.println(String.format("next_peak started at time %d.", next_peak.elapsedTime));
+                                // Create merged data line from both peaks
+                                IntermediateDataLine merged_peak = new IntermediateDataLine(last_peak.channel, last_peak.elapsedTime, last_peak.peakWidth + next_peak.peakWidth);
+                                // replace last_peak in all_peaks_channel_sorted with merged_peak
+                                all_peaks_channel_sorted.get(j).set(all_peaks_last_index, merged_peak);
+                            }//end if it seems we have a split peak
+                        }//end if we can go ahead and check elements
+                        else {
+                            if (this_channel_sorted_peaks.get(j).size() > 0) {
+                                IntermediateDataLine this_peak = this_channel_sorted_peaks.get(j).get(0);
+                                all_peaks_channel_sorted.get(j).add(this_peak);
+                            }//end if we have a first element
+                        }//end else add first element of this_channel_sorted_peaks[j] to all_peaks_channel_sorted[j] without alteration
+                        // either way, from here, add each element in this_channel_sorted_peaks[j] to all_peaks_channel_sorted
+                        for (int k = 1; k < this_channel_sorted_peaks.get(j).size(); k++) {
+                            all_peaks_channel_sorted.get(j).add(this_channel_sorted_peaks.get(j).get(k));
+                        }//end adding each element in this_channel_sorted_peaks[j] to all_peaks_channel_sorted[j] (except for first element)
+                    }//end fixing beginning values of each channel and doing array maintenance
                 }//end looping over each split file we made
+                // do final direction processing and output of all our files together, using inputCommandLine for whole file and total duration earlier
+                doFileProcessingDirectionOnwards(all_peaks_channel_sorted, total_duration, inputCommandLine, files_to_process.size(), files_to_process.size());
                 JOptionPane.showMessageDialog(this, String.format("%d Files have finished processing.", files_to_process.size()));
-                // StringBuilder messageBuilder = new StringBuilder();
-                // messageBuilder.append(String.format("Your file has been split into %d smaller files. You will need to process each of them individually to prevent memory problems. The files have been added to the same folder as the original, at path \"%s\". The names of the split files are:\n", files_to_process.size(), inputCommandLine.inputFileName));
-                // for (InputCommandLine split_file : files_to_process) {
-                //     messageBuilder.append(String.format("\"%s\"\n", split_file.inputFileName));
-                // }//end looping over split_files
-                // uxStatusText.setText("File has been split. Please re-select individual files to process.");
-                // uxStatusText.paintImmediately(uxStatusText.getVisibleRect());
-                // JOptionPane.showMessageDialog(this, messageBuilder.toString());
             }//end else we need to split file and process each individually
             
             // clear collection time
@@ -431,19 +472,15 @@ public class AppInterface extends javax.swing.JFrame {
         }//end catching IOExceptions
     }//GEN-LAST:event_uxProcessBtnActionPerformed
 
-    /**
-     * Does the whole gui and processing stuff for one file. Extracted into a method for convenience with ux_ProcessBtnActionPerformed
-     * @param icl THe inputCommandLine for the file in question
-     * @param curFileNum
-     * @param totFileNum
-     * @throws FileNotFoundException 
-     */
-    private void doFileProcessing(InputCommandLine icl, int curFileNum, int totFileNum) throws FileNotFoundException {
+    private List<InputDataLine> doFileProcessingJustLoadInput(InputCommandLine icl, int curFileNum, int totFileNum) throws FileNotFoundException {
         // load the input file
         uxStatusText.setText(String.format("Loading input file %d of %d into memory.", curFileNum, totFileNum));
         uxStatusText.paintImmediately(uxStatusText.getVisibleRect());
         List<InputDataLine> inputList = ProcessDataLoggerFile.LoadInputFile(icl);
-        double duration = ProcessDataLoggerFile.getDuration(inputList);
+        return inputList;
+    }//end doFileProcessingJustLoadInput()
+
+    private List<List<IntermediateDataLine>> doFileProcessingToSortedPeaks(List<InputDataLine> inputList, InputCommandLine icl, int curFileNum, int totFileNum) {
         // make list of individual peaks
         uxStatusText.setText(String.format("Finding list of individual peaks for file %d of %d.", curFileNum, totFileNum));
         uxStatusText.paintImmediately(uxStatusText.getVisibleRect());
@@ -453,14 +490,36 @@ public class AppInterface extends javax.swing.JFrame {
         uxStatusText.setText(String.format("Sorting peaks by channel to ease processing for file %d of %d.", curFileNum, totFileNum));
         uxStatusText.paintImmediately(uxStatusText.getVisibleRect());
         List<List<IntermediateDataLine>> channelSortedInputList = ProcessDataLoggerFile.separateIntermedDataByChannel(processedInputList);
+
+        return channelSortedInputList;
+    }//end doFileProcessingToSortedPeaks()
+
+    private void doFileProcessingDirectionOnwards(List<List<IntermediateDataLine>> channel_sorted_peaks, double duration, InputCommandLine icl, int curFileNum, int totFileNum) throws FileNotFoundException {
         // figure out directionallity from those peaks
         uxStatusText.setText(String.format("Sifting through peaks to figure out directionallity for file %d of %d.", curFileNum, totFileNum));
         uxStatusText.paintImmediately(uxStatusText.getVisibleRect());
-        List<FinalDataLine> directionedInputList = ProcessDataLoggerFile.processDirectionallity(channelSortedInputList, inputCommandLine);
+        List<FinalDataLine> directionedInputList = ProcessDataLoggerFile.processDirectionallity(channel_sorted_peaks, inputCommandLine);
         // write output file
         uxStatusText.setText(String.format("Writing the output for file %d of %d.", curFileNum, totFileNum));
         uxStatusText.paintImmediately(uxStatusText.getVisibleRect());
         ProcessDataLoggerFile.makeOutputFile(duration, directionedInputList, icl, dtDialog1.dateTime);
+    }//end doFileProcessingDirectionOnwards()
+
+    /**
+     * Does the whole gui and processing stuff for one file. Extracted into a method for convenience with ux_ProcessBtnActionPerformed
+     * @param icl THe inputCommandLine for the file in question
+     * @param curFileNum
+     * @param totFileNum
+     * @throws FileNotFoundException 
+     */
+    private void doFileProcessing(InputCommandLine icl, int curFileNum, int totFileNum) throws FileNotFoundException {
+        // user helper method to load file
+        List<InputDataLine> inputList = doFileProcessingJustLoadInput(icl, curFileNum, totFileNum);
+        double duration = ProcessDataLoggerFile.getDuration(inputList);
+        // use helper method to get to point of sorted IntermediateDataLines
+        List<List<IntermediateDataLine>> channelSortedInputList = doFileProcessingToSortedPeaks(inputList, icl, curFileNum, totFileNum);
+        // do direction stuff and make the output file
+        doFileProcessingDirectionOnwards(channelSortedInputList, duration, icl, curFileNum, totFileNum);
         // tell the user what happened
         uxStatusText.setText(String.format("File %d has finished processing.", curFileNum));
         uxStatusText.paintImmediately(uxStatusText.getVisibleRect());
